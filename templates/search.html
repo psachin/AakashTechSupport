@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+
+{% block body_block %}
+    <!-- SEARCH BAR IMPLEMENT -->
+    {% if search_dict %}
+    <div id="post_body" class="col-md-8 col-md-offset-2" style="padding-top: 1cm">
+        <form action="/aakashuser/search/" role="form" id="search_form">
+        <nav>
+        <ul class="nav navbar-nav">
+            <div class="input-group" style="float: left;">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                <input type="text" id="search" class="form-control" name="search_string" placeholder="Search" required="required" data-max-length="150" data-min-length="15" tabindex="100" maxlength="300" style="width: 600px;"/>
+            </div>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+            <button class="btn btn btn-primary" type="submit">Search</button>
+        </ul>
+        </nav>
+        </form>
+    </div>
+
+    <!-- SBI ENDS HERE -->
+
+    <!-- SEARCH -->
+
+    <div>
+        <ul id="search_results">
+        </ul>
+    </div>
+
+	<!-- FOOTER CODE GOES HERE -->
+
+	<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+		<div id="footer">
+		  <div class="container">
+			<center>
+				<p class="muted credit">Development on <a href="http://www.aakashlabs.org.in"> Aakash Labs</a> under construction.
+				 &nbsp; |  &nbsp;
+			   	Copyright <a href="http://www.github.com/darkdefender27"> © darkdefender27</a>  Inc. and its affiliates.
+				 &nbsp; |  &nbsp;
+			   	Contact : <a href="https://www.facebook.com/sHuBhAm5/"> ushubham27 </a>
+				</p>
+			</center>
+		  </div>
+		</div>
+	</nav>
+
+	<!-- END OF FOOTER -->
+
+{% endblock %}

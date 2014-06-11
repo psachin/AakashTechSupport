@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+
+{% block body_block  %}
+
+    <div id="post_body" class="col-md-8 col-md-offset-2" style="padding-top: 1cm">
+        <form action="search" role="form" id="search_form">
+        <nav>
+        <ul class="nav navbar-nav">
+            <div class="input-group" style="float: left;">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                <input type="text" class="form-control" name="search_string" placeholder="Search for a Tag" required="required" data-max-length="150" data-min-length="15" tabindex="100" maxlength="300" style="width: 250px;"/>
+            </div>
+        </ul>
+
+        <ul class="nav navbar-nav" style="padding-left: 1cm; padding-top: 2px;">
+            <button class="btn btn-sm btn-primary" type="submit">Search</button>
+        </ul>
+        </nav>
+        </form>
+    </div>
+
+{% endblock %}
