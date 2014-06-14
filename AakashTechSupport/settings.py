@@ -17,6 +17,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+LOGIN_URL = '/login/'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

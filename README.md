@@ -1,4 +1,0 @@
-AakashTechSupport
-=================
-
-Using Django Python
