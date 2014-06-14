@@ -17,7 +17,10 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
 
     url(r'^admin/', include(admin.site.urls)),
+
     url(r'^aakashuser/', include('aakashuser.urls')),
+    url(r'^questions/', include('questions.urls')),
+
     url(r'^$', 'aakashuser.views.index', name='indexpage'),
     url(r'^register/$', 'aakashuser.views.register', name='register'),
     url(r'^login/$', 'aakashuser.views.login_new', name='login_new'),
