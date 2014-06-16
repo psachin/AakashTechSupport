@@ -1,48 +1,133 @@
 # FORMS
+import datetime
+from django.core.validators import RegexValidator
+
 __author__ = 'ushubham27'
 
 from django import forms
 from django.contrib.auth.models import User
 from tinymce.widgets import TinyMCE
+from aakashuser.models import Post, Category
+
 
 class UserForm(forms.ModelForm):
-    username = forms.CharField(label='Username',
-        widget= forms.TextInput(
+    username = forms.CharField(
+        min_length=6,
+        max_length=30,
+        required=True,
+        error_messages={
+            'required': 'Username is required.'
+        },
+        validators=[
+            RegexValidator('^[a-zA-Z0-9]*$', message='Username must be Alphanumeric'),
+        ],
+        label='Username',
+        widget=forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'Username to login*.'}),
-            help_text="",
-            required=True,
-            error_messages={'required':'Username is required.'})
+        )
+
     first_name = forms.CharField(
-        widget= forms.TextInput(
+        min_length=2,
+        max_length=20,
+        required=True,
+        error_messages={
+            'required': 'First name is required.'
+        },
+        validators=[
+            RegexValidator('^[a-zA-Z]*$', message='First name must be Alphanumeric'),
+        ],
+        widget=forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'Coordinator first name*.'}),
-            help_text="",
-            required=True,
-            error_messages={'required':'First name is required.'})
+        )
+
     last_name = forms.CharField(
-        widget= forms.TextInput(
+        min_length=2,
+        max_length=20,
+        required=True,
+        error_messages={
+            'required': 'Last name is required.'
+        },
+        validators=[
+            RegexValidator('^[a-zA-Z]*$', message='Last name must be Alphanumeric'),
+        ],
+        widget=forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'Coordinator last name*.'}),
-            help_text="",
-            required=True,
-            error_messages={'required':'Last name is required.'})
+        )
+
     email = forms.CharField(
-        widget= forms.TextInput(
+        max_length=30,
+        required=True,
+        error_messages={
+            'required': 'Valid Email address is required.'
+        },
+        widget=forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'Coordinator valid email*.'}),
-            help_text="",
-            required=True,
-            error_messages={'required':'Valid Email address is required.'})
+        )
+
     password = forms.CharField(
+        min_length=6,
+        max_length=16,
+        required=True,
+        error_messages={
+            'required': 'Password is missing.'
+        },
         widget=forms.PasswordInput(
             attrs={'class': 'form-control', 'placeholder': 'Coordinator password*.'}),
-            help_text="",
-            required=True,
-            error_messages={'required':'Password is missing.'})
+
+        )
+
     password1 = forms.CharField(
+        min_length=6,
+        max_length=16,
+        required=True,
+        error_messages={
+            'required': 'reenter correct password.'
+        },
         widget=forms.PasswordInput(
             attrs={'class': 'form-control', 'placeholder': 'Re-enter password'}),
-            help_text="",
-            required=True,
-            error_messages={'required':'reenter correct password.'})
+        )
 
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password', 'password1']
+
+"""
+class PostForm(forms.ModelForm):
+
+    title = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+            }
+        ),
+        help_text="",
+        required=True,
+        error_messages={'required:' 'Renter the question tile.'}
+    )
+    body = forms.Textarea(
+        widget=forms.Textarea(
+            attrs={
+                'class': "form-control",
+            }
+        ),
+        help_text="",
+        required=True,
+        error_messages={
+            'required': 'Re-enter the text.'
+        }
+    )
+
+    tags = forms.ChoiceField(
+        choices=[(x['category'], str(x['category']))
+                 for x in Category.objects.values('category')],
+        help_text="please select the category of your problem"
+    )
+
+    class Meta:
+        model = Post
+        fields = ['title', 'body', 'tags']
+
+    def clean_created_date_time(self):
+        return datetime.datetime.now()
+
+"""

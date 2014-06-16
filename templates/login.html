@@ -4,7 +4,7 @@
 <HTML>
 <HEAD>
 	<TITLE>
-		Registration Page
+		Login Page
 	</TITLE>
 	
 		<link rel="stylesheet" href="{% static 'css/custom.css' %}" />
@@ -18,11 +18,7 @@
 		
 		
 		<style>
-		
-		form .alert {
-			display : none;
-		}	
-		
+
 		.light-wrap {
 			border: 1px solid rgb(194, 199, 208);
 		}
@@ -58,7 +54,9 @@
 	<div class="container" align="center">
 	
 		<div class="page-header">
-		  <img src = "{% static 'images/aakash.png' %}" height="50px" width="100px" />
+          <a href='/' title="Go back to Home Page">
+		    <img src = "{% static 'images/aakash.png' %}" height="50px" width="100px" />
+          </a>
 		  <h1><small>Log In to </small><strong>TechSupport</strong></h1>
 		</div>
 		
@@ -89,10 +87,15 @@
 					<input type="password" class="form-control" name="password" placeholder="Password" required="required" />
 			  	</div>
 			  	<br/>
-			  	
-				<div class="alert alert-danger">		
+
+                <!-- ERRORS, IF ANY IN POSTFORM -->
+
+				{% if login_error %}
+				<div class="alert alert-danger">
+				<p>{{ login_error }}</p>
 				</div>
-			    
+			    {% endif %}
+
 				<button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
 
 				<br />		
@@ -104,7 +107,7 @@
 
 
 	<!-- REGISTER COMPLETES HERE -->
-	
+
 </BODY>
 
 </HTML>

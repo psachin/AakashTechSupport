@@ -53,7 +53,10 @@
 	<div class="container" align="center">
 	
 		<div class="page-header">
-		  <img src = "{% static 'images/aakash.png' %}" height="50px" width="100px" />
+		  <a href="/" title="Go back to Home Page">
+            <img src = "{% static 'images/aakash.png' %}" alt="Aakash Logo-small" height="50px" width="100px" />
+		  </a>
+
 		  <h1><small>Register to </small><strong>TechSupport</strong></h1>
 		</div>
 		
@@ -122,18 +125,38 @@
 
 			    <!-- ERRORS, IF ANY IN POSTFORM -->
 			    
-				{% if er1 or postform.errors%}
+				{% if er1 or er2 or postform.errors%}
 				<div class="alert alert-danger">
 				{% for i in postform.errors %}
-				<p>{{ i }}</p>
+				<p>
+                    {% if i == "username" %}
+                        Username should be alphanumeric & of min_length 3
+                    {% endif %}
+
+                    {% if i == "first_name" %}
+                        First name should consist of alphabets only
+                    {% endif %}
+
+                    {% if i == "last_name" %}
+                        Last name should consist of alphabets only
+                    {% endif %}
+                </p>
 				{% endfor %}
 				
 				{% if er1 %}
 				<p> {{ er1 }} </p>
 				{% endif %}
+
+                {% if er2 %}
+				<p> {{ er2 }} </p>
+				{% endif %}
+
 				</div>
 			    {% endif %}
-			    
+
+
+
+
 				<button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
 
 				<br />		
