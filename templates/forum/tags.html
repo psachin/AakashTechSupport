@@ -38,7 +38,38 @@
         </form>
     </div>
 
+    <div id="post_body" class="col-md-8 col-md-offset-2" style="padding-top: 1.5cm">
+    <table id="tags-browser">
+        <tbody>
+            <tr>
+            {% for tag in tags %}
 
+                <td class="tag-cell">
+                    <a class="post-tag" rel="tag" title="" href="/questions/tag/{{ tag.pk }}/">
+                       {{ tag }}
+                    </a>
+                    <span class="item-multiplier">
+                        <span class="item-multiplier-x">
+                            x
+                        </span>
+                        <span class="item-multiplier-count">
+                           {{ tag.count }}
+                        </span>
+                    </span>
+                    <div class="excerpt">
+                        Java (not to be confused with JavaScript) is a cla…
+                    </div>
+                </td>
+                {% if forloop.counter|divisibleby:"4" %}
+            </tr>
+            <tr>
+                {% endif %}
+    		{% endfor %}
+            </tr>
+        </tbody>
 
+    </table>
+
+    </div>
 
 {% endblock %}
