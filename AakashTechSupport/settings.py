@@ -146,6 +146,7 @@ INSTALLED_APPS = (
     'taggit',
     'django_wysiwyg',
     'tinymce',
+    'ac',	
 
     # Uncomment the next line to enable the admin:
     # Uncomment the next line to enable admin documentation:
