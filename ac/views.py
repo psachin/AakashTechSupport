@@ -288,17 +288,22 @@ def view_tickets(request):
 		if t.topic_priority==2:
 			p="high"
 		t_dic["priority"]=p
-		tickets_dict.append(t_dic)
+		
 		#reply_dict={}
-		#replies=Threads.objects.filter(ticketreply=t.ticket_id)
-		#reply_str=""
-		#print replies
-		#for reply in replies:
-		#	print reply.reply
-		#print "\n__________n"	
-		#reply_str=str(replies)
-		#tickets_dict.append(reply_str)
-	#print tickets_dict
+		replies=Threads.objects.filter(ticketreply=t.ticket_id)
+		if not replies:
+			reply_str="No replies yet"
+		else:
+			reply_str=""
+		print replies
+		for reply in replies:
+			print reply.reply
+			print reply.created
+			reply_str=reply_str+"Reply on "+reply.created.strftime('%Y-%m-%d')+" : "+reply.reply+" ;"
+		print reply_str
+		t_dic["Replies"]=reply_str
+		tickets_dict.append(t_dic)
+	print tickets_dict
 
 	return render_to_response("ac/view_tickets.html",{"tickets_dict":tickets_dict}, context_instance=RequestContext(request))
                    
