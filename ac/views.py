@@ -263,8 +263,25 @@ def open(request):
 def close(request):
      tickets = Ticket.objects.filter(status=1)
      return render_to_response("ac/d.html",dict(tickets=tickets), RequestContext(request))
-    
 
+@login_required
+def view_tickets(request):
+	email=request.user.email
+	tickets=Ticket.objects.filter(user_id=email)
+	tickets_dict=[]
+	print tickets
+	for t in tickets:
+		t_dic={}
+		t_dic["status"]=t.status
+		t_dic["tablet id"]=t.tab_id
+		t_dic["message"]=t.message
+		t_dic["created date time"]=t.created_date_time
+		t_dic["ticket id"]=t.ticket_id
+		t_dic["priority"]=t.topic_priority
+		tickets_dict.append(t_dic)
+	print tickets_dict
+
+	return render_to_response("ac/view_tickets.html",{"tickets_dict":tickets_dict}, context_instance=RequestContext(request))
                    
 
     
