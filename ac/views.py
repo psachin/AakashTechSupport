@@ -272,14 +272,33 @@ def view_tickets(request):
 	print tickets
 	for t in tickets:
 		t_dic={}
-		t_dic["status"]=t.status
+		if t.status==0:
+			status="open"
+		if t.status==1:
+			status="closed"
+		t_dic["status"]=status
 		t_dic["tablet id"]=t.tab_id
 		t_dic["message"]=t.message
-		t_dic["created date time"]=t.created_date_time
+		t_dic["created date and time"]=t.created_date_time
 		t_dic["ticket id"]=t.ticket_id
-		t_dic["priority"]=t.topic_priority
+		if t.topic_priority==0:
+			p="low"
+		if t.topic_priority==1:
+			p="normal"
+		if t.topic_priority==2:
+			p="high"
+		t_dic["priority"]=p
 		tickets_dict.append(t_dic)
-	print tickets_dict
+		#reply_dict={}
+		#replies=Threads.objects.filter(ticketreply=t.ticket_id)
+		#reply_str=""
+		#print replies
+		#for reply in replies:
+		#	print reply.reply
+		#print "\n__________n"	
+		#reply_str=str(replies)
+		#tickets_dict.append(reply_str)
+	#print tickets_dict
 
 	return render_to_response("ac/view_tickets.html",{"tickets_dict":tickets_dict}, context_instance=RequestContext(request))
                    
