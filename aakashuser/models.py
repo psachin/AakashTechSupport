@@ -4,6 +4,16 @@ from django.contrib.auth.models import User
 from django.contrib import admin
 from django.db.models.signals import post_save
 from taggit.managers import TaggableManager
+from django.db import models
+from django.db.models import *
+from django.contrib.auth.models import User
+from django.contrib import admin
+from django.db.models.signals import post_save
+import datetime
+from datetime import timedelta
+Date=datetime.datetime.now()
+Enddate=Date+datetime.timedelta(days=1)
+Invaliddate=Date-datetime.timedelta(days=1)
 
 class UserProfile(models.Model):#Model for storing a user's information.
     user = OneToOneField(User)
@@ -28,11 +38,11 @@ class UserProfile(models.Model):#Model for storing a user's information.
 
 
 class Category(models.Model):#Model for storing categories of various posts.
-    category_title = models.CharField(max_length=20)
+    category = models.CharField(max_length=20)
     description = models.TextField()
 
     def __unicode__(self):
-        return self.category_title
+        return self.category
 
 class Post(models.Model):#Model for storing information about each post with category as its foreign key.
     title = CharField(max_length=60)
@@ -96,5 +106,49 @@ class Comment(models.Model):#Model for storing information about each Comment wi
 
     def __unicode__(self):
         return self.user.username
+
+class Ticket(models.Model):
+	user_id=models.EmailField()
+	topic_id=models.ForeignKey(Category)
+	tab_id=models.IntegerField(blank=False)
+	message=models.TextField(help_text="enter message")
+	ticket_id = models.AutoField(primary_key=True)
+	created_date_time=models.DateTimeField(auto_now_add=False,default=Date)
+	overdue_date_time=models.DateTimeField(auto_now_add=False,default=Enddate)
+	closed_date_time=models.DateTimeField(auto_now_add=False,default=Invaliddate)
+	status=models.IntegerField(help_text="enter status",default=0)
+	reopened_date_time=models.DateTimeField(auto_now_add=False,default=Invaliddate)
+	topic_priority=models.IntegerField(help_text="enter priority",default=1)
+	duration_for_reply=models.IntegerField(help_text="enter duration for reply",default=24)
+	
+        
+        def __unicode__(self):
+		return unicode(self.ticket_id)
+
+            
+class Threads(models.Model):
+      created = models.DateTimeField(auto_now_add=True)
+      reply=models.TextField(blank=True)
+      ticketreply=models.ForeignKey(Ticket)
+      count = models.IntegerField()
+      
+      def __unicode__(self):
+         return unicode(self.reply)
+      
+    
+
+
+class Tablet_info(models.Model):
+	rcID=models.IntegerField()
+	rcName=models.CharField(max_length=100)
+	start_tab_id=models.IntegerField()
+	end_tab_id=models.IntegerField()
+	count=models.IntegerField()
+	city=models.CharField(max_length=20)
+
+	def __unicode__(self):
+		return unicode(str(self.start_tab_id)+"-"+str(self.end_tab_id))
+
+
 
 

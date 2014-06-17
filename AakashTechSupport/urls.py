@@ -20,6 +20,8 @@ urlpatterns = patterns('',
 
     url(r'^aakashuser/', include('aakashuser.urls')),
     url(r'^questions/', include('questions.urls')),
+    url(r'^ac/', include('ac.urls')),
+
 
     url(r'^$', 'aakashuser.views.index', name='indexpage'),
     url(r'^register/$', 'aakashuser.views.register', name='register'),
@@ -27,5 +29,8 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'aakashuser.views.logout_new', name='logout_new'),
     url(r'^index/$', 'aakashuser.views.index', name='index'),
     url(r'^search/$', 'aakashuser.views.search', name='index'),
+	
+
+
 
 )
