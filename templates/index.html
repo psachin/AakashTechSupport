@@ -12,6 +12,8 @@
 		<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
 		<link rel="stylesheet" href="{% static 'css/footer.css' %}" />
 		<link rel="stylesheet" href="{% static 'css/ask_que.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/tags_table.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/question_summary.css' %}" />
 
 	</head>
 	
@@ -92,6 +94,7 @@
 			<li>
 				<a href="/register/">Register</a>
 			</li>
+			
 			{% endif %}
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
@@ -126,16 +129,17 @@
         </ul>
 
         <ul class="nav navbar-nav">
-          <a class="navbar-brand " href="/aakashuser/tags/" ><b>Tags</b></a>
+          <a class="navbar-brand " href="/questions/tags/" ><b>Tags</b></a>
         </ul>
 
-        <ul class="nav navbar-nav">
-          <a class="navbar-brand " href="#" ><b>Unanswered</b></a>
+	<ul class="nav navbar-nav">
+          <a class="navbar-brand " href="/ac/submit_ticket/" ><b>Submit ticket</b></a>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
           <a class="navbar-brand " href="/aakashuser/askquestion/" >Ask <b>Question </b></a>
+	  <a class="navbar-brand " href="/ac/view_tickets/" >View <b>Tickets </b></a>	
           {% else %}
           <a class="navbar-brand " href="#" data-toggle="modal" data-target="#myModal">Ask <b>Question </b></a>
           {% endif %}

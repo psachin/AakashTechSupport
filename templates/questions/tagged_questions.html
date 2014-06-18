@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+{% extends "index.html" %}
+
+{% block body_block %}
+
+    <div class="container-fluid"  style="padding-top: 0.5cm; padding-bottom: 0.7cm;">
+	<div class="  col-md-8 col-md-offset-2" role="navigation">
+
+        <ul class="nav nav-tabs">
+          <li style="float: right;"><a href="#">Popular</a></li>
+          <li style="float: right;" class="active"><a href="#">New</a></li>
+        <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
+            Tagged Questions
+        </h4>
+
+        </ul>
+
+            <!-- QUESTION SUMMARY -->
+
+
+    {% for post in posts_date %}
+
+    <div style="padding-top: 1cm;">
+    </div>
+
+    <div id="mainbar">
+        <div id="questions" class="content-padding">
+            <div id="question-summary" class="question-summary">
+
+                    <div class="stats-container">
+                    <div class="stats-arrow">
+                    </div>
+                    <div class="stats" style="width: 10%; float:left; padding-top: 10px;">
+                        <div class="vote">
+                            <div class="votes">
+                               <span class="vote-count-post">
+                                    0
+                               </span>
+                               <div class="viewcount">
+                                   votes
+                               </div>
+                            </div>
+                        </div>
+
+                        <div class="status unanswered">
+                            <strong>
+                                0
+                            </strong>
+                            ans
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="summary" style="float: left; width: 70%; padding-left: 40px;">
+                    <h3>
+                        <a class="question-hyperlink" href="/questions/1" style="font-size: 19px;" >
+                            {{ post.title }}
+                        </a>
+                    </h3>
+                    <div class="excerpt">
+                        {{ post.body }}
+                    </div>
+                    <div class="tags t-search">
+                        <a class="post-tag" rel="tag" title="" href="/questions/tags/{{ mytag.pk }}">
+                            {{ mytag }}
+                        </a>
+                    </div>
+                    <div class="started-fr">
+                        <div class="user-info">
+                            <div class="user-action-time" style="float: right;">
+                                asked
+                                <span class="relativetime" title="2014-06-17 14:05:09Z">
+                                    1 min ago
+                                </span>
+                            </div>
+                            <div class="user-gravatar32">
+                                <a href="/users/1">
+                                    <div class="gravatar-wrapper-32">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="user-details">
+                                <a href="/users/1">
+                                </a>
+                                <br>
+                                </br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+    </div>
+    </div>
+
+
+
+
+{% endblock %}
