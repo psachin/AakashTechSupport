@@ -20,6 +20,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
+from django.contrib.auth.decorators import user_passes_test
 
 
 @login_required
@@ -71,15 +72,15 @@ def submit_ticket(request):
         {'submit_ticket_form': submit_ticket_form, 'user': request.user},
         RequestContext(request))
 
-
-@staff_member_required
+# MAIN function to display the  all the submitted 
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def main(request):
     """Main listing."""
     tickets = Ticket.objects.all()
     return render_to_response("ac/d.html", dict(tickets=tickets), RequestContext(request))
 
-
-@staff_member_required
+# To show all the details of a particular ticket
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def display(request, id):
     """Displaying the details of the corresponding tickets"""
     threads = Ticket.objects.get(pk=id)
@@ -105,8 +106,8 @@ def display(request, id):
 
     return render_to_response("ac/second.html", context_dict, RequestContext(request))
 
-
-@staff_member_required
+#Function for searching tickets
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def search(request):
     if request.method == "POST":
         Search = request.POST.get('search')
@@ -128,7 +129,7 @@ def search(request):
                 return render_to_response("ac/d.html", dict(tickets=tickets), RequestContext(request))
 
 
-@staff_member_required
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def graph(request):
     data = {}
     category_names = []
@@ -149,7 +150,7 @@ def graph(request):
     return render_to_response("ac/graphs.html", {'count': count, 'category_names': category_names}, RequestContext(request))#passing the count and category_names dictionary to graphs.html template for rendering graph
 
 
-@staff_member_required
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def ticket_status_graph(request):
     tickets = Ticket.objects.all()#ticket stores a list of all the tickets
     t_open = 0#intializing the open ticket count as 0
@@ -165,7 +166,7 @@ def ticket_status_graph(request):
     return render_to_response("ac/graphs_tickets.html", {'status_dict': status_dict}, RequestContext(request))#passing the status_dict dictionary to graphs_tickets.html template for rendering graph of open vs closed tickets
 
 
-@staff_member_required
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def ticket_traffic_graph(request):
     year = date.today().year#get the current year
     ticket_dict = {}
@@ -177,8 +178,8 @@ def ticket_traffic_graph(request):
         ticket_dict[i] = tickets_in_i_count#update the dictionary to include the value of the number of tickets in the month i
     return render_to_response("ac/ticket_traffic.html", {'ticket_dict': ticket_dict}, RequestContext(request))#passing the ticket_dict dictionary to ticket_traffic.html template for rendering graph of ticket traffic
 
-
-@staff_member_required
+#To post the ADMIN REPLY
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def reply(request, id):
     if request.method == 'POST':
         Reply = request.POST.get('response')
@@ -212,13 +213,13 @@ def reply(request, id):
         return render_to_response("ac/second.html", context_dict, RequestContext(request))
 
 
-@staff_member_required
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def open(request):
     tickets = Ticket.objects.filter(status=0)
     return render_to_response("ac/d.html", dict(tickets=tickets), RequestContext(request))
 
 
-@staff_member_required
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def close(request):
     tickets = Ticket.objects.filter(status=1)
     return render_to_response("ac/d.html", dict(tickets=tickets), RequestContext(request))

@@ -14,6 +14,7 @@ urlpatterns = patterns( '',
      url(r'^ticket_traffic/', 'ac.views.ticket_traffic_graph', name='ticket traffic'),	
      url(r'^open/', 'ac.views.open', name='open'),	
      url(r'^close/', 'ac.views.close', name='close'),
-     url(r'^view_tickets/', 'ac.views.view_tickets', name='view tickets'),	
+     url(r'^view_tickets/', 'ac.views.view_tickets', name='view tickets'),
+     url(r'^login/$', include('aakashuser.urls')),	
 		
 )
