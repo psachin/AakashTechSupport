@@ -11,9 +11,10 @@ from django.contrib import admin
 from django.db.models.signals import post_save
 import datetime
 from datetime import timedelta
-Date=datetime.datetime.now()
-Enddate=Date+datetime.timedelta(days=1)
-Invaliddate=Date-datetime.timedelta(days=1)
+Date = datetime.datetime.now()
+Enddate = Date + datetime.timedelta(days=1)
+Invaliddate = Date - datetime.timedelta(days=1)
+
 
 class UserProfile(models.Model):#Model for storing a user's information.
     user = OneToOneField(User)
@@ -43,6 +44,7 @@ class Category(models.Model):#Model for storing categories of various posts.
 
     def __unicode__(self):
         return self.category
+
 
 class Post(models.Model):#Model for storing information about each post with category as its foreign key.
     title = CharField(max_length=60)
@@ -106,6 +108,7 @@ class Comment(models.Model):#Model for storing information about each Comment wi
 
     def __unicode__(self):
         return self.user.username
+
 
 class Ticket(models.Model):
 	user_id=models.EmailField()

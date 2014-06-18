@@ -236,31 +236,3 @@ def ask_question(request):
         c.update(csrf(request))
         return render_to_response('ask_question.html', c)
 
-
-def view_tags(request):
-    context = RequestContext(request)
-    tags = Tag.objects.all()
-    for i in tags:
-        i.count = len(Post.objects.filter(tags=i))
-    context_dict = {'tags': tags}
-    return render_to_response('forum/tags.html', context_dict, context)
-
-def search_tags(request):
-    """
-        @AJAX SEARCHING
-        @author = d27
-    """
-
-    search_dict = {}
-
-    if request.method == 'POST':
-        search_text = request.POST['search_text']
-        searched_tags = Tag.objects.filter(name__contains=search_text)
-        search_dict = {
-            'searched_tags': searched_tags
-        }
-    else:
-        search_text = "No query provided."
-        print search_text
-
-    render_to_response('search.html', search_dict)
