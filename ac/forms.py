@@ -3,10 +3,6 @@ from django import forms
 from django.contrib.auth.models import User
 import datetime
 from datetime import timedelta
-last_ticket=100
-#last_ticket=int(Ticket.objects.all().aggregate(Max('ticket_id'))['ticket_id__max'])
-#ticket_id_new=last_ticket+1
-#print ticket_id_new
 class SubmitTicketForm(forms.ModelForm):
 		tab_id=forms.CharField(max_length=8,help_text="Enter your tablet  id:")
                 topic_id=forms.ChoiceField(choices=[(x['category'], str(x['category'])) for x in Category.objects.values('category')],help_text="Select the category of your problem:")

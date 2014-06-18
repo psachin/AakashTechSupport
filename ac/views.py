@@ -1,6 +1,4 @@
-#from PIL import Image as PImage
-
-
+from PIL import Image as PImage
 from aakashuser.models import *
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template import RequestContext
@@ -14,16 +12,12 @@ from django.shortcuts import render
 from django import forms
 from django.db.models import Max
 from ac.forms import SubmitTicketForm
-from ac.forms import SubmitTicketForm
 from django.template import RequestContext
-from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
 import datetime
 from datetime import *
 from django.db.models import Max
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 
@@ -35,8 +29,6 @@ def submit_ticket(request):
 		return render_to_response('ac/email_not_valid.html',{"message":"Please enter a valid email id; the email id you used during registration!"},RequestContext(request))
         if request.user.is_authenticated() and request.user.email==request.POST["user_id"]:
 	    user_tab_id=request.POST["tab_id"]
-	    #if user_tab_id.length()==8:
-		#TODO validate the tablet id here
 	    if len(user_tab_id)!=8:
 		return render_to_response('ac/email_not_valid.html',{"message":"the tablet id you entered is not valid.Please enter a valid tablet id"},RequestContext(request))	
 	    user_details=request.user.email
@@ -47,7 +39,6 @@ def submit_ticket(request):
             print cat_id
             
             if submit_ticket_form.is_valid():
-                #submit_ticket_form.cleaned_data['ticket_id'] = ticket_id_new
                 submit_ticket_form.save()
                 ticket_id=1
                 if Ticket.objects.all()==[]:
@@ -60,7 +51,6 @@ def submit_ticket(request):
                     {'ticket_id': ticket_id},
                     RequestContext(request))
             else:
-		#the form does not validate when user enters a tablet_id that is not present in the database
 		return render_to_response('ac/email_not_valid.html',{"message":"the tablet id you entered is not valid.Please enter a valid tablet id"},RequestContext(request))
         else:
             return HttpResponse("login to post")
@@ -128,29 +118,20 @@ def search(request):
 @staff_member_required       
 def graph(request):
 	data={}
-	category_names=[]#a list
+	category_names=[]
 	category=Category.objects.all()
 	for c in category:
 		category_names.append(c.category)
-	#we now have a list of  category
-	#now count no of tickets in each category
-	count={}#a dictionary
+	count={}
 	category=Category.objects.all()
 	ticket=Ticket.objects.all()
 	for c in category:
-		count[c.category]=0
-		#like count['android']		
+		count[c.category]=0		
 		for t in ticket:
 			ticket_for_a_cat=Ticket.objects.filter(topic_id=c)
 		count[c.category]=ticket_for_a_cat.count()
 	print category_names
-	print count	
-	#{ label: "Series1",  data: 10},
-	#	//	{ label: "Series2",  data: 30},
-	#	//	{ label: "Series3",  data: 90},
-	#	//	{ label: "Series4",  data: 70},
-	#	//	{ label: "Series5",  data: 80},
-	#	//	{ label: "Series6",  data: 110}
+	print count
 	tickets=Ticket.objects.all()
 	t_open=0
 	t_closed=0
@@ -166,29 +147,20 @@ def graph(request):
 @staff_member_required    
 def ticket_status_graph(request):
 	data={}
-	category_names=[]#a list
+	category_names=[]
 	category=Category.objects.all()
 	for c in category:
 		category_names.append(c.category)
-	#we now have a list of  category
-	#now count no of tickets in each category
-	count={}#a dictionary
+	count={}
 	category=Category.objects.all()
 	ticket=Ticket.objects.all()
 	for c in category:
-		count[c.category]=0
-		#like count['android']		
+		count[c.category]=0		
 		for t in ticket:
 			ticket_for_a_cat=Ticket.objects.filter(topic_id=c)
 		count[c.category]=ticket_for_a_cat.count()
 	print category_names
 	print count	
-	#{ label: "Series1",  data: 10},
-	#	//	{ label: "Series2",  data: 30},
-	#	//	{ label: "Series3",  data: 90},
-	#	//	{ label: "Series4",  data: 70},
-	#	//	{ label: "Series5",  data: 80},
-	#	//	{ label: "Series6",  data: 110}
 	tickets=Ticket.objects.all()
 	t_open=0
 	t_closed=0
@@ -204,7 +176,6 @@ def ticket_status_graph(request):
 @staff_member_required
 def ticket_traffic_graph(request):
 	year=date.today().year
-	#ticket in a particular month
 	ticket_dict={}
 	for i in range(1,13):
 		tickets_in_i=Ticket.objects.filter(created_date_time__year=year, 
@@ -291,8 +262,6 @@ def view_tickets(request):
 			if t.topic_priority==2:
 				p="high"
 			t_dic["priority"]=p
-		
-			#reply_dict={}
 			replies=Threads.objects.filter(ticketreply=t.ticket_id)
 			if not replies:
 				reply_str="No replies yet"
