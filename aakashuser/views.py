@@ -242,9 +242,6 @@ def ask_question(request):
         c.update(csrf(request))
         return render_to_response('ask_question.html', c)
 
-<<<<<<< HEAD
-=======
-
 def view_tags(request):
     context = RequestContext(request)
     tags = Tag.objects.all()
@@ -272,4 +269,3 @@ def search_tags(request):
         print search_text
 
     render_to_response('search.html', search_dict)
->>>>>>> a0f560d8d4aa2672ba38ea14c61ab54d50e13119
