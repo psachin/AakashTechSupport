@@ -69,6 +69,10 @@ Usage
     cd /path/to/AakashTechSupport
     python manage.py syncdb
 
+- Run the script populate.py which enters details of remote center into the table Tabletinfo from the details_of_rc.csv file ::
+    
+    python populate.py
+
 - Start the server using the command ::
 
     python manage.py runserver
