@@ -9,6 +9,7 @@
       <h4 class="panel-title">
         <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
           {% for key,value in dict.items %}
+<<<<<<< HEAD
                 {% ifequal key "ticket id" %}
         Ticket {{ value }}     
         {% endifequal %}
@@ -24,6 +25,22 @@
         </br>
        
     {% endfor %}
+=======
+            	{%ifequal key "ticket id" %}
+		Ticket {{ value }}      
+		{%endifequal%}  
+    {% endfor %}
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">
+        {% for key,value in dict.items %}
+            	{{ key }}:
+		{{ value }}</br>
+        
+    {% endfor %}
+>>>>>>> abnth-master
       </div>
     </div>
   </div>
