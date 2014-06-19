@@ -11,7 +11,7 @@ urlpatterns = patterns(
     #url(r'^tag/$', views.tag, name='tag'),
     url(r'^tags/$', views.view_tags, name='tags'),
     url(r'^tags/(?P<qid>\d+)/$', views.linktag, name='linktag'),
-
+    url(r'^(?P<qid>\d+)/$', views.link_question, name='link_question'),
     url(r'^tag_search/$', views.tag_search, name='tag_search'),
 
 )

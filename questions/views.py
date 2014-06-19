@@ -116,3 +116,16 @@ def tag_search(request):#This view has been defined to search a tag, and if foun
 		context_dict={}
 	return render_to_response('questions/all_questions.html', context_dict, context)
 
+def link_question(request, qid):
+    context = RequestContext(request)
+
+    posts = Post.objects.get(pk=qid)
+    replies = Reply.objects.filter(title=posts)
+   
+    context_dict = {
+        'posts': posts,
+        'replies': replies,
+    }
+
+    return render_to_response('questions/allqueries_link.html', context_dict, context)
+
