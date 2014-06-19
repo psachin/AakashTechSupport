@@ -50,18 +50,13 @@ def all_questions_view(request, url):
     return render_to_response('questions/all_questions.html', context_dict, context)
 
 
-def view_tags(request):
-    context = RequestContext(request)
-    tags = Tag.objects.all()
-
-    for i in tags:
-        i.count = len(Post.objects.filter(tags=i))
-
-    context_dict = {
-        'tags': tags
-    }
-
-    return render_to_response('forum/tags.html', context_dict, context)
+def view_tags(request): #This view has been defined for displaying all the tags and the number of posts related to each tag.
+	context=RequestContext(request)
+	tags=Tag.objects.all()#for fetching all the tags.
+	for tag in tags:
+		tag.count=len(Post.objects.filter(tags=tag,post_status=1))
+	context_dict= {'tags': tags}
+	return render_to_response('forum/tags.html', context_dict, context)
 
 
 def search_tags(request):
@@ -89,8 +84,8 @@ def linktag(request, qid):
     context = RequestContext(request)
 
     new_tag = Tag.objects.get(pk=qid)
-    posts_date = Post.objects.filter(tags=new_tag).order_by('-post_date')
-    posts_views = Post.objects.filter(tags=new_tag).order_by('-post_views')
+    posts_date = Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_date')#for fetching posts related to a particular tag.
+    posts_views = Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_views')
     #post = Post.objects.get(tags=new_tag)
 
 
@@ -101,22 +96,23 @@ def linktag(request, qid):
         #'post': post,
     }
 
-    return render_to_response('questions/tagged_questions.html', context_dict, context)
+    return render_to_response('questions/tagged_questions.html', context_dict, context)    
+    
 
 
-def tag_search(request):
-    context = RequestContext(request)
-    mytag = request.POST.get('search_text')
-    mytag = mytag.upper()
-    try:
-        new_tag = Tag.objects.get(name=mytag)
-        posts = Post.objects.filter(tags=new_tag).order_by('-post_date')
-        posts1 = Post.objects.filter(tags=new_tag).order_by('-post_views')
-        context_dict = {
-            'posts': posts,
-            'mytag': new_tag,
-            'posts1': posts1
-        }
-    except Tag.DoesNotExist:
-        context_dict = {}
-    return render_to_response('questions/all_questions.html', context_dict, context)
+def tag_search(request):#This view has been defined to search a tag, and if found , display the associated questions.
+	context=RequestContext(request)
+	mytag = request.POST.get('search_text')#value of search_text comes through the textbox in html
+	mytag=mytag.upper()
+	try:
+		new_tag= Tag.objects.get(name=mytag)
+		posts=Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_date')#for fetching posts related to a particular tag.
+		posts1= Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_views')
+		context_dict={
+			'posts':posts,
+			'mytag':new_tag,
+			'posts1':posts1}
+	except Tag.DoesNotExist:
+		context_dict={}
+	return render_to_response('questions/all_questions.html', context_dict, context)
+
