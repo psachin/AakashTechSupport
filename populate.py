@@ -23,7 +23,7 @@ def add_tablet(rcID, rcName, start_tab_id, end_tab_id,count,city):
 
 # Start execution here!
 if __name__ == '__main__':
-    print "Starting Rango population script..."
+    print "Starting population script..."
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AakashTechSupport.settings')
     from aakashuser.models import *
     populate()
