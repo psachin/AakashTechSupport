@@ -120,3 +120,14 @@ def tag_search(request):
     except Tag.DoesNotExist:
         context_dict = {}
     return render_to_response('questions/all_questions.html', context_dict, context)
+
+
+def link_question(request, qid):
+    context = RequestContext(request)
+    question = Post.objects.get(pk=qid)
+
+    context_dict = {
+        'question': question,
+    }
+
+    return render_to_response('questions/question_page.html', context_dict, context)
