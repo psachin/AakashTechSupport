@@ -29,48 +29,32 @@
 
     <div class="container-fluid"  style="padding-top: 0.5cm; padding-bottom: 2cm;">
 	<div class="  col-md-8 col-md-offset-2" role="navigation">
-        {% for i in posts %}
 
         <div class="well-sm" style="padding-top: 0.2cm;">
-            <h4 class="text-justify">
-                <a href="/questions/{{ i.pk }}" >
-                    {{i.title}}
-                </a>
+            <h4 class="text-justify" style="color:sienna;" >
+                
+                    <b><u>{{posts.title}}</u></b>
+               
             </h4>
-            <pre>
-                {{ i.body|safe|linebreaks }}
-            </pre>
+            
+                {{ posts.body|safe|linebreaks }}
+
+   <div class="page-header">
+        </div>        
+	     {% for reply in replies %}
+	      <pre>
+			{{ reply.body|safe|linebreaks  }}
+	      </pre>
+	     {% endfor %}
 
         </div>
         <div class="page-header">
         </div>
-        {% endfor %}
+       
+
 
     </div>
-    </div>
-
-<!--
-    <div class="container  footer_padding" style="padding-top:2.5cm;">
-        {% for i in posts %}
-
-    <h2>?<i class="fa fa-question-circle"><a href="/questions/link/{{i.pk}}/" >{{i.title}}</a></h2>
-    <h5><b>POST~<b/></h5>
-
-        <h5><p class="lead text-info">
-            {{ i.body|safe|linebreaks }}</p></h5>
-        <b>votes</b> = {{i.upvotes}}
-
-    <div class="post_meta">
-        by: <b>{{i.creator}}</b> | {{ i.post_date }}
-    </div>
-    <br/>
-
-    {% endfor %}
-    </div>
-
-    -->
-
-
+</div>
 {% endblock %}
 
 
