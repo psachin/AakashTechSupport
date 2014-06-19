@@ -125,9 +125,12 @@ def tag_search(request):
 def link_question(request, qid):
     context = RequestContext(request)
     question = Post.objects.get(pk=qid)
-
+    posts = Post.objects.get(pk=qid)
+    replies = Reply.objects.filter(title=posts)
+   
     context_dict = {
-        'question': question,
+        'posts': posts,
+        'replies': replies,
     }
 
-    return render_to_response('questions/question_page.html', context_dict, context)
+    return render_to_response('questions/allqueries_link.html', context_dict, context)
