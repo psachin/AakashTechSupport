@@ -20,10 +20,16 @@ def all_questions_view(request, url):
         }
 
     elif url == 'frequent':
-        pass
+        posts = Post.objects.all().order_by("-post_views")
+        context_dict = {
+            'posts': posts,
+        }
 
-    elif url == 'active':
-        pass
+    elif url == 'votes':
+        posts=Post.objects.all().order_by("-upvotes")
+    	context_dict = {
+            'posts': posts,
+        }
 
     elif url == 'unanswered':
         posts = Post.objects.all()
@@ -120,8 +126,9 @@ def link_question(request, qid):
     context = RequestContext(request)
 
     posts = Post.objects.get(pk=qid)
-    replies = Reply.objects.filter(title=posts)
-   
+    replies = Reply.objects.filter(title=posts).order_by("-upvotes")
+    posts.post_views = posts.post_views + 1
+    posts.save()
     context_dict = {
         'posts': posts,
         'replies': replies,
