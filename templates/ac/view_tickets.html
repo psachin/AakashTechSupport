@@ -21,8 +21,19 @@
         {% for key,value in dict.items %}
             	{{ key }}:
 		{{ value }}</br>
-        
+        {% endfor %}
+	
+	<div align="center">
+	</br>
+	{% for key,value in dict.items %}
+            	{%ifequal key "ticket id" %}
+		<form method="post" action="/ac/close_ticket/{{value}}/">
+		{% csrf_token %}     
+		{%endifequal%}  
     {% endfor %}
+	<button class="btn btn-primary " type="submit">Close Ticket</button>        
+	</form>
+	</div>
       </div>
     </div>
   </div>
