@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html lang="en">
   <head>
     
@@ -38,14 +39,29 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/ac">WELCOME</a>
+          <a class="navbar-brand" href="/ac">Admin Panel</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="/logout">LOGOUT</a></li>
+			{% if user.is_authenticated %}
+			<li>
+			  <a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ user.username }} <b class="caret"></b></a>
+		      <ul class="dropdown-menu">
+		        <li><a href="/">Home</a></li>
+		        <li><a href="#">Profile</a></li>
+		        <li class="divider"></li>
+		        <li><a href="/logout/">LogOut</a></li>
+		      </ul>
+			</li>
+			{% else %}
+			<li>
+				<a href="/login/">Login</a>
+			</li>
+			<li>
+				<a href="/register/">Register</a>
+			</li>
+
+			{% endif %}
           </ul>
            
           <form class="navbar-form navbar-right"   action= "/ac/search/" method="post">{% csrf_token %}
@@ -99,6 +115,9 @@
                      {{ ticket.user_id|linebreaksbr }}</td>
                     
                 </td>
+                <td {% if forloop.last %} class="last"{% endif %}>
+                    {% if ticket.topic_priority == 0 %} Low {% elif ticket.topic_priority == 1 %} Normal {% elif ticket.topic_priority == 2 %} High {% endif %}
+                </td>
             </tr>
             {% endfor %}
 
@@ -124,7 +143,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
     <script src="../../assets/js/docs.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
   </body>
 </html>
