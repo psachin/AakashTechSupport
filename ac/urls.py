@@ -16,6 +16,7 @@ urlpatterns = patterns( '',
      url(r'^close/', 'ac.views.close', name='close'),
      url(r'^view_tickets/', 'ac.views.view_tickets', name='view tickets'),
      url(r'^login/$', include('aakashuser.urls')),
-     url(r'^close_ticket/(\d+)/$', "ac.views.close_ticket"),		
+     url(r'^close_ticket/(\d+)/$', "ac.views.close_ticket"),
+     url(r'^ticket_csv/$', "ac.views.make_csv"),		
 		
 )
