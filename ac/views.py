@@ -167,6 +167,7 @@ def ticket_status_graph(request):
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def ticket_traffic_graph(request):
+    from datetime import date	
     year = date.today().year#get the current year
     ticket_dict = {}
     for i in range(1, 13):
