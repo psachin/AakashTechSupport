@@ -25,7 +25,11 @@
 	
 	<div align="center">
 	</br>
-	{% for key,value in dict.items %}
+{%for key,value in dict.items %}
+{%ifequal key "status"%}
+{%ifequal value "open"%}
+
+{% for key,value in dict.items %}
             	{%ifequal key "ticket id" %}
 		<form method="post" action="/ac/close_ticket/{{value}}/">
 		{% csrf_token %}     
@@ -33,6 +37,10 @@
     {% endfor %}
 	<button class="btn btn-primary " type="submit">Close Ticket</button>        
 	</form>
+
+{%endifequal%}
+{%endifequal%}
+{%endfor%}
 	</div>
       </div>
     </div>
