@@ -307,3 +307,52 @@ def close_ticket(request, id):
 			return render_to_response('ac/email_not_valid.html', {"message": "you can close tickets submitted only by you!"}, RequestContext(request))
 	return render_to_response('ac/email_not_valid.html', {"message": "The ticket has been closed! Happy that your problem was resolved!"}, RequestContext(request))
 
+
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
+def make_csv(request):
+	'''
+	dumps all the data from the ticket table into the ticket_data.csv file
+	'''
+	#file_obj=open("data_of_rc.csv")
+	#print file_obj
+	#file_obj.close()
+	import csv
+	response = HttpResponse(mimetype='text/csv')
+	response['Content-Disposition'] =  'attachment; filename=ticket_data.csv'
+	writer = csv.writer(response)
+	#writer = csv.writer(open("ticket_data.csv", 'w'))	
+	headers = []
+	for field in Ticket._meta.fields:
+		headers.append(field.name)
+	writer.writerow(headers)
+	ticket=Ticket.objects.all()
+	for t in ticket:
+	  row=[]
+	  user_id=t.user_id
+	  topic_id=t.topic_id
+	  tab_id=t.tab_id
+	  message=t.message
+	  ticket_id = t.ticket_id
+	  created_date_time=t.created_date_time.strftime("%d/%m/%Y %H:%M:%S")
+	  overdue_date_time=t.overdue_date_time.strftime("%d/%m/%Y %H:%M:%S")
+	  closed_date_time=t.closed_date_time.strftime("%d/%m/%Y %H:%M:%S")
+	  status=t.status
+	  reopened_date_time=t.reopened_date_time.strftime("%d/%m/%Y %H:%M:%S")
+	  topic_priority=t.topic_priority
+	  duration_for_reply=t.duration_for_reply
+	  row.append(user_id)
+	  row.append(topic_id)
+	  row.append(tab_id)
+	  row.append(message)
+	  row.append(ticket_id)
+	  row.append(created_date_time)
+	  row.append(overdue_date_time)
+	  row.append(closed_date_time)
+	  row.append(status)
+	  row.append(reopened_date_time)
+	  row.append(topic_priority)
+	  row.append(duration_for_reply)
+	  #print row
+	  writer.writerow(row)
+	return response
+
