@@ -14,7 +14,6 @@ from django.db.models import Max
 from ac.forms import SubmitTicketForm
 from django.template import RequestContext
 import datetime
-from datetime import *
 from django.db.models import Max
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
@@ -168,6 +167,7 @@ def ticket_status_graph(request):
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def ticket_traffic_graph(request):
+    from datetime import date	
     year = date.today().year#get the current year
     ticket_dict = {}
     for i in range(1, 13):
@@ -267,3 +267,78 @@ def view_tickets(request):
             t_dic["Replies"] = reply_str
             tickets_dict.append(t_dic)#append the t_dic dictionary to the tickets_dict list
         return render_to_response("ac/view_tickets.html", {"tickets_dict": tickets_dict}, context_instance=RequestContext(request))#passing the tickets_dict dictionary to view_tickets.html template for displaying ticket details
+
+
+@login_required
+def close_ticket(request, id):
+	"""closing a ticket"""
+	logged_in_user_email=request.user.email
+	ticket=Ticket.objects.filter(ticket_id=id)
+	print ticket
+	if not ticket:
+		return render_to_response('ac/email_not_valid.html', {"message": "No such ticket exists!"}, RequestContext(request))
+	else:
+		ticket=ticket[0]
+		ticket_submitter_user_email=ticket.user_id
+		if logged_in_user_email==ticket_submitter_user_email:
+			if ticket.status==0:#ticket is open
+				ticket.status=1
+				now=datetime.datetime.now()
+				print now
+				ticket.closed_date_time=now.strftime('%Y-%m-%d %H:%M:%S')
+				ticket.save()
+			else:
+				return render_to_response('ac/email_not_valid.html', {"message": "You have already closed this ticket!"}, RequestContext(request))			
+		else:
+			return render_to_response('ac/email_not_valid.html', {"message": "you can close tickets submitted only by you!"}, RequestContext(request))
+	return render_to_response('ac/email_not_valid.html', {"message": "The ticket has been closed! Happy that your problem was resolved!"}, RequestContext(request))
+
+
+@user_passes_test(lambda u:u.is_staff, login_url='/login/')
+def make_csv(request):
+	'''
+	dumps all the data from the ticket table into the ticket_data.csv file
+	'''
+	#file_obj=open("data_of_rc.csv")
+	#print file_obj
+	#file_obj.close()
+	import csv
+	response = HttpResponse(mimetype='text/csv')
+	response['Content-Disposition'] =  'attachment; filename=ticket_data.csv'
+	writer = csv.writer(response)
+	#writer = csv.writer(open("ticket_data.csv", 'w'))	
+	headers = []
+	for field in Ticket._meta.fields:
+		headers.append(field.name)
+	writer.writerow(headers)
+	ticket=Ticket.objects.all()
+	for t in ticket:
+	  row=[]
+	  user_id=t.user_id
+	  topic_id=t.topic_id
+	  tab_id=t.tab_id
+	  message=t.message
+	  ticket_id = t.ticket_id
+	  created_date_time=t.created_date_time.strftime("%d/%m/%Y %H:%M:%S")
+	  overdue_date_time=t.overdue_date_time.strftime("%d/%m/%Y %H:%M:%S")
+	  closed_date_time=t.closed_date_time.strftime("%d/%m/%Y %H:%M:%S")
+	  status=t.status
+	  reopened_date_time=t.reopened_date_time.strftime("%d/%m/%Y %H:%M:%S")
+	  topic_priority=t.topic_priority
+	  duration_for_reply=t.duration_for_reply
+	  row.append(user_id)
+	  row.append(topic_id)
+	  row.append(tab_id)
+	  row.append(message)
+	  row.append(ticket_id)
+	  row.append(created_date_time)
+	  row.append(overdue_date_time)
+	  row.append(closed_date_time)
+	  row.append(status)
+	  row.append(reopened_date_time)
+	  row.append(topic_priority)
+	  row.append(duration_for_reply)
+	  #print row
+	  writer.writerow(row)
+	return response
+

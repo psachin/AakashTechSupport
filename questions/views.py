@@ -136,3 +136,36 @@ def link_question(request, qid):
 
     return render_to_response('questions/allqueries_link.html', context_dict, context)
 
+<<<<<<< HEAD
+=======
+def tag_search(request):
+    context = RequestContext(request)
+    mytag = request.POST.get('search_text')
+    mytag = mytag.upper()
+    try:
+        new_tag = Tag.objects.get(name=mytag)
+        posts = Post.objects.filter(tags=new_tag).order_by('-post_date')
+        posts1 = Post.objects.filter(tags=new_tag).order_by('-post_views')
+        context_dict = {
+            'posts': posts,
+            'mytag': new_tag,
+            'posts1': posts1
+        }
+    except Tag.DoesNotExist:
+        context_dict = {}
+    return render_to_response('questions/all_questions.html', context_dict, context)
+
+
+def link_question(request, qid):
+    context = RequestContext(request)
+    question = Post.objects.get(pk=qid)
+    posts = Post.objects.get(pk=qid)
+    replies = Reply.objects.filter(title=posts)
+   
+    context_dict = {
+        'posts': posts,
+        'replies': replies,
+    }
+
+    return render_to_response('questions/allqueries_link.html', context_dict, context)
+>>>>>>> cca12ce2129ae83aa7aff971486fe70553529b92
