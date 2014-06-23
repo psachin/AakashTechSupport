@@ -206,7 +206,7 @@ def reply(request, id):
         check = request.POST.get('reply_ticket_status')
         print check
         if check == 'Open':
-            s = ticket.objects.get(pk=id)
+            s = Ticket.objects.get(pk=id)
             s.status = 0
             s.save()
 
