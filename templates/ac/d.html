@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    
+   
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,11 +43,11 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
+            <li><a href="/">MAIN</a></li>
             <li><a href="#">Profile</a></li>
             <li><a href="/logout">LOGOUT</a></li>
           </ul>
-           
+          
           <form class="navbar-form navbar-right"   action= "/ac/search/" method="post">{% csrf_token %}
             <input type="text" name="search" class="form-control" placeholder="Search id or subject">
             </form>
@@ -68,15 +68,15 @@
           <h1 class="page-header">Dashboard</h1>
 
           <div class="row placeholders">
-           
+          
           </div>
 
-         
+        
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>Ticket</th>             
+                  <th>Ticket</th>            
                   <th>Date</th>
                   <th>Subject</th>
                   <th>From</th>
@@ -84,10 +84,10 @@
                 </tr>
               </thead>
               <tbody>
-               
-             
+              
+            
             {% for ticket in tickets %}
-                
+               
             <tr>
                 <td {% if forloop.last %}class="last"{% endif %}>
               <div class="title"><a href="/ac/display/{{ticket.pk}}">{{ ticket.ticket_id }}</a>
@@ -97,22 +97,31 @@
                     {{ ticket.topic_id|linebreaksbr }}</td>
                 <td {% if forloop.last %}class="last"{% endif %}>
                      {{ ticket.user_id|linebreaksbr }}</td>
-                    
+                  <td {% if forloop.last %}class="last"{% endif %}>
+              {% if ticket.topic_priority == 0 %}
+                       LOW
+                      {% elif ticket.topic_priority == 1 %}
+                      Normal
+                      {% elif ticket.topic_priority == 2 %}
+                  HIGH
+                  {% endif %}
+        </td>
+                   
                 </td>
             </tr>
             {% endfor %}
 
-            
-            
-               
-               
-               
-               
+           
+           
               
-               
-               
-               
-               
+              
+              
+              
+             
+              
+              
+              
+              
               </tbody>
             </table>
           </div>
