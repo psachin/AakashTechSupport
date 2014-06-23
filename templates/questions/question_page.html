@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+{% extends "index.html" %}
+
+{% block body_block %}
+
+    <!-- MODAL FOR ANSWERING QUESTION -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="addAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">Answer here</h4>
+          </div>
+          <div class="modal-body">
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Post your answer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container-fluid"  style="padding-top: 0.5cm; padding-bottom: 0.7cm;">
+	<div class="  col-md-8 col-md-offset-2" role="navigation">
+
+        <ul class="nav nav-tabs">
+        <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
+            {{ question.title }}
+        </h4>
+
+        </ul>
+        <div style="padding-top: 0.5cm;">
+
+        </div>
+        <div class="well">
+            {{ question.body }}
+        </div>
+
+        <button class="btn btn btn-primary" type="submit" data-toggle="modal" data-target="#addAnswer">Add your answer</button>
+    </div>
+    </div>
+
+
+{% endblock %}
