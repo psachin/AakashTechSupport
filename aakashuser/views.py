@@ -143,12 +143,8 @@ def login_new(request):
                     'session_id': session_id,
                     'login_error': login_error,
                 }
-		if request.user.is_superuser:
-                    tickets = Ticket.objects.all()
-                    return render_to_response("ac/d.html",dict(tickets=tickets), RequestContext(request))
-                else:
-                    response = render_to_response('index.html', login_dict)
-                    return response
+                response = render_to_response('index.html', login_dict)
+                return response
                
 #               response.set_cookie('logged_in', user.email)
             else:
