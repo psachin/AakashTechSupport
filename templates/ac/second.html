@@ -28,10 +28,6 @@
     <link type="text/css" href="static/css/custom.css" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="/static/css/min.css">
     <link type="text/css" rel="stylesheet" href="static/css/dropdown.css">
-<<<<<<< HEAD
-	<link href="/static/css/bootstrap.min.css" rel="stylesheet">
-=======
->>>>>>> 2128c8bacad51de3827d14198ed86212f9581eda
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
@@ -61,10 +57,7 @@
             <li><a href="/ac/close">Closed Tickets ({{count_close}})</a></li>
             <li><a href="/logout">LOGOUT</a></li>
           </ul>
-<<<<<<< HEAD
-=======
           
->>>>>>> 2128c8bacad51de3827d14198ed86212f9581eda
           <form class="navbar-form navbar-right"   action= "/ac/search/" method="post">{% csrf_token %}
             <input type="text" name="search" class="form-control" placeholder="Search id or subject">
             </form>
@@ -72,14 +65,6 @@
       </div>
     </div>
 <div id="container">
-<<<<<<< HEAD
-
-</li>
-    <div id="content">
-     <h2><a> Ticket {{ threads.ticket_id }}</a></h2>
-    <div id="content">
-     <h1> Ticket {{threads.ticket_id}}</a></h2>   
-=======
        
   
 
@@ -92,7 +77,6 @@
     <div id="content">
      <h1> Ticket {{threads.ticket_id}}</a></h2>   
 
->>>>>>> 2128c8bacad51de3827d14198ed86212f9581eda
 <table class="ticket_info" cellspacing="0" cellpadding="0" width="940" border="0">
     <tr>
         <td width="50">
@@ -102,15 +86,6 @@
                 <tr>
                     <th width="100">Status:</th>
                     <td {% if forloop.last %}class="last"{% endif %}>
-<<<<<<< HEAD
-			{% if threads.status == 0 %}
-			Open
-			{% else %}
-			Close
-			{% endif %}
-		    </td>
-=======
->>>>>>> 2128c8bacad51de3827d14198ed86212f9581eda
             {% if threads.status == 0 %}
             Open
             {% else %}
@@ -121,20 +96,11 @@
                 <tr>
                     <th>Priority:</th>
                     <td {% if forloop.last %}class="last"{% endif %}>
-<<<<<<< HEAD
-			  {% if threads.topic_priority == 0 %}
-=======
->>>>>>> 2128c8bacad51de3827d14198ed86212f9581eda
               {% if threads.topic_priority == 0 %}
                        LOW
             {% elif threads.topic_priority == 1 %}
                 Normal
             {% elif threads.topic_priority == 2 %}
-<<<<<<< HEAD
-	     HIGH
-	     {% endif %}
-=======
->>>>>>> 2128c8bacad51de3827d14198ed86212f9581eda
          HIGH
          {% endif %}
         </td>
@@ -174,7 +140,11 @@
                              
                                 <tr>
                     <th>Close Date:</th>
-                    <td>06/06/2014 1:01 pm</td>
+                    {% if threads.closed_date_time > threads.created_date_time %}
+                    <td>{{ threads.closed_date_time }}</td>
+                    {% else %}
+                    <td>Not closed yet.</td>
+                    {% endif %}
                 </tr>
                             </table>
         </td>
@@ -184,15 +154,7 @@
                     <th width="100">Help Topic:</th>
                     <td {% if forloop.last %}class="last"{% endif %}>{{ threads.topic_id}}</td>
                 </tr>
-                <tr>
-                    <th nowrap>Last Message:</th>
-                <td {% if forloop.last %}class="last"{% endif %}>{{ threads.reopened_date}}</td>
-                </tr>
-                <tr>
-                    <th nowrap>Last Response:</th>
-                    <td>06/06/2014 1:01 pm</td>
-                </tr>
-                
+
             </table>
         </td>
     </tr>
@@ -205,7 +167,11 @@
 <div id="ticket_thread">
             <table class="message" cellspacing="0" cellpadding="1" width="940" border="0">
             <tr>
-                <th width="200">06/06/2014 12:54 pm</th>
+                {% if threads.closed_date_time > threads.created_date_time %}
+                <th width="200">{{ threads.closed_date_time }}</th>
+                {% else %}
+                <th width="200">Not yet closed.</th>
+                {% endif %}
                 <th width="440"><span></span></th>
                 <th width="300" class="tmeta"></th>
             </tr>
@@ -219,9 +185,9 @@
             </tr
         {% for responses in response %}
         <tr>
-         <th width="200">{{responses.created}}</th>
+         <th width="200">{{ responses.created }}</th>
         </tr>
-            <tr><td colspan=3>{{responses.reply}}</tr>
+            <tr><td colspan=3>{{ responses.reply }}</tr>
         {%  endfor %}
                     </table>
         </div>
@@ -246,7 +212,7 @@
                 <label id="uder email">{{threads.user_id}}</label>
        
                 </td>
-        <
+
             </tr>
                         <tr>
                 <td width="160">
