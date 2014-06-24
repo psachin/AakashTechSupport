@@ -87,8 +87,31 @@
 
         </form>
 
+        <!-- MODAL ALERT -->
+
+        <!-- SMALL MODAL -->
+        <div class="modal fade" id="alertBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-body">
+                <CENTER>
+                  <h4>Login to post an answer.</h4>
+                </CENTER>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+              </div>
+
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
         <div id="ans_buttons" style="vertical-align: top; float: left;">
-            <button id="add_answer" class="btn btn btn-primary" type="button">Add your answer</button>
+            {% if user.is_authenticated %}
+            <button id="add_answer" title="Add Answer" class="btn btn btn-primary" type="button">Add your answer</button>
+            {% else %}
+            <button id="fake_add_answer" data-toggle="modal" data-target="#alertBox" class="btn btn btn-primary" type="button">Add your answer</button>
+            {% endif %}
             <button id="submit_reply" class="btn btn btn-primary" type="submit" form="post_answer_form" style="display: none;">Post your answer</button>
 
 
@@ -100,6 +123,7 @@
 
             <a id="cancel_submit" type="reset" style="display: none; padding-top: 5px;">or Cancel?</a>
         </div>
+
 
         <!-- SUBMIT REPLY FORM ENDS HERE -->
 
@@ -116,6 +140,19 @@
     var btn_click = 0;
 
     var cancelbtn = document.getElementById('cancel_submit')
+    /*
+    var fakebtn = document.getElementById('fake_add_answer')
+
+
+    fakebtn.addEventListener('click', function(event){
+        popAlert();
+    });
+
+    function popAlert() {
+        alert('You must login to post an answer.');
+    }
+
+    */
 
     ansbtn.addEventListener('click', function(event){
         if (btn_click == 0)

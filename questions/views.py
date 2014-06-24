@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response, render, get_object_or_404
-from aakashuser.models import Post, Reply, UserProfile
+from aakashuser.models import Post, Reply, UserProfile, Category
 from taggit.models import Tag
 from django.core.context_processors import csrf
 
@@ -153,11 +153,11 @@ def link_question(request, qid):
 
 def view_tags(request):
     context = RequestContext(request)
-    tags = Tag.objects.all()
-
+    tags = Category.objects.all()
+    """
     for i in tags:
         i.count = len(Post.objects.filter(tags=i))
-
+    """
     context_dict = {
         'tags': tags
     }
