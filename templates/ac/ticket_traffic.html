@@ -1,8 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+{% load staticfiles %}
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Flot Examples: Categories</title>
+	<title>Aakash Tech support - statistics</title>
 	<!-- Bootstrap core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
@@ -57,13 +58,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/ac">WELCOME</a>
+          <img src = "{% static 'images/aakash.png' %}" alt="Aakash Logo" width="100px" height="50px"/>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="/">MAIN</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="/ac">Dashboard</a></li>
+            
             <li><a href="/logout">LOGOUT</a></li>
           </ul>
         </div>
@@ -84,9 +84,7 @@
 
 	</div>
 
-	<div id="footer">
-		Copyright &copy; 2007 - 2014 IOLA and Ole Laursen
-	</div>
+	
 
 </body>
 </html>

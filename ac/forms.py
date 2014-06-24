@@ -6,28 +6,28 @@ from datetime import timedelta
 
 
 class SubmitTicketForm(forms.ModelForm):
-    tab_id = forms.CharField(max_length=8, help_text="Enter your tablet  id:")
-    topic_id = forms.ChoiceField(choices=[(x['category'], str(x['category'])) for x in Category.objects.values(
-        'category')], help_text="Select the category of your problem:")#topic_id will display a html select element in the rendered html so that the user can select his problems category
-    message = forms.CharField(max_length=500, help_text="message :",
-                              widget=forms.widgets.Textarea(attrs={'cols': 35, 'rows': 5}))#a textarea is displayed in the rendered html
-    created_date_time = forms.DateTimeField(
-        widget=forms.TextInput(attrs={'readonly': 'readonly', 'hidden': 'True'}), initial=datetime.datetime.now)#is a hidden and readonly field in the rendered html with the initial value as the current datetime
-    overdue_date_time = forms.DateTimeField(
-        widget=forms.TextInput(attrs={'readonly': 'readonly', 'hidden': 'True'}), initial=datetime.datetime.now)#is a hidden and readonly field in the rendered html with the initial value as the current datetime
-    closed_date_time = forms.DateTimeField(
-        widget=forms.TextInput(attrs={'readonly': 'readonly', 'hidden': 'True'}), initial=datetime.datetime.now)#is a hidden and readonly field in the rendered html with the initial value as the current datetime
-    status = forms.IntegerField(
-        widget=forms.TextInput(attrs={'readonly': 'readonly', 'hidden': 'True'}), initial=0)#is a hidden and readonly field in the rendered html with the initial value as 0 i.e open
-    reopened_date_time = forms.DateTimeField(
-        widget=forms.TextInput(attrs={'readonly': 'readonly', 'hidden': 'True'}), initial=datetime.datetime.now)
-#is a hidden and readonly field in the rendered html with the initial value as the current datetime
-    topic_priority = forms.IntegerField(
-        widget=forms.TextInput(attrs={'readonly': 'readonly', 'hidden': 'True'}), initial=1)
-#is a hidden and readonly field in the rendered html with the initial value as 2 i.e. normal priority
-    duration_for_reply = forms.IntegerField(
-        widget=forms.TextInput(attrs={'readonly': 'readonly', 'hidden': 'True'}), initial=24)#is a hidden and readonly field in the rendered html with the initial value 24 which represents the number of hours
-
+    tab_id = forms.CharField(
+			    max_length=8,
+			    error_messages={
+			    'required': 'Tablet id is required.'
+			    },
+			    help_text="Enter your tablet  id:",
+			    label="Table id",
+			    widget=forms.TextInput(
+				    attrs={'class': 'form-control', 'placeholder': 'Tablet Id'}),
+			    )
+    topic_id = forms.ChoiceField(
+			    choices=[(x['category'], str(x['category'])) for x in Category.objects.values('category')],
+			    help_text="Enter Help Topic:",
+			    #label="Select Help Topic",
+			    widget=forms.Select(
+				    attrs={'class': 'form-control', 'placeholder': 'Help topic'}),
+			    )#topic_id will display a html select element in the rendered html so that the user can select his problems category
+    message = forms.CharField(max_length=500,
+			      help_text="Message :",
+			      label="Message",
+			      widget=forms.Textarea(attrs={'class': 'form-control'})
+                             )#a textarea is displayed in the rendered html
     class Meta:
         model = Ticket
         fields = ('tab_id', 'user_id', 'topic_id', 'message')
@@ -41,7 +41,8 @@ class SubmitTicketForm(forms.ModelForm):
         user_details = kwargs.pop("user_details")#get the users email from the argument passed
         super(SubmitTicketForm, self).__init__(*args, **kwargs)
         self.fields['user_id'] = forms.EmailField(help_text="Enter your email  id:",
-                                                  widget=forms.TextInput(attrs={'readonly': 'readonly', 'value': user_details}))#is a readonly field in the rendered html with the initial value as the users email id
+						  label="Email id",
+                                                  widget=forms.TextInput(attrs={'class': 'form-control','readonly': 'readonly', 'value': user_details}))#is a readonly field in the rendered html with the initial value as the users email id
 
     def clean(self):
 	#in the clean method we validate the tablet id and raise a ValidationError if the user enters an invalid tablet id
