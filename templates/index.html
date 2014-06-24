@@ -14,6 +14,7 @@
 		<link rel="stylesheet" href="{% static 'css/ask_que.css' %}" />
 		<link rel="stylesheet" href="{% static 'css/tags_table.css' %}" />
         <link rel="stylesheet" href="{% static 'css/question_summary.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/que_view.css' %}" />
 
 	</head>
 	
@@ -133,21 +134,13 @@
         </ul>
 
 	<ul class="nav navbar-nav">
-<<<<<<< HEAD
-         
+
 		{% if user.is_superuser %}
 	 <a class="navbar-brand " href="/ac" ><b>Dashboard</b></a>
 	        {% else %}
 	<a class="navbar-brand " href="/ac/submit_ticket/" ><b>Submit Ticket</b></a>
 	        {% endif %}
-=======
-	{% if user.is_superuser %} 
-	<a class="navbar-brand " href="/ac" ><b>DASHBOARD</b></a>
-        {% else %}
-	<a class="navbar-brand " href="/ac/submit_ticket/" ><b>Submit Ticket</b></a> 
-	{% endif %}
->>>>>>> 591bbd34f77a214aa7a5964f29acceceb01f94cd
-        </ul>
+    </ul>
 
         <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}

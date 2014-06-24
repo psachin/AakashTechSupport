@@ -133,4 +133,6 @@ def link_question(request, qid):
         'replies': replies,
     }
 
-    return render_to_response('questions/allqueries_link.html', context_dict, context)
+    return render_to_response('questions/question_page.html', context_dict, context)
+
+
