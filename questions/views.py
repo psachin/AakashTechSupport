@@ -24,10 +24,16 @@ def all_questions_view(request, url):
         }
 
     elif url == 'frequent':
-        pass
+        posts = Post.objects.all().order_by("-post_views")
+        context_dict = {
+            'posts': posts,
+        }
 
-    elif url == 'active':
-        pass
+    elif url == 'votes':
+        posts=Post.objects.all().order_by("-upvotes")
+    	context_dict = {
+            'posts': posts,
+        }
 
     elif url == 'unanswered':
         posts = Post.objects.all()
