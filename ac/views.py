@@ -20,8 +20,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.contrib.auth.decorators import user_passes_test
-
-
+from datetime import timedelta
 @login_required
 def submit_ticket(request):
     if request.method == "POST":
@@ -30,30 +29,43 @@ def submit_ticket(request):
 	    #checking whether the email id submitted by the user is the same as the email id he registered with
             return render_to_response('ac/email_not_valid.html', {"message": "Please enter a valid email id; the email id you used during registration!"}, RequestContext(request))
         if request.user.is_authenticated() and request.user.email == request.POST["user_id"]:
-	    #checking if the user is authenticated or not	
-            user_tab_id = request.POST["tab_id"]
-            if len(user_tab_id) != 8:
-		#the tablet id is exactly of 8 digits; if the user enters fewer digits he is redirected to a page showing that his tab id is not valid
+	    #checking if the user is authenticated or not
+	    user_tab_id = request.POST["tab_id"]
+	    if len(user_tab_id) != 8:
+#the tablet id is exactly of 8 digits; if the user enters fewer digits he is redirected to a page showing that his tab id is not valid
                 return render_to_response('ac/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
             user_details = request.user.email
             submit_ticket_form = SubmitTicketForm(
                 request.POST, user_details=user_details)#instantiating the SubmitTicketForm; passing the POST request and users email as a parameter
-            category = Category.objects.get(category=request.POST["topic_id"])#getting the category object from the Category table corresponding to the category selected from the drop down by the user
+            print request.POST["topic_id"]
+            category = Category.objects.get(category=str(request.POST["topic_id"]))#getting the category object from the Category table corresponding to the category selected from the drop down by the user
             cat_id = category.id
             submit_ticket_form.topic_id = cat_id #setting the topic_id of the Ticket to the corresponding Category instance
 
 	    #checking if the form is valid	
             if submit_ticket_form.is_valid():
-                submit_ticket_form.save()
-                if Ticket.objects.all() == []:
-                    ticket_id = 1 #ticket_id is set to 1 if no tickets exist in the database
-                else:
-                    ticket_id = int(
-                        Ticket.objects.all().aggregate(Max('ticket_id'))['ticket_id__max']) #the ticket id for the submitted ticket is retrieved from the database to be displayed to the user
+                #submit_ticket_form.save() dont save it this way! 
+                #prepare to save
+                t=datetime.datetime.now()
+		t=t.strftime('%Y-%m-%d %H:%M:%S')
+		Enddate = Date + datetime.timedelta(days=1)
+		Invaliddate = Date - datetime.timedelta(days=1)
+
+		ticket=Ticket.objects.get_or_create(user_id=request.POST["user_id"],
+					    topic_id=category,
+					    tab_id=request.POST["tab_id"],
+					    message=request.POST["message"],
+					    created_date_time=t,
+					    overdue_date_time=Enddate,
+					    closed_date_time=Invaliddate,
+					    reopened_date_time=Invaliddate,
+					    status=0,
+					    topic_priority=1,
+					    duration_for_reply=24)[0]
                 print "success"
                 return render_to_response(
                     'ac/after_submit.html',
-                    {'ticket_id': ticket_id},
+                    {'ticket_id': ticket.ticket_id},
                     RequestContext(request)) #passing the ticket_id as a dictionary element to the template ac/after_submit.html where its displayed to the user
             else:
 		#this handles the ValidationError raised in forms.py if the user enters a tablet id that is not present in the Tablet_info table

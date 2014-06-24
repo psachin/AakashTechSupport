@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html lang="en">
   <head>
    
@@ -38,16 +39,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-<<<<<<< HEAD
-          <a class="navbar-brand" href="/ac">Admin Panel</a>
-=======
-          <a class="navbar-brand" href="\ac">WELCOME</a>
->>>>>>> 591bbd34f77a214aa7a5964f29acceceb01f94cd
+           <img src = "{% static 'images/aakash.png' %}" alt="Aakash Logo" width="100px" height="50px"/>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/">Home</a></li>
-            <li><a href="#">Profile</a></li>
+            <li><a href="/ac">Dashboard</a></li>
+            
             <li><a href="/logout">LOGOUT</a></li>
           </ul>
           

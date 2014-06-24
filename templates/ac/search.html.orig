@@ -39,13 +39,25 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
+<<<<<<< HEAD
            <img src = "{% static 'images/aakash.png' %}" alt="Aakash Logo" width="100px" height="50px"/>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="/">MAIN</a></li>
+            <li><a href="/ac">Dashboard</a></li>
+            
+=======
+<<<<<<< HEAD
+          <a class="navbar-brand" href="/ac">Admin Panel</a>
+=======
+          <a class="navbar-brand" href="\ac">WELCOME</a>
+>>>>>>> 591bbd34f77a214aa7a5964f29acceceb01f94cd
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Home</a></li>
             <li><a href="#">Profile</a></li>
+>>>>>>> upstream/master
             <li><a href="/logout">LOGOUT</a></li>
           </ul>
           
@@ -98,15 +110,6 @@
                     {{ ticket.topic_id|linebreaksbr }}</td>
                 <td {% if forloop.last %}class="last"{% endif %}>
                      {{ ticket.user_id|linebreaksbr }}</td>
-                  <td {% if forloop.last %}class="last"{% endif %}>
-              {% if ticket.topic_priority == 0 %}
-                       LOW
-                      {% elif ticket.topic_priority == 1 %}
-                      Normal
-                      {% elif ticket.topic_priority == 2 %}
-                  HIGH
-                  {% endif %}
-        </td>
                    
                 </td>
             </tr>

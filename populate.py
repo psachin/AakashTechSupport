@@ -18,7 +18,7 @@ def populate():
 
 def add_tablet(rcID, rcName, start_tab_id, end_tab_id,count,city):
     tab = Tablet_info.objects.get_or_create(rcID=rcID, rcName=rcName, start_tab_id=start_tab_id, end_tab_id=end_tab_id,count=count,city=city)[0]
-    print "rc" +str(rcID)+"added \n"
+    print "rc " +str(rcID)+"added \n"
     return tab
 
 # Start execution here!
