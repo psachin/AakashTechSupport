@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-
 {% extends "index.html" %}
 
+{% load staticfiles %}
 {% block body_block %}
 
     <!-- MODAL FOR ANSWERING QUESTION -->
 
     <!-- Modal -->
-    <div class="modal fade" id="addAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         xmlns="http://www.w3.org/1999/html">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -30,20 +31,108 @@
 
         <ul class="nav nav-tabs">
         <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
-            {{ question.title }}
+            {{ posts.title }}
         </h4>
 
         </ul>
-        <div style="padding-top: 0.5cm;">
 
-        </div>
-        <div class="well">
-            {{ question.body }}
-        </div>
+        <table>
+            <tbody>
+                <tr>
+                    <!-- VOTE CELL -->
+                    <td class="votecell" style="padding-top: 1cm;">
+                        <div class="vote">
+                            <a href="#" title="This question shows research effort; it is useful and clear">
+                                <img src="{% static 'images/up1.png' %}" />
+                            </a>
 
+                            <span class="vote-count-post" id="show_vote_count">
+                                {{ posts.upvotes }}
+                            </span>
+
+                            <a href="#" title="This question shows research effort; it is useful and clear">
+                                <img src="{% static 'images/down1.png' %}" />
+                            </a>
+                        </div>
+                    </td>
+
+                    <!-- POST CELL -->
+                    <td class="postcell" style="padding-top: 1cm; padding-left: 0.5cm;">
+                        <div>
+                            <div class="well post-text" itemprop="description">
+                                {{ posts.body }}
+                            </div>
+                            <div class="post-taglist" style="padding-top: 0.5cm;">
+                                <a class="post-tag" rel="tag" title="" href="/questions/tags/">
+                                    python
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
         <button class="btn btn btn-primary" type="submit" data-toggle="modal" data-target="#addAnswer">Add your answer</button>
+
+        <div style="padding-top: 0.5cm;">
+        </div>
+        <!--
+        <div class="well">
+
+        </div>
+
+        <hr>
+        <button class="btn btn btn-primary" type="submit" data-toggle="modal" data-target="#addAnswer">Add your answer</button>
+        -->
     </div>
     </div>
+
+    <!-- AJAX SCRIPT -->
+
+    <script>
+
+    $(document).ready(function() {
+
+        var change_vote = function() {
+
+            var value = $("form input[name='choice']:checked").val();
+
+            if (value != "")
+            {
+                var data = { choice:value };
+                var args = { type:"POST", url:"/polls/{{ poll.id }}/ajaxvote/", data:data, complete:create_vote_complete };
+                $.ajax(args);
+            }
+            else
+            {
+                // We should display a helpful error message
+            }
+            return false;
+        };
+
+
+        $("#vote").click(change_vote);
+    });
+
+
+
+
+    /*
+    var vote_count = 0;
+
+    function incVoteCount( ) {
+        vote_count++;
+        document.getElementById("show_vote_count").innerHTML = vote_count;
+    }
+
+    function decVoteCount( ) {
+        vote_count--;
+        document.getElementById("show_vote_count").innerHTML = vote_count;
+    }
+
+    */
+    </script>
 
 
 {% endblock %}

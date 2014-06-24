@@ -122,22 +122,36 @@ def display(request, id):
 def search(request):
     if request.method == "POST":
         Search = request.POST.get('search')
+        active_user = request.user
+        context_dict = {}
+
         """Searching for ticket-id"""
-        tickets = Ticket.objects.filter(
-            Q(ticket_id__icontains=Search) | Q(user_id__icontains=Search))
+        tickets = Ticket.objects.filter(Q(ticket_id__icontains=Search) | Q(user_id__icontains=Search))
+
         if tickets.exists():
-            # importticket=Ticket.objects.get(pk=Search)
-            return render_to_response("ac/search.html", dict(tickets=tickets), RequestContext(request))
+            context_dict = {
+                'user': active_user,
+                'tickets': tickets,
+            }
+            return render_to_response("ac/search.html", context_dict, RequestContext(request))
         else:
             """Searching for Topic-id"""
             tickets = Category.objects.filter(category__icontains=Search)
+
             if tickets.exists():
-                # tickets=Ticket.objects.get(pk=tickets)
                 tickets = Ticket.objects.filter(topic_id=tickets)
-                return render_to_response("ac/search.html", dict(tickets=tickets), RequestContext(request))
+                context_dict = {
+                    'user': active_user,
+                    'tickets': tickets,
+                }
+                return render_to_response("ac/search.html", context_dict, RequestContext(request))
             else:
                 tickets = Ticket.objects.all()
-                return render_to_response("ac/d.html", dict(tickets=tickets), RequestContext(request))
+                context_dict = {
+                    'user': active_user,
+                    'tickets': tickets,
+                }
+                return render_to_response("ac/d.html", context_dict, RequestContext(request))
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')

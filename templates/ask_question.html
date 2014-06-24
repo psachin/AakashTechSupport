@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 {% extends "index.html" %}
 
+{% load wysiwyg %}
+{% wysiwyg_setup %}
+
+
 {% block body_block %}
 
     <!-- QUESTION POST-->
@@ -25,6 +29,8 @@
         <div id="post_text" style="padding-top: 0.5cm">
             <textarea placeholder= "Write a description of your question here..." name="post_text" id="wmd-input" class="wmd-input processed form-control" required="required" data-min-length="" tabindex="101" rows="15" cols="92" name="post-text" style="width: 610px;">
             </textarea>
+            {% wysiwyg_editor "wmd-input" %}
+
             <div class="grippie" style="margin-right: 0px;"></div>
         </div>
 

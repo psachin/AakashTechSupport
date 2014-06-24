@@ -18,15 +18,23 @@ from aakashuser.models import *
 import re
 # INDEX PAGE VIEW
 
+
 def index(request):
-    return render_to_response("index.html", request)
+    context = RequestContext(request)
+    active_user = ""
+    if request.user:
+        active_user = request.user
+    context_dict = {
+        'user': active_user,
+    }
+    return render_to_response("index.html", context_dict, context)
+
 
 def search(request):
     c = {}
     c.update(csrf(request))
     return render_to_response("search.html", c)
 
-# REGISTER VIEW
 
 def validateEmail(email):
     if len(email) > 6:
@@ -34,6 +42,7 @@ def validateEmail(email):
         if re.match(r'\b[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\b', email) is not None:
             return 1
     return 0
+
 
 def register(request):
     context = RequestContext(request)
@@ -84,6 +93,7 @@ def register(request):
     return render_to_response("register.html", context_dict, context)
 
 # LOGIN VIEW
+
 
 def login_x(request):
     session_id = ""
@@ -178,6 +188,7 @@ def logout_new(request):
 def display_questions(request):
     return render_to_response('questions.html')
 
+
 def ask_question(request):
     context = RequestContext(request)
     if request.POST:
@@ -238,6 +249,7 @@ def ask_question(request):
         c.update(csrf(request))
         return render_to_response('ask_question.html', c)
 
+
 def view_tags(request):
     context = RequestContext(request)
     tags = Tag.objects.all()
@@ -245,6 +257,7 @@ def view_tags(request):
         i.count = len(Post.objects.filter(tags=i))
     context_dict = {'tags': tags}
     return render_to_response('forum/tags.html', context_dict, context)
+
 
 def search_tags(request):
     """
