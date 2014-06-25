@@ -69,10 +69,10 @@ The ticket submission system allows the user to submit his issues for resolution
 
 The user is able to go to the submit ticket page by clicking on the link to the same on the home page; provided he is logged in.A user is allowed to submit a ticket only if he is logged in. If a user tries to submit a ticket without being logged in; he is redirected to the login page.Once the user has been logged in and is on the submit ticket page; in order for him to submit his issue he has to provide the following details:
 
-*Tablet id: The tablet id is an eight digit number inscribed on the back of every aakash tablet.
-*Message: The details of the problem that the user is facing goes here.
-*Category of the problem: The user is given a drop down list of categories to select from.
-*Email : The email field is automatically populated with the email id of the logged in user.
+* Tablet id: The tablet id is an eight digit number inscribed on the back of every aakash tablet.
+* Message: The details of the problem that the user is facing goes here.
+* Category of the problem: The user is given a drop down list of categories to select from.
+* Email : The email field is automatically populated with the email id of the logged in user.
 
 .. figure:: _static/images/submit_ticket.png
    :height: 600 px
@@ -125,9 +125,9 @@ The chart/graph display system on the admin dashboard
 The admin can conveniently visualize the statistics about the tickets generated and resolved by using interactive charts and graphs.
 Three different graphs/charts have been implemented:
 
-*A pie chart showing the Category-wise breakup of tickets.
-*A pie chart showing the number of open vs number of closed tickets.
-*A bar chart showing the number of tickets generated per month.
+* A pie chart showing the Category-wise breakup of tickets.
+* A pie chart showing the number of open vs number of closed tickets.
+* A bar chart showing the number of tickets generated per month.
 
 The pie charts are interactive and can be rendered in different ways as desired by the admin; by clicking on the buttons along the right margin.
 
@@ -148,9 +148,9 @@ A screenshot of the page showing the ticket number so generated is shown below:
 Dashboard Features
 ~~~~~~~~~~~~~~~~~~
 
-*Graphical Representation of Data : Graphical representation of ticketing data can be access from the admin dashboard pannel
+* Graphical Representation of Data : Graphical representation of ticketing data can be access from the admin dashboard pannel
 
-*Search: Admin can search for a specific ticket  submitted by the user by its Ticked ID or by User Email. Admin can also search for ticket in specific categories i.e. by typing ANDROID all the ticket corresponding to the android categories will be displayed in the dashboard
+* Search: Admin can search for a specific ticket  submitted by the user by its Ticked ID or by User Email. Admin can also search for ticket in specific categories i.e. by typing ANDROID all the ticket corresponding to the android categories will be displayed in the dashboard
 
 
 
