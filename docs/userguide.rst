@@ -166,12 +166,16 @@ The admin dashboard
 ~~~~~~~~~~~~~~~~~~~
 The admin dashboard  system allows the admin to check the submitted issues by aakash  tablet id holders in case the FAQs and discussion forum do not provide enough information.To access the admin panel the admin should be logged in with his corresponding id and  password.The main page of the admin dashboard shows all the tickets submitted by the  user and the category of the  problem.
 
-
-
 A screenshot of the page showing the ticket number so generated is shown below:
 
-
-
+.. figure:: _static/images/dashboard.png
+   :height: 600 px
+   :width: 900 px
+   :scale: 50 %
+   :alt: ticket numbers generated so far are shown on the dashboard
+   :align: center
+   
+    all the ticket numbers generated so far are shown on the dashboard 
 
 
 Dashboard Features
@@ -181,19 +185,23 @@ Dashboard Features
 
 * Search: Admin can search for a specific ticket  submitted by the user by its Ticked ID or by User Email. Admin can also search for ticket in specific categories i.e. by typing ANDROID all the ticket corresponding to the android categories will be displayed in the dashboard
 
+* Report Generation: The admin can download a csv file containing the details of all the tickets submitted so far by clicking on the Reports link on the welcome page.
 
 
 The  Reply interface between user and admin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Reply interface allows admin to reply the query of a specific ticket by clicking on it's 
-Ticket id screenshot of the page showing the  of a particular ticket number is shown below:
+Reply interface allows admin to reply the query of a specific ticket by clicking on it's Ticket id.
+screenshot of the page showing the  reply interface for a particular ticket number is shown below:
 
-
-
-
-
-
+.. figure:: _static/images/reply.png
+   :height: 600 px
+   :width: 900 px
+   :scale: 50 %
+   :alt: ticket numbers generated so far are shown on the dashboard
+   :align: center
+   
+    all the ticket numbers generated so far are shown on the dashboard 
 
 
 The above Page show the all Details of a particular ticket along with the problem message submitted by the user. The admin  can reply correspondingly to the problem in the response section and by clicking Post Reply to send a e-mail to the user. The top of the page also shows the statistics of open and close tickets
