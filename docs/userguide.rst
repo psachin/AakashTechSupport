@@ -126,8 +126,37 @@ The admin can conveniently visualize the statistics about the tickets generated 
 Three different graphs/charts have been implemented:
 
 * A pie chart showing the Category-wise breakup of tickets.
+
+.. figure:: _static/images/category_breakup.png
+   :height: 600 px
+   :width: 900 px
+   :scale: 50 %
+   :alt: pie chart showing the Category-wise breakup of tickets
+   :align: center
+
+   pie chart showing the Category-wise breakup of tickets
+
 * A pie chart showing the number of open vs number of closed tickets.
+
+.. figure:: _static/images/open_vs_closed.png
+   :height: 600 px
+   :width: 900 px
+   :scale: 50 %
+   :alt: pie chart showing the number of open vs number of closed tickets
+   :align: center
+   
+    pie chart showing the number of open vs number of closed tickets
+
 * A bar chart showing the number of tickets generated per month.
+
+.. figure:: _static/images/traffic.png
+   :height: 600 px
+   :width: 900 px
+   :scale: 50 %
+   :alt: pie chart showing the number of tickets generated per month
+   :align: center
+   
+    pie chart showing the number of tickets generated per month
 
 The pie charts are interactive and can be rendered in different ways as desired by the admin; by clicking on the buttons along the right margin.
 
