@@ -21,5 +21,6 @@ urlpatterns = patterns(
     url(r'^(unanswered)/$', views.all_questions_view, name='unans'),
     url(r'^(latest)/$', views.all_questions_view, name='latest'),
     url(r'^(frequent)/$', views.all_questions_view, name='frequent'),
-    url(r'^(votes)/$', views.all_questions_view, name='votes'),
+
+    url(r'^vote/$', views.vote_post, name='votes'),
 )

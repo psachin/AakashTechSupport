@@ -137,6 +137,46 @@ def submit_reply(request, qid):
     return render_to_response('questions/question_page.html', context_dict, context)
 
 
+def vote_post(request):
+    post_id = int(request.POST.get('id'))
+    vote_type = request.POST.get('type')
+    vote_action = request.POST.get('action')
+
+    cur_post = get_object_or_404(Post, pk=post_id)
+
+    thisuserupvote = cur_post.userUpVotes.filter(id=request.user.id).count()
+    thisuserdownvote = cur_post.userDownVotes.filter(id=request.user.id).count()
+
+    #This loop is for voting
+    if vote_action == 'vote':
+        if (thisuserupvote == 0) and (thisuserdownvote == 0):
+            if vote_type == 'up':
+                cur_post.userUpVotes.add(request.user)
+            elif vote_type == 'down':
+                cur_post.userDownVotes.add(request.user)
+            else:
+                return HttpResponse("Error: Unknown vote-type passed.")
+        else:
+            return HttpResponse("Error: User has already voted this post :P")
+    #This loop is for canceling vote
+    elif vote_action == 'recall-vote':
+        if (vote_type == 'up') and (thisuserupvote == 1):
+            cur_post.userUpVotes.remove(request.user)
+        elif (vote_type == 'down') and (thisuserdownvote == 1):
+            cur_post.userDownVotes.remove(request.user)
+        else:
+            return HttpResponse("Error - Unknown vote type or no vote to recall")
+
+    else:
+        return HttpResponse("Error: Bad Action.")
+
+    num_votes = cur_post.userUpVotes.count() - cur_post.userDownVotes.count()
+
+    return HttpResponse(num_votes)
+
+
+
+
 def link_question(request, qid):
     context = RequestContext(request)
     question = Post.objects.get(pk=qid)

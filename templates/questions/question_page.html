@@ -25,7 +25,6 @@
       </div>
     </div>
 
-
     <div class="container-fluid"  style="padding-top: 0.5cm; padding-bottom: 0.7cm;">
 	<div class="  col-md-8 col-md-offset-2" role="navigation">
 
@@ -41,16 +40,16 @@
                 <tr>
                     <!-- VOTE CELL -->
                     <td class="votecell" style="padding-top: 0.0cm;">
+
                         <div class="vote">
-                            <a href="#" title="This question shows research effort; it is useful and clear">
+                            <a class="vote-up" title="This question shows research effort; it is useful and clear">
                                 <img src="{% static 'images/up1.png' %}" />
                             </a>
 
                             <span class="vote-count-post" id="show_vote_count">
-                                {{ posts.upvotes }}
                             </span>
 
-                            <a href="#" title="This question shows research effort; it is useful and clear">
+                            <a class="vote-down" title="This question does not show any research effort; it is not useful and unclear">
                                 <img src="{% static 'images/down1.png' %}" />
                             </a>
                         </div>
@@ -133,7 +132,6 @@
 
     <script>
 
-
     var ansbtn = document.getElementById('add_answer')
     var ansform = document.getElementById('post_answer_form');
     var post_btn = document.getElementById('add_answer')
@@ -202,35 +200,85 @@
         txt.remove();
         btn_click = 0;
     }
-
-
     </script>
 
     <!-- AJAX SCRIPT -->
 
     <script>
 
-    $(document).ready(function() {
+        $(document).ready(function() {
 
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+
+        $('div.vote a.vote-up').click(function() {
+
+            var id = {{ posts.pk }};
+            var vote_type = 'up';
+
+            /* USER HAS ALREADY VOTED */
+
+            if ($(this).hasClass('selected')) {
+                var vote_action = 'recall-vote'
+
+                $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
+
+                    //$('a.vote-up').removeAttr('src')
+                      //  .attr('src', 'images/vote-up-off.png')
+                        //.removeClass('selected');
+                    $('div.vote span.vote-count-post').html(response);
+                });
+            }
+            /* USER WISHES TO VOTE */
+            else {
+                var vote_action = 'vote'
+                $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
+
+                    //$('a.vote-up').removeAttr('src')
+                      //  .attr('src', 'images/vote-up-on.png')
+                        //.addClass('selected');
+                    $('div.vote span.vote-count-post').html(response);
+                });
+            }
+        });
+
+        /* DOWNVOTE */
+
+
+        $('div.vote a.vote-down').click(function() {
+
+            var id = {{ posts.pk }};
+            var vote_type = 'down';
+
+            /* USER HAS ALREADY DOWN-VOTED */
+
+            if ($(this).hasClass('selected')) {
+                var vote_action = 'recall-vote'
+
+                $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
+
+                    //$('a.vote-up').removeAttr('src')
+                      //  .attr('src', 'images/vote-up-off.png')
+                        //.removeClass('selected');
+                    $('div.vote span.vote-count-post').html(response);
+                });
+            }
+            /* USER WISHES TO VOTE */
+            else {
+                var vote_action = 'vote'
+                $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
+
+                    //$('a.vote-up').removeAttr('src')
+                      //  .attr('src', 'images/vote-up-on.png')
+                        //.addClass('selected');
+                    $('div.vote span.vote-count-post').html(response);
+                });
+            }
+        });
     });
 
-
-
-
-    /*
-    var vote_count = 0;
-
-    function incVoteCount( ) {
-        vote_count++;
-        document.getElementById("show_vote_count").innerHTML = vote_count;
-    }
-
-    function decVoteCount( ) {
-        vote_count--;
-        document.getElementById("show_vote_count").innerHTML = vote_count;
-    }
-
-    */
     </script>
+
 
 {% endblock %}
