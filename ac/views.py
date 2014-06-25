@@ -21,6 +21,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.contrib.auth.decorators import user_passes_test
 from datetime import timedelta
+import re
+def special_match(strg, search=re.compile(r'[^a-z0-9.]').search):
+     return not bool(search(strg))
 @login_required
 def submit_ticket(request):
     if request.method == "POST":
@@ -31,7 +34,7 @@ def submit_ticket(request):
         if request.user.is_authenticated() and request.user.email == request.POST["user_id"]:
 	    #checking if the user is authenticated or not
 	    user_tab_id = request.POST["tab_id"]
-	    if len(user_tab_id) != 8:
+	    if len(user_tab_id) != 8 and not special_match(user_tab_id):
 #the tablet id is exactly of 8 digits; if the user enters fewer digits he is redirected to a page showing that his tab id is not valid
                 return render_to_response('ac/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
             user_details = request.user.email
