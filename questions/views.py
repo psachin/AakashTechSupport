@@ -69,23 +69,20 @@ def ask_question(request):
     if request.POST:
         title = request.POST['post_title']
         body = request.POST['post_text']
+        category_selected = request.POST['category']
         post_date = datetime.datetime.now()
         upvotes = 0
-
         u = User.objects.get(username=request.user.username)
-        print "Username : "
-        print u.username
-
         some_user = UserProfile.objects.get(user=u)
 
-        creator_id = some_user.id
-#        post.creator.id = creator_id
+        category_selected = category_selected.upper()
+        category = Category.objects.get(category=category_selected)
 
-        print creator_id
-
-        post = Post.objects.create(title=title, body=body, post_date=post_date, upvotes=upvotes, creator=some_user)
+        post = Post.objects.create(title=title, body=body, post_date=post_date, upvotes=upvotes, creator=some_user,
+                                   category=category)
         post.tags.all()
-        post.tags.add(request.POST['post_tags'])#Adding tags to the object created.
+        # Adding tags to the object created.
+        post.tags.add(request.POST['post_tags'])
 
         que_dict = {
             'posts': post,
@@ -96,7 +93,11 @@ def ask_question(request):
     else:
         if request.user.is_authenticated():
             user = request.user
-            c = {'user': user}
+            categories = Category.objects.all()
+            c = {
+                'user': user,
+                'catg': categories
+            }
             print user.username
         else:
             err_msg = "You need to login to post a question."
@@ -154,10 +155,10 @@ def link_question(request, qid):
 def view_tags(request):
     context = RequestContext(request)
     tags = Category.objects.all()
-    """
+
     for i in tags:
-        i.count = len(Post.objects.filter(tags=i))
-    """
+        i.count = len(Post.objects.filter(category=i))
+
     context_dict = {
         'tags': tags
     }

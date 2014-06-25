@@ -27,11 +27,28 @@
         </div>
 
         <div id="post_text" style="padding-top: 0.5cm">
-            <textarea placeholder= "Write a description of your question here..." name="post_text" id="wmd-input" class="wmd-input processed form-control" required="required" data-min-length="" tabindex="101" rows="15" cols="92" name="post-text" style="width: 610px;">
+            <textarea placeholder= "Write a description of your question here..." name="post_text" id="wmd-input" class="wmd-input processed form-control" required="required" data-min-length="" rows="15" cols="92" style="">
             </textarea>
-            {% wysiwyg_editor "wmd-input" %}
 
             <div class="grippie" style="margin-right: 0px;"></div>
+        </div>
+
+        <div style="padding-top: 0.5cm;">
+        <tr>
+            <td>
+                <label>
+                    <b>Select a Category</b>
+                </label>
+            </td>
+
+            <td>
+                <select class="form-control" name="category" style="width: 610px;">
+                  {% for i in catg %}
+                  <option>{{ i.category|lower|capfirst }}</option>
+                  {% endfor %}
+                </select>
+            </td>
+        </tr>
         </div>
 
         <div id="post_tags" style="padding-top: 0.5cm;">
@@ -78,6 +95,7 @@
 	</nav>
 	
 	<!-- END OF FOOTER -->
-
+    <div style="padding-bottom: 25cm;">
+    </div>
 
 {% endblock %}

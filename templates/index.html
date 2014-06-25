@@ -138,6 +138,8 @@
 	<ul class="nav navbar-nav">
 	{% if user.is_superuser %} 
 	<a class="navbar-brand " href="/ac" ><b>Dashboard</b></a>
+    <a class="navbar-brand " href="/ac/ticket_csv/"><b>Reports</b></a>
+
         {% else %}
 	<a class="navbar-brand " href="/ac/submit_ticket/" ><b>Submit Ticket</b></a> 
 	{% endif %}
