@@ -22,7 +22,7 @@ LOGIN_URL = '/login/'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'mydb.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -145,15 +145,20 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'aakashuser',
+    'ac',
+    'south',
     'taggit',
     'django_wysiwyg',
     'tinymce',
-    'ac',	
 
     # Uncomment the next line to enable the admin:
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+SOUTH_MIGRATION_MODULES = {
+    'taggit': 'taggit.south_migrations',
+}
 
 DJANGO_WYSIWYG_FLAVOR = "tinymce"
 

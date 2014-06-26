@@ -15,7 +15,7 @@ urlpatterns = patterns(
 
     #url(r'^tag/$', views.tag, name='tag'),
     url(r'^tags/$', views.view_tags, name='tags'),
-    url(r'^tags/(?P<qid>\d+)/$', views.linktag, name='linktag'),
+    url(r'^tagged_questions/(?P<qid>\d+)/$', views.linktag, name='linktag'),
     url(r'^tag_search/$', views.tag_search, name='tag_search'),
   
     url(r'^(unanswered)/$', views.all_questions_view, name='unans'),

@@ -58,6 +58,8 @@ class Post(models.Model):
     userUpVotes = models.ManyToManyField(User, blank=True, related_name='postUpVotes')
     userDownVotes = models.ManyToManyField(User, blank=True, related_name='postDownVotes')
 
+    num_votes = models.IntegerField(default=0)
+
     tags = TaggableManager()
     post_status = models.IntegerField(max_length=1, default=0)
 

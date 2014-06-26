@@ -45,7 +45,7 @@
             {% for tag in tags %}
 
                 <td class="tag-cell">
-                    <a class="post-tag" rel="tag" title="" href="/questions/tags/{{ tag.pk }}/">
+                    <a class="post-tag" rel="tag" title="" href="/questions/tagged_questions/{{ tag.pk }}/">
                        {{ tag.category|lower|capfirst }}
                     </a>
                     <span class="item-multiplier">
