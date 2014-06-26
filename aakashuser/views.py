@@ -6,14 +6,14 @@ from django.shortcuts import render_to_response, get_object_or_404, render, redi
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.context_processors import csrf
-from forms import UserForm
+from forms import UserForm, UserProfileForm
 from aakashuser.models import *
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from taggit.models import Tag
 from django.db.models.signals import post_delete
 import re
-
+from django.contrib.auth.decorators import login_required
 # INDEX PAGE VIEW
 
 
@@ -211,3 +211,52 @@ def search_tags(request):
         print search_text
 
     render_to_response('search.html', search_dict)
+
+
+@login_required
+def profile(request):
+    if request.method == "POST":
+        if request.user.is_authenticated(): 
+	  
+	    try:
+	      u=User.objects.get(username=request.user.username)
+	    except User.DoesNotExist:
+	      u = None
+	    print u
+	    up=UserProfile.objects.get_or_create(user=u)[0]
+	    print up
+            user_profile_form=UserProfileForm(data=request.POST)
+            user_profile_form.user=u
+            if user_profile_form.is_valid():
+                print "valid form"
+                if 'avatar' in request.FILES:
+		  up.location=request.POST['location']
+		  #up.avatar=request.FILES['avatar'],
+		  up.user_skills=request.POST['skills']
+		  up.save()
+		  image=request.FILES['avatar']
+		  up.avatar.save(image.name,image)		 
+		else:
+		  up.location=request.POST['location']
+		  up.user_skills=request.POST['skills']
+		  up.avatar=None
+		  up.save()
+                return render_to_response(
+                    'after_profile_update.html',
+                    {"message": "Your profile has been updated"},
+                    RequestContext(request)) 
+            else:
+		#this handles the ValidationError raised in forms.py
+                return render_to_response('after_profile_update.html',
+					  {"message": "please enter valid data"},
+					  RequestContext(request))
+        else:
+	    #the user has to login to post and is displayed the login to post message if he does so without logging in
+            return HttpResponse("login to post")
+    # displaying the form for the first time.
+    else: 
+        user_profile_form = UserProfileForm()
+	return render_to_response(
+        'update_profile.html',
+        {'user_profile_form': user_profile_form},
+        RequestContext(request))

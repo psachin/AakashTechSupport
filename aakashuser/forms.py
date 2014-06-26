@@ -7,7 +7,7 @@ __author__ = 'ushubham27'
 from django import forms
 from django.contrib.auth.models import User
 from tinymce.widgets import TinyMCE
-from aakashuser.models import Post, Category
+from aakashuser.models import Post, Category, UserProfile
 
 
 class UserForm(forms.ModelForm):
@@ -131,3 +131,35 @@ class PostForm(forms.ModelForm):
         return datetime.datetime.now()
 
 """
+
+class UserProfileForm(forms.ModelForm):
+    location = forms.CharField(
+			    max_length=30,
+			    error_messages={
+			    'required': 'location is required.'
+			    },
+			    #help_text="Enter your location:",
+			    label="Location",
+			    required=False,
+			    widget=forms.TextInput(
+				    attrs={'class': 'form-control', 'placeholder': 'Location'}),
+			    )
+    skills = forms.CharField(
+			    max_length=100,
+			    required=False,
+			    error_messages={
+			    'required': 'skills is required.'
+			    },
+			    #help_text="Enter your skills:",
+			    widget=forms.TextInput(
+				    attrs={'class': 'form-control', 'placeholder': 'skills'}),
+			    )
+    avatar = forms.ImageField(
+			    label='Profile picture',
+			    required=False,
+			     widget=forms.FileInput(attrs={
+			     'placeholder': 'Profile picture.'}),
+			      )
+    class Meta:
+        model = UserProfile
+        fields = ('location', 'skills','avatar')
