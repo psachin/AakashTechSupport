@@ -42,16 +42,21 @@
                     <td class="votecell" style="padding-top: 0.0cm;">
 
                         <div class="vote">
-                            <a class="vote-up" title="This question shows research effort; it is useful and clear">
-                                <img src="{% static 'images/up1.png' %}" />
-                            </a>
+                            {% ifequal thisUserUpvote 0 %}
+                                <img src="{% static 'images/up1-off.png' %}" class="vote-up" title="This question shows research effort; it is useful and clear"/>
+                            {% else %}
+                                <img src="{% static 'images/up1-on.png' %}" class="vote-up selected" title="This question shows research effort; it is useful and clear"/>
+                            {% endifequal %}
 
                             <span class="vote-count-post" id="show_vote_count">
+                                {{ net_count }}
                             </span>
 
-                            <a class="vote-down" title="This question does not show any research effort; it is not useful and unclear">
-                                <img src="{% static 'images/down1.png' %}" />
-                            </a>
+                            {% ifequal thisUserDownvote 0 %}
+                                <img src="{% static 'images/down1-off.png' %}" class="vote-down" title="This question does not show any research effort; it is not useful and unclear"/>
+                            {% else %}
+                                <img src="{% static 'images/down1-on.png' %}" class="vote-down selected" title="This question does not show any research effort; it is not useful and unclear"/>
+                            {% endifequal %}
                         </div>
                     </td>
 
@@ -212,7 +217,7 @@
             data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
         });
 
-        $('div.vote a.vote-up').click(function() {
+        $('div.vote img.vote-up').click(function() {
 
             var id = {{ posts.pk }};
             var vote_type = 'up';
@@ -224,9 +229,9 @@
 
                 $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
 
-                    //$('a.vote-up').removeAttr('src')
-                      //  .attr('src', 'images/vote-up-off.png')
-                        //.removeClass('selected');
+                    $('img.vote-up').removeAttr('src')
+                        .attr('src', '{% static 'images/up1-off.png' %}')
+                        .removeClass('selected');
                     $('div.vote span.vote-count-post').html(response);
                 });
             }
@@ -235,9 +240,9 @@
                 var vote_action = 'vote'
                 $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
 
-                    //$('a.vote-up').removeAttr('src')
-                      //  .attr('src', 'images/vote-up-on.png')
-                        //.addClass('selected');
+                    $('img.vote-up').removeAttr('src')
+                        .attr('src', '{% static 'images/up1-on.png' %}')
+                        .addClass('selected');
                     $('div.vote span.vote-count-post').html(response);
                 });
             }
@@ -245,8 +250,7 @@
 
         /* DOWNVOTE */
 
-
-        $('div.vote a.vote-down').click(function() {
+        $('div.vote img.vote-down').click(function() {
 
             var id = {{ posts.pk }};
             var vote_type = 'down';
@@ -258,9 +262,9 @@
 
                 $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
 
-                    //$('a.vote-up').removeAttr('src')
-                      //  .attr('src', 'images/vote-up-off.png')
-                        //.removeClass('selected');
+                    $('img.vote-down').removeAttr('src')
+                        .attr('src', '{% static 'images/down1-off.png' %}')
+                        .removeClass('selected');
                     $('div.vote span.vote-count-post').html(response);
                 });
             }
@@ -269,9 +273,9 @@
                 var vote_action = 'vote'
                 $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
 
-                    //$('a.vote-up').removeAttr('src')
-                      //  .attr('src', 'images/vote-up-on.png')
-                        //.addClass('selected');
+                    $('img.vote-down').removeAttr('src')
+                        .attr('src', '{% static 'images/down1-on.png' %}')
+                        .addClass('selected');
                     $('div.vote span.vote-count-post').html(response);
                 });
             }
