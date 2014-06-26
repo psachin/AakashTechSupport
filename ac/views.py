@@ -60,7 +60,7 @@ def submit_ticket(request):
 					    topic_priority=1,
 					    duration_for_reply=24)[0]
                 print "success"
-		subject="AakashTechSupport: Your ticket has been submitted"
+		subject="AakashTechSupport: Your ticket id is:"+str(ticket.ticket_id)
 		message=request.user.email+''',
 
 A request for support has been created and assigned ticket #'''+str(ticket.ticket_id)+'''. A representative will follow-up with you as soon as possible.
@@ -221,7 +221,16 @@ def reply(request, id):
         response = Threads.objects.create(
             ticketreply=ticket, reply=Reply, count=1)
         response.save()
+	subject="AakashTechSupport: Response to your ticket id #"+str(id)
+	message=ticket.user_id+''',
+A customer support staff member has replied to your support request, #'''+id+''' with the following response:
 
+'''+Reply+'''
+
+We hope this response has sufficiently answered your questions.If so please login to your account and close the ticket. Login to your account for a complete archive of all your support requests and responses.'''
+	my_email="aakashkumariitb@gmail.com"#CHANGE THIS WHILE DEPLOYING
+	receiptents=[ticket.user_id]
+	send_mail(subject, message, my_email, receiptents,fail_silently=False)
         check = request.POST.get('reply_ticket_status')
         print check
         if check == 'Open':
