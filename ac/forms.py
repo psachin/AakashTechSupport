@@ -3,7 +3,9 @@ from django import forms
 from django.contrib.auth.models import User
 import datetime
 from datetime import timedelta
-
+import re
+def special_match(strg, search=re.compile(r'[^a-z0-9.]').search):
+    	return not bool(search(strg))
 
 class SubmitTicketForm(forms.ModelForm):
     tab_id = forms.CharField(
@@ -43,22 +45,27 @@ class SubmitTicketForm(forms.ModelForm):
         self.fields['user_id'] = forms.EmailField(help_text="Enter your email  id:",
 						  label="Email id",
                                                   widget=forms.TextInput(attrs={'class': 'form-control','readonly': 'readonly', 'value': user_details}))#is a readonly field in the rendered html with the initial value as the users email id
-
+    
+    	
     def clean(self):
 	#in the clean method we validate the tablet id and raise a ValidationError if the user enters an invalid tablet id
         cleaned_data = self.cleaned_data
-        entered_tab_id = int(cleaned_data.get('tab_id'))#get the entered tab id
-        tablets = Tablet_info.objects.all()#get all the tablets from the Tablet_info table
-        found = 0
-        for tablet in tablets:
-            starttab = tablet.start_tab_id
-            endtab = tablet.end_tab_id
-            if starttab <= entered_tab_id <= endtab:
-		#if the tablet id entered is between the starting and ending tablet id ; then the found flag is set as 1 otherwise it stays 0
-                found = 1
-        if found == 0:
-	    #raise a ValidationError if the tab id is invalid	
-            raise forms.ValidationError(
-                "You have entered an invalid tablet id")
-        else:
-            return cleaned_data
+	if special_match(cleaned_data.get('tab_id')) and cleaned_data.get('message')!="":
+		entered_tab_id = int(cleaned_data.get('tab_id'))#get the entered tab id
+		tablets = Tablet_info.objects.all()#get all the tablets from the Tablet_info table
+		found = 0
+		for tablet in tablets:
+		    starttab = tablet.start_tab_id
+		    endtab = tablet.end_tab_id
+		    if starttab <= entered_tab_id <= endtab:
+			#if the tablet id entered is between the starting and ending tablet id ; then the found flag is set as 1 otherwise it stays 0
+		        found = 1
+		if found == 0:
+		    #raise a ValidationError if the tab id is invalid	
+		    raise forms.ValidationError(
+		        "You have entered an invalid tablet id")
+		else:
+		    return cleaned_data
+	else:
+		raise forms.ValidationError(
+		        "You have entered an invalid tablet id")

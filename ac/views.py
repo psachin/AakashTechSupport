@@ -21,18 +21,20 @@ from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.contrib.auth.decorators import user_passes_test
 from datetime import timedelta
+import re
+from django.contrib import messages
+from django.core.mail import send_mail
+def special_match(strg, search=re.compile(r'[^a-z0-9.]').search):
+     return not bool(search(strg))
 @login_required
 def submit_ticket(request):
     if request.method == "POST":
-        #if the user has submitted the form
         if request.user.email != request.POST["user_id"]:
 	    #checking whether the email id submitted by the user is the same as the email id he registered with
             return render_to_response('ac/email_not_valid.html', {"message": "Please enter a valid email id; the email id you used during registration!"}, RequestContext(request))
         if request.user.is_authenticated() and request.user.email == request.POST["user_id"]:
-	    #checking if the user is authenticated or not
 	    user_tab_id = request.POST["tab_id"]
-	    if len(user_tab_id) != 8:
-#the tablet id is exactly of 8 digits; if the user enters fewer digits he is redirected to a page showing that his tab id is not valid
+	    if len(user_tab_id) != 8 and not special_match(user_tab_id):
                 return render_to_response('ac/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
             user_details = request.user.email
             submit_ticket_form = SubmitTicketForm(
@@ -40,17 +42,12 @@ def submit_ticket(request):
             print request.POST["topic_id"]
             category = Category.objects.get(category=str(request.POST["topic_id"]))#getting the category object from the Category table corresponding to the category selected from the drop down by the user
             cat_id = category.id
-            submit_ticket_form.topic_id = cat_id #setting the topic_id of the Ticket to the corresponding Category instance
-
-	    #checking if the form is valid	
+            submit_ticket_form.topic_id = cat_id	
             if submit_ticket_form.is_valid():
-                #submit_ticket_form.save() dont save it this way! 
-                #prepare to save
                 t=datetime.datetime.now()
 		t=t.strftime('%Y-%m-%d %H:%M:%S')
 		Enddate = Date + datetime.timedelta(days=1)
 		Invaliddate = Date - datetime.timedelta(days=1)
-
 		ticket=Ticket.objects.get_or_create(user_id=request.POST["user_id"],
 					    topic_id=category,
 					    tab_id=request.POST["tab_id"],
@@ -63,6 +60,15 @@ def submit_ticket(request):
 					    topic_priority=1,
 					    duration_for_reply=24)[0]
                 print "success"
+		subject="AakashTechSupport: Your ticket id is:"+str(ticket.ticket_id)
+		message=request.user.email+''',
+
+A request for support has been created and assigned ticket #'''+str(ticket.ticket_id)+'''. A representative will follow-up with you as soon as possible.
+
+You can view this ticket's progress online by logging into your account and clicking on view tickets.'''
+		my_email="aakashkumariitb@gmail.com"#CHANGE THIS WHILE DEPLOYING
+		receiptents=[request.user.email]
+		send_mail(subject, message, my_email, receiptents,fail_silently=False)
                 return render_to_response(
                     'ac/after_submit.html',
                     {'ticket_id': ticket.ticket_id},
@@ -170,7 +176,9 @@ def graph(request):
         count[c.category] = 0#initializing the count of each category as 0
         for t in ticket:
 	    #iterating over all the tickets	
-            ticket_for_a_cat = Ticket.objects.filter(topic_id=c)#ticket_for_a_cat is a list that contains tickets corresponding to the category c
+
+	    ticket_for_a_cat=[]	
+            ticket_for_a_cat = Ticket.objects.filter(topic_id=c)#ticket_for_a_cat is a list that contains tickets corresponding to the category	
             count[c.category] = ticket_for_a_cat.count()#updating the count of each category as the number of elements in ticket_for_a_cat list
     return render_to_response("ac/graphs.html", {'count': count, 'category_names': category_names}, RequestContext(request))#passing the count and category_names dictionary to graphs.html template for rendering graph
 
@@ -214,7 +222,16 @@ def reply(request, id):
         response = Threads.objects.create(
             ticketreply=ticket, reply=Reply, count=1)
         response.save()
+	subject="AakashTechSupport: Response to your ticket id #"+str(id)
+	message=ticket.user_id+''',
+A customer support staff member has replied to your support request, #'''+id+''' with the following response:
 
+'''+Reply+'''
+
+We hope this response has sufficiently answered your questions.If so please login to your account and close the ticket. Login to your account for a complete archive of all your support requests and responses.'''
+	my_email="aakashkumariitb@gmail.com"#CHANGE THIS WHILE DEPLOYING
+	receiptents=[ticket.user_id]
+	send_mail(subject, message, my_email, receiptents,fail_silently=False)
         check = request.POST.get('reply_ticket_status')
         print check
         if check == 'Open':
