@@ -14,6 +14,9 @@
 		<link rel="stylesheet" href="{% static 'css/ask_que.css' %}" />
 		<link rel="stylesheet" href="{% static 'css/tags_table.css' %}" />
         <link rel="stylesheet" href="{% static 'css/question_summary.css' %}" />
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+
 	{%block head_block%}
 	{%endblock%}	
 	</head>
@@ -138,6 +141,8 @@
 	<ul class="nav navbar-nav">
 	{% if user.is_superuser %} 
 	<a class="navbar-brand " href="/ac" ><b>Dashboard</b></a>
+    <a class="navbar-brand " href="/ac/ticket_csv/"><b>Reports</b></a>
+
         {% else %}
 	<a class="navbar-brand " href="/ac/submit_ticket/" ><b>Submit Ticket</b></a> 
 	{% endif %}

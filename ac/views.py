@@ -176,8 +176,12 @@ def graph(request):
         count[c.category] = 0#initializing the count of each category as 0
         for t in ticket:
 	    #iterating over all the tickets	
+<<<<<<< HEAD
 	    ticket_for_a_cat=[]	
             ticket_for_a_cat = Ticket.objects.filter(topic_id=c)#ticket_for_a_cat is a list that contains tickets corresponding to the category	
+=======
+            ticket_for_a_cat = Ticket.objects.filter(topic_id=c)#ticket_for_a_cat is a list that contains tickets corresponding to the category c
+>>>>>>> upstream/master
             count[c.category] = ticket_for_a_cat.count()#updating the count of each category as the number of elements in ticket_for_a_cat list
     return render_to_response("ac/graphs.html", {'count': count, 'category_names': category_names}, RequestContext(request))#passing the count and category_names dictionary to graphs.html template for rendering graph
 

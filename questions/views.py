@@ -69,23 +69,20 @@ def ask_question(request):
     if request.POST:
         title = request.POST['post_title']
         body = request.POST['post_text']
+        category_selected = request.POST['category']
         post_date = datetime.datetime.now()
         upvotes = 0
-
         u = User.objects.get(username=request.user.username)
-        print "Username : "
-        print u.username
-
         some_user = UserProfile.objects.get(user=u)
 
-        creator_id = some_user.id
-#        post.creator.id = creator_id
+        category_selected = category_selected.upper()
+        category = Category.objects.get(category=category_selected)
 
-        print creator_id
-
-        post = Post.objects.create(title=title, body=body, post_date=post_date, upvotes=upvotes, creator=some_user)
+        post = Post.objects.create(title=title, body=body, post_date=post_date, upvotes=upvotes, creator=some_user,
+                                   category=category)
         post.tags.all()
-        post.tags.add(request.POST['post_tags'])#Adding tags to the object created.
+        # Adding tags to the object created.
+        post.tags.add(request.POST['post_tags'])
 
         que_dict = {
             'posts': post,
@@ -96,7 +93,11 @@ def ask_question(request):
     else:
         if request.user.is_authenticated():
             user = request.user
-            c = {'user': user}
+            categories = Category.objects.all()
+            c = {
+                'user': user,
+                'catg': categories
+            }
             print user.username
         else:
             err_msg = "You need to login to post a question."
@@ -136,6 +137,46 @@ def submit_reply(request, qid):
     return render_to_response('questions/question_page.html', context_dict, context)
 
 
+def vote_post(request):
+    post_id = int(request.POST.get('id'))
+    vote_type = request.POST.get('type')
+    vote_action = request.POST.get('action')
+
+    cur_post = get_object_or_404(Post, pk=post_id)
+
+    thisuserupvote = cur_post.userUpVotes.filter(id=request.user.id).count()
+    thisuserdownvote = cur_post.userDownVotes.filter(id=request.user.id).count()
+
+    #This loop is for voting
+    if vote_action == 'vote':
+        if (thisuserupvote == 0) and (thisuserdownvote == 0):
+            if vote_type == 'up':
+                cur_post.userUpVotes.add(request.user)
+            elif vote_type == 'down':
+                cur_post.userDownVotes.add(request.user)
+            else:
+                return HttpResponse("Error: Unknown vote-type passed.")
+        else:
+            return HttpResponse("Error: User has already voted this post :P")
+    #This loop is for canceling vote
+    elif vote_action == 'recall-vote':
+        if (vote_type == 'up') and (thisuserupvote == 1):
+            cur_post.userUpVotes.remove(request.user)
+        elif (vote_type == 'down') and (thisuserdownvote == 1):
+            cur_post.userDownVotes.remove(request.user)
+        else:
+            return HttpResponse("Error - Unknown vote type or no vote to recall")
+
+    else:
+        return HttpResponse("Error: Bad Action.")
+
+    num_votes = cur_post.userUpVotes.count() - cur_post.userDownVotes.count()
+
+    return HttpResponse(num_votes)
+
+
+
+
 def link_question(request, qid):
     context = RequestContext(request)
     question = Post.objects.get(pk=qid)
@@ -154,10 +195,10 @@ def link_question(request, qid):
 def view_tags(request):
     context = RequestContext(request)
     tags = Category.objects.all()
-    """
+
     for i in tags:
-        i.count = len(Post.objects.filter(tags=i))
-    """
+        i.count = len(Post.objects.filter(category=i))
+
     context_dict = {
         'tags': tags
     }

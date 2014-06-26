@@ -39,7 +39,7 @@ class UserProfile(models.Model):#Model for storing a user's information.
         self.save()
 
 
-class Category(models.Model):#Model for storing categories of various posts.
+class Category(models.Model): # Model for storing categories of various posts.
     category = models.CharField(max_length=20)
     description = models.TextField()
 
@@ -47,17 +47,19 @@ class Category(models.Model):#Model for storing categories of various posts.
         return self.category
 
 
-class Post(models.Model):#Model for storing information about each post with category as its foreign key.
+class Post(models.Model):
     title = CharField(max_length=60)
     body = models.TextField()
     post_date = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(UserProfile)
-    #category = models.ForeignKey('Category')
-    post_views = models.IntegerField(default=0)#Frequently visited posts
-    upvotes = models.IntegerField(default=0)
-    tags = TaggableManager()#for storing multiple tags for each question
-    post_status = models.IntegerField(max_length=1,
-                                      default=0)#question will need admin's approval 0 being not approved, 1 being approved and can be displayed
+    category = models.ForeignKey(Category)
+    post_views = models.IntegerField(default=0)
+
+    userUpVotes = models.ManyToManyField(User, blank=True, related_name='postUpVotes')
+    userDownVotes = models.ManyToManyField(User, blank=True, related_name='postDownVotes')
+
+    tags = TaggableManager()
+    post_status = models.IntegerField(max_length=1, default=0)
 
     class Meta:
         ordering = ["post_date"]
