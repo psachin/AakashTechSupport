@@ -84,9 +84,20 @@ def ask_question(request):
         # Adding tags to the object created.
         post.tags.add(request.POST['post_tags'])
 
+        thisuserupvote = post.userUpVotes.filter(id=request.user.id).count()
+        thisuserdownvote = post.userDownVotes.filter(id=request.user.id).count()
+
+        print "User Upvote and Downvote: "
+        print thisuserupvote
+
+        print thisuserdownvote
+        net_count = post.userUpVotes.count() - post.userDownVotes.count()
         que_dict = {
             'posts': post,
             'user': request.user,
+            'thisUserUpvote': thisuserupvote,
+            'thisUserDownvote': thisuserdownvote,
+            'net_count': net_count
         }
         return render_to_response('questions/question_page.html', que_dict, context)
 
@@ -125,10 +136,17 @@ def submit_reply(request, qid):
         reply = Reply.objects.create(title=current_post, body=reply_body, upvotes=upvotes, user=some_user)
         print reply.reply_date
 
+        thisuserupvote = current_post.userUpVotes.filter(id=request.user.id).count()
+        thisuserdownvote = current_post.userDownVotes.filter(id=request.user.id).count()
+        net_count = current_post.userUpVotes.count() - current_post.userDownVotes.count()
+
         context_dict = {
             'user': request.user,
             'posts': current_post,
             'post_reply': reply,
+            'thisUserUpvote': thisuserupvote,
+            'thisUserDownvote': thisuserdownvote,
+            'net_count': net_count
         }
 
     else:
@@ -147,6 +165,10 @@ def vote_post(request):
     thisuserupvote = cur_post.userUpVotes.filter(id=request.user.id).count()
     thisuserdownvote = cur_post.userDownVotes.filter(id=request.user.id).count()
 
+    initial_votes = cur_post.userUpVotes.count() - cur_post.userDownVotes.count()
+
+    print "User Initial Upvote and Downvote: %d %d %s " % (thisuserupvote, thisuserdownvote, vote_action)
+
     #This loop is for voting
     if vote_action == 'vote':
         if (thisuserupvote == 0) and (thisuserdownvote == 0):
@@ -157,7 +179,7 @@ def vote_post(request):
             else:
                 return HttpResponse("Error: Unknown vote-type passed.")
         else:
-            return HttpResponse("Error: User has already voted this post :P")
+            return HttpResponse(initial_votes)
     #This loop is for canceling vote
     elif vote_action == 'recall-vote':
         if (vote_type == 'up') and (thisuserupvote == 1):
@@ -165,28 +187,35 @@ def vote_post(request):
         elif (vote_type == 'down') and (thisuserdownvote == 1):
             cur_post.userDownVotes.remove(request.user)
         else:
-            return HttpResponse("Error - Unknown vote type or no vote to recall")
-
+            # "Error - Unknown vote type or no vote to recall"
+            return HttpResponse(initial_votes)
     else:
         return HttpResponse("Error: Bad Action.")
 
     num_votes = cur_post.userUpVotes.count() - cur_post.userDownVotes.count()
 
+    print "Num Votes: %s" % num_votes
+
     return HttpResponse(num_votes)
-
-
 
 
 def link_question(request, qid):
     context = RequestContext(request)
-    question = Post.objects.get(pk=qid)
     posts = Post.objects.get(pk=qid)
     replies = Reply.objects.filter(title=posts)
+
+    thisuserupvote = posts.userUpVotes.filter(id=request.user.id).count()
+    thisuserdownvote = posts.userDownVotes.filter(id=request.user.id).count()
+
+    net_count = posts.userUpVotes.count() - posts.userDownVotes.count()
 
     context_dict = {
         'user': request.user,
         'posts': posts,
         'replies': replies,
+        'thisUserUpvote': thisuserupvote,
+        'thisUserDownvote': thisuserdownvote,
+        'net_count': net_count
     }
 
     return render_to_response('questions/question_page.html', context_dict, context)
@@ -234,7 +263,6 @@ def linktag(request, qid):
     posts_date = Post.objects.filter(tags=new_tag).order_by('-post_date')
     posts_views = Post.objects.filter(tags=new_tag).order_by('-post_views')
     #post = Post.objects.get(tags=new_tag)
-
 
     context_dict = {
         'mytag': new_tag,
