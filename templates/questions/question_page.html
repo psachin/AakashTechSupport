@@ -68,7 +68,7 @@
                             </div>
                             <div class="post-taglist" style="padding-top: 0.5cm;">
                                 <a class="post-tag" rel="tag" title="" href="/questions/tags/">
-                                    python
+                                    {{ posts.category|lower|capfirst }}
                                 </a>
                             </div>
                         </div>
@@ -77,6 +77,15 @@
             </tbody>
         </table>
         <hr>
+
+        <ul class="nav nav-tabs">
+        <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
+            {{ posts.num_votes }}
+            {{ Answers }}
+        </h4>
+
+        </ul>
+
 
         <!-- SUBMIT REPLY FORM -->
 

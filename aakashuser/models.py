@@ -59,6 +59,7 @@ class Post(models.Model):
     userDownVotes = models.ManyToManyField(User, blank=True, related_name='postDownVotes')
 
     num_votes = models.IntegerField(default=0)
+    #reply_count = models.IntegerField(default=0)
 
     tags = TaggableManager()
     post_status = models.IntegerField(max_length=1, default=0)
@@ -85,7 +86,7 @@ class Reply(models.Model):
     reply_date = models.DateTimeField(auto_now_add=True)
     file_upload = models.FileField(upload_to='forum/file', blank=True)
     upvotes = models.IntegerField(default=0)
-    reply_status = models.BooleanField(default=False)
+    reply_status = models.BooleanField(default=False, blank=True)
 
     class Meta:
         ordering = ["reply_date"]
