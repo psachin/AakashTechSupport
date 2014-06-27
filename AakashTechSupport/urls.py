@@ -20,7 +20,7 @@ urlpatterns = patterns('',
 
     url(r'^aakashuser/', include('aakashuser.urls')),
     url(r'^questions/', include('questions.urls')),
-    url(r'^ac/', include('ac.urls')),
+    url(r'^ticketing/', include('ticketing.urls')),
 
 
     url(r'^$', 'aakashuser.views.index', name='indexpage'),

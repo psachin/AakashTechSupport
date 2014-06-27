@@ -56,10 +56,11 @@ def all_questions_view(request, url):
         context_dict = {
             'posts': posts,
         }
-        c_dict = {
-            'url': url
-        }
-        context_dict.update(c_dict)
+
+    c_dict = {
+        'url': url
+    }
+    context_dict.update(c_dict)
 
     return render_to_response('questions/all_questions.html', context_dict, context)
 
@@ -71,14 +72,13 @@ def ask_question(request):
         body = request.POST['post_text']
         category_selected = request.POST['category']
         post_date = datetime.datetime.now()
-        upvotes = 0
         u = User.objects.get(username=request.user.username)
         some_user = UserProfile.objects.get(user=u)
 
         category_selected = category_selected.upper()
         category = Category.objects.get(category=category_selected)
 
-        post = Post.objects.create(title=title, body=body, post_date=post_date, upvotes=upvotes, creator=some_user,
+        post = Post.objects.create(title=title, body=body, post_date=post_date, creator=some_user,
                                    category=category)
         post.tags.all()
         # Adding tags to the object created.
@@ -167,7 +167,7 @@ def vote_post(request):
 
     initial_votes = cur_post.userUpVotes.count() - cur_post.userDownVotes.count()
 
-    print "User Initial Upvote and Downvote: %d %d %s " % (thisuserupvote, thisuserdownvote, vote_action)
+    # print "User Initial Upvote and Downvote: %d %d %s " % (thisuserupvote, thisuserdownvote, vote_action)
 
     #This loop is for voting
     if vote_action == 'vote':
@@ -193,6 +193,8 @@ def vote_post(request):
         return HttpResponse("Error: Bad Action.")
 
     num_votes = cur_post.userUpVotes.count() - cur_post.userDownVotes.count()
+    cur_post.num_votes = num_votes
+    cur_post.save()
 
     print "Num Votes: %s" % num_votes
 
@@ -259,13 +261,13 @@ def search_tags(request):
 def linktag(request, qid):
     context = RequestContext(request)
 
-    new_tag = Tag.objects.get(pk=qid)
-    posts_date = Post.objects.filter(tags=new_tag).order_by('-post_date')
-    posts_views = Post.objects.filter(tags=new_tag).order_by('-post_views')
+    cat = Category.objects.get(pk=qid)
+    posts_date = Post.objects.filter(category=cat).order_by('-post_date')
+    posts_views = Post.objects.filter(category=cat).order_by('-post_views')
     #post = Post.objects.get(tags=new_tag)
 
     context_dict = {
-        'mytag': new_tag,
+        'mytag': cat,
         'posts_views': posts_views,
         'posts_date': posts_date,
         #'post': post,

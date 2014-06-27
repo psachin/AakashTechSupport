@@ -17,6 +17,10 @@ urlpatterns = patterns( '',
      url(r'^view_tickets/', 'ac.views.view_tickets', name='view tickets'),
      url(r'^login/$', include('aakashuser.urls')),
      url(r'^close_ticket/(\d+)/$', "ac.views.close_ticket"),
-     url(r'^ticket_csv/$', "ac.views.make_csv"),		
+     url(r'^ticket_csv/$', "ac.views.make_csv"),	
+     url(r'^unapproved/$','ac.views.view_unapproved_ques',name='view_unapproved_ques'),
+     url(r'^approve_post/(?P<id>\d+)/$','ac.views.approve_post',name='approve_post'),
+     url(r'^unapproved_ans/$','ac.views.view_unapproved_ans',name='view_unapproved_ans'),
+     url(r'^approve_reply/(?P<id>\d+)/$','ac.views.approve_reply',name='approve_reply'),	
 		
 )

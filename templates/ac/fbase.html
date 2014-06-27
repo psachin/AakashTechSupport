@@ -47,7 +47,7 @@
             {% block nav-global %}
 
                 <!-- MENU -->
-                <h3><a href="{% url ac.views.main %}">ForumApp</a></h3>
+                <h3><a href="{% url ticketing.views.main %}">ForumApp</a></h3>
 
                 {% if user.is_staff %} <a href="{% url admin:index %}">Admin</a> {% endif %}
                 {% if user.is_authenticated %}
