@@ -7,8 +7,11 @@ __author__ = 'ushubham27'
 from django import forms
 from django.contrib.auth.models import User
 from tinymce.widgets import TinyMCE
-from aakashuser.models import Post, Category
-
+from aakashuser.models import Post, Category, UserProfile
+from django.template.defaultfilters import filesizeformat
+from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+from django.core.exceptions import *
 
 class UserForm(forms.ModelForm):
     username = forms.CharField(
@@ -131,3 +134,36 @@ class PostForm(forms.ModelForm):
         return datetime.datetime.now()
 
 """
+
+class UserProfileForm(forms.ModelForm):
+    location = forms.CharField(
+			    max_length=30,
+			    error_messages={
+			    'required': 'location is required.'
+			    },
+			    #help_text="Enter your location:",
+			    label="Location",
+			    required=True,
+			    widget=forms.TextInput(
+				    attrs={'class': 'form-control', 'placeholder': 'Location'}),
+			    )
+    skills = forms.CharField(
+			    max_length=100,
+			    required=True,
+			    error_messages={
+			    'required': 'skills is required.'
+			    },
+			    #help_text="Enter your skills:",
+			    widget=forms.TextInput(
+				    attrs={'class': 'form-control', 'placeholder': 'Skills'}),
+			    )
+    avatar = forms.ImageField(
+			    label='Profile picture',
+			    help_text='jpg/jpeg/png file of size less than 1MB required.',
+			    required=False,
+			     widget=forms.FileInput(attrs={
+			     'placeholder': 'Profile picture.'}),
+			      )
+    class Meta:
+        model = UserProfile
+        fields = ('location', 'skills','avatar')

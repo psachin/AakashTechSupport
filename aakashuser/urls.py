@@ -8,5 +8,7 @@ urlpatterns = patterns('',
     #url(r'^questions/$', 'aakashuser.views.display_questions', name='index'),
     #url(r'^tags/$', 'aakashuser.views.view_tags', name='tags'),
     #url(r'^search/$', 'aakashuser.views.search_tags', name='search_tags'),
+    url(r'^profile/$', 'aakashuser.views.profile', name='profile'),	
+    url(r'^view_profile/$', 'aakashuser.views.view_profile', name='view profile'),
 
 )
