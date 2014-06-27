@@ -26,6 +26,8 @@ DATABASES = {
     }
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -82,8 +84,8 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-	os.path.join(BASE_DIR, "static"),
-	'/home/shubham/virtualenvs/interns2014/InternFinal/AakashTechSupport/static',
+    os.path.join(BASE_DIR, "static"),
+    '/home/shubham/virtualenvs/interns2014/InternFinal/AakashTechSupport/static',
     
 )
 
@@ -143,15 +145,20 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'aakashuser',
+    'ac',
+    'south',
     'taggit',
     'django_wysiwyg',
     'tinymce',
-    'ac',	
 
     # Uncomment the next line to enable the admin:
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+SOUTH_MIGRATION_MODULES = {
+    'taggit': 'taggit.south_migrations',
+}
 
 DJANGO_WYSIWYG_FLAVOR = "tinymce"
 

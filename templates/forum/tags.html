@@ -45,19 +45,20 @@
             {% for tag in tags %}
 
                 <td class="tag-cell">
-                    <a class="post-tag" rel="tag" title="" href="/questions/tags/{{ tag.pk }}/">
-                       {{ tag }}
+                    <a class="post-tag" rel="tag" title="" href="/questions/tagged_questions/{{ tag.pk }}/">
+                       {{ tag.category|lower|capfirst }}
                     </a>
                     <span class="item-multiplier">
                         <span class="item-multiplier-x">
                             x
                         </span>
                         <span class="item-multiplier-count">
-                           {{ tag.count }}
+                           {{ tag.count|default:"0" }}
                         </span>
                     </span>
                     <div class="excerpt">
                         Java (not to be confused with JavaScript) is a cla…
+                        {{ tag.description }}
                     </div>
                 </td>
                 {% if forloop.counter|divisibleby:"4" %}
@@ -71,5 +72,8 @@
     </table>
 
     </div>
+
+    <div style="padding-top: 20cm;">
+    <div>
 
 {% endblock %}

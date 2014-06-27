@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-
 {% extends "index.html" %}
 
+{% load staticfiles %}
 {% block body_block %}
 
     <!-- MODAL FOR ANSWERING QUESTION -->
 
     <!-- Modal -->
-    <div class="modal fade" id="addAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         xmlns="http://www.w3.org/1999/html">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -24,26 +25,264 @@
       </div>
     </div>
 
-
     <div class="container-fluid"  style="padding-top: 0.5cm; padding-bottom: 0.7cm;">
 	<div class="  col-md-8 col-md-offset-2" role="navigation">
 
         <ul class="nav nav-tabs">
         <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
-            {{ question.title }}
+            {{ posts.title }}
         </h4>
 
         </ul>
-        <div style="padding-top: 0.5cm;">
 
-        </div>
-        <div class="well">
-            {{ question.body }}
+        <table>
+            <tbody>
+                <tr>
+                    <!-- VOTE CELL -->
+                    <td class="votecell" style="padding-top: 0.0cm;">
+
+                        <div class="vote">
+                            {% ifequal thisUserUpvote 0 %}
+                                <img src="{% static 'images/up1-off.png' %}" class="vote-up" title="This question shows research effort; it is useful and clear"/>
+                            {% else %}
+                                <img src="{% static 'images/up1-on.png' %}" class="vote-up selected" title="This question shows research effort; it is useful and clear"/>
+                            {% endifequal %}
+
+                            <span class="vote-count-post" id="show_vote_count">
+                                {{ net_count }}
+                            </span>
+
+                            {% ifequal thisUserDownvote 0 %}
+                                <img src="{% static 'images/down1-off.png' %}" class="vote-down" title="This question does not show any research effort; it is not useful and unclear"/>
+                            {% else %}
+                                <img src="{% static 'images/down1-on.png' %}" class="vote-down selected" title="This question does not show any research effort; it is not useful and unclear"/>
+                            {% endifequal %}
+                        </div>
+                    </td>
+
+                    <!-- POST CELL -->
+                    <td class="postcell" style="padding-top: 1cm; padding-left: 0.5cm;">
+                        <div>
+                            <div class="well post-text" itemprop="description">
+                                {{ posts.body }}
+                            </div>
+                            <div class="post-taglist" style="padding-top: 0.5cm;">
+                                <a class="post-tag" rel="tag" title="" href="/questions/tags/">
+                                    python
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+
+        <!-- SUBMIT REPLY FORM -->
+
+        <form id="post_answer_form" method="POST" action="/questions/submit_reply/{{ posts.pk }}/">
+            {% csrf_token %}
+            <h3 id="ans_header" style="display: none;">
+                Your Answer
+            </h3>
+
+            <div style="padding-bottom: 0.3cm;">
+            </div>
+
+        </form>
+
+        <!-- MODAL ALERT -->
+
+        <!-- SMALL MODAL -->
+        <div class="modal fade" id="alertBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-body">
+                <CENTER>
+                  <h4>Login to post an answer.</h4>
+                </CENTER>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+              </div>
+
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div id="ans_buttons" style="vertical-align: top; float: left;">
+            {% if user.is_authenticated %}
+            <button id="add_answer" title="Add Answer" class="btn btn btn-primary" type="button">Add your answer</button>
+            {% else %}
+            <button id="fake_add_answer" data-toggle="modal" data-target="#alertBox" class="btn btn btn-primary" type="button">Add your answer</button>
+            {% endif %}
+            <button id="submit_reply" class="btn btn btn-primary" type="submit" form="post_answer_form" style="display: none;">Post your answer</button>
+
+
+            <button id="submit_reply" class="btn btn-primary" type="submit" form="post_answer_form" style="display: none;">
+                Post your answer
+            </button>
+
+            <!-- HTML5 form attribute used here for submit-buttons outside a form :P -->
+
+            <a id="cancel_submit" type="reset" style="display: none; padding-top: 5px;">or Cancel?</a>
         </div>
 
-        <button class="btn btn btn-primary" type="submit" data-toggle="modal" data-target="#addAnswer">Add your answer</button>
+
+        <!-- SUBMIT REPLY FORM ENDS HERE -->
+
     </div>
     </div>
+
+
+    <script>
+
+    var ansbtn = document.getElementById('add_answer')
+    var ansform = document.getElementById('post_answer_form');
+    var post_btn = document.getElementById('add_answer')
+    var btn_click = 0;
+
+    var cancelbtn = document.getElementById('cancel_submit')
+    /*
+    var fakebtn = document.getElementById('fake_add_answer')
+
+
+    fakebtn.addEventListener('click', function(event){
+        popAlert();
+    });
+
+    function popAlert() {
+        alert('You must login to post an answer.');
+    }
+
+    */
+
+    ansbtn.addEventListener('click', function(event){
+        if (btn_click == 0)
+        {
+            btn_click=1;
+            addField();
+            doChange();
+        }
+    });
+
+    cancelbtn.addEventListener('click', function(event){
+        revertChange();
+    });
+
+
+    function addField() {
+
+        var text_area = document.createElement('textarea');
+        text_area.setAttribute('id', 'text_area_{{ user.id }}')
+        text_area.setAttribute('class', 'form-control')
+        text_area.setAttribute('name', 'post_answer')
+        text_area.setAttribute('rows', '5')
+        text_area.setAttribute('cols', '92')
+        text_area.setAttribute('width', '610px')
+        text_area.setAttribute('placeholder', 'Enter your answer here.')
+
+        ansform.appendChild(text_area);
+
+    }
+
+    function doChange() {
+        document.getElementById('ans_header').style.display = "block";
+        document.getElementById('add_answer').style.display = "none";
+        document.getElementById('submit_reply').style.display = "block";
+        document.getElementById('cancel_submit').style.display = "block";
+        document.getElementById('ans_buttons').style.paddingTop = "0.5cm";
+    }
+
+    function revertChange() {
+        document.getElementById('ans_header').style.display = "none";
+        document.getElementById('add_answer').style.display = "block";
+        document.getElementById('submit_reply').style.display = "none";
+        document.getElementById('cancel_submit').style.display = "none";
+        document.getElementById('ans_buttons').style.paddingTop = "0.0cm";
+
+        var txt = document.getElementById('text_area_{{ user.id }}')
+        txt.remove();
+        btn_click = 0;
+    }
+    </script>
+
+    <!-- AJAX SCRIPT -->
+
+    <script>
+
+        $(document).ready(function() {
+
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+
+        $('div.vote img.vote-up').click(function() {
+
+            var id = {{ posts.pk }};
+            var vote_type = 'up';
+
+            /* USER HAS ALREADY VOTED */
+
+            if ($(this).hasClass('selected')) {
+                var vote_action = 'recall-vote'
+
+                $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
+
+                    $('img.vote-up').removeAttr('src')
+                        .attr('src', '{% static 'images/up1-off.png' %}')
+                        .removeClass('selected');
+                    $('div.vote span.vote-count-post').html(response);
+                });
+            }
+            /* USER WISHES TO VOTE */
+            else {
+                var vote_action = 'vote'
+                $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
+
+                    $('img.vote-up').removeAttr('src')
+                        .attr('src', '{% static 'images/up1-on.png' %}')
+                        .addClass('selected');
+                    $('div.vote span.vote-count-post').html(response);
+                });
+            }
+        });
+
+        /* DOWNVOTE */
+
+        $('div.vote img.vote-down').click(function() {
+
+            var id = {{ posts.pk }};
+            var vote_type = 'down';
+
+            /* USER HAS ALREADY DOWN-VOTED */
+
+            if ($(this).hasClass('selected')) {
+                var vote_action = 'recall-vote'
+
+                $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
+
+                    $('img.vote-down').removeAttr('src')
+                        .attr('src', '{% static 'images/down1-off.png' %}')
+                        .removeClass('selected');
+                    $('div.vote span.vote-count-post').html(response);
+                });
+            }
+            /* USER WISHES TO VOTE */
+            else {
+                var vote_action = 'vote'
+                $.post('/questions/vote/', {id:id, type:vote_type, action:vote_action}, function(response) {
+
+                    $('img.vote-down').removeAttr('src')
+                        .attr('src', '{% static 'images/down1-on.png' %}')
+                        .addClass('selected');
+                    $('div.vote span.vote-count-post').html(response);
+                });
+            }
+        });
+    });
+
+    </script>
 
 
 {% endblock %}

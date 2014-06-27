@@ -1,6 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+{% load staticfiles %}
 <html>
 <head>
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard.css" rel="stylesheet">	
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta http-equiv="cache-control" content="no-cache" />
     <meta http-equiv="pragma" content="no-cache" />
@@ -22,64 +28,82 @@
     <link type="text/css" href="static/css/custom.css" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" href="/static/css/min.css">
     <link type="text/css" rel="stylesheet" href="static/css/dropdown.css">
-<script type="text/javascript">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
-function addTxtBx(){
-var txtBxHolder = document.getElementById('txtBoxHolder');
-var newTxtBx = document.createElement('input');
-newTxtBx.type = 'text';
-txtBxHolder.appendChild(newTxtBx);
-}
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard.css" rel="stylesheet">
 
-function removeTxtBx(){
-var allTxtBxs = document.getElementById('txtBoxHolder').getElementsByTagName('input');
-if(allTxtBxs.length == 0){
-alert('there are no text boxes to remove');
-}
-else{
-document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1]);
-}
 
-}
-
-</script>
-
-	
-    
-	<meta name="csrf_token" content="ODUxZDI2Y2ZjMDY0NTM3ZWI2ZTA5OWFiZjgyOWY5ZmJjYzNmNjM4Mw==" />
+   
+   
+    <meta name="csrf_token" content="ODUxZDI2Y2ZjMDY0NTM3ZWI2ZTA5OWFiZjgyOWY5ZmJjYzNmNjM4Mw==" />
 </head>
 <body>
+     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        <img src = "{% static 'images/aakash.png' %}" alt="Aakash Logo" width="100px" height="50px"/>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/ac">Dashboard</a></li>
+            <li><a href="/ac/open">Open ({{count_open}})</a></li>
+            <li><a href="/ac/close">Closed Tickets ({{count_close}})</a></li>
+            <li><a href="/logout">LOGOUT</a></li>
+          </ul>
+          
+          <form class="navbar-form navbar-right"   action= "/ac/search/" method="post">{% csrf_token %}
+            <input type="text" name="search" class="form-control" placeholder="Search id or subject">
+            </form>
+        </div>
+      </div>
+    </div>
 <div id="container">
-        
-    <ul id="nav">
-        <li class="inactive"><a href="/ac/">Dashboard</a><ul>
-
-</ul>
-
+       
+  
 
 
 
 
 </li>
-    </ul>
-    <ul id="sub_nav">
-        <li><a class="Ticket" href="/ac/open" title="Open Tickets" >Open ({{count_open}})</a></li><li><a class="closedTickets" href="/ac/close" title="Closed Tickets" >Closed Tickets ({{count_close}})</a></li><li><a class="newTicket" href="tickets.php?a=open" title="" >New Ticket</a></li>    </ul>
+  
+    
     <div id="content">
-     <h1> Ticket {{threads.ticket_id}}</a></h2>    
+     <h1> Ticket {{threads.ticket_id}}</a></h2>   
 
 <table class="ticket_info" cellspacing="0" cellpadding="0" width="940" border="0">
     <tr>
         <td width="50">
             <table border="0" cellspacing="" cellpadding="4" width="100%">
-                  
-                    
+                 
+                   
                 <tr>
                     <th width="100">Status:</th>
-                    <td {% if forloop.last %}class="last"{% endif %}>{{ threads.status}}</td>
+                    <td {% if forloop.last %}class="last"{% endif %}>
+            {% if threads.status == 0 %}
+            Open
+            {% else %}
+            Close
+            {% endif %}
+            </td>
                 </tr>
                 <tr>
                     <th>Priority:</th>
-                    <td {% if forloop.last %}class="last"{% endif %}>{{ threads.topic_priority}}</td>
+                    <td {% if forloop.last %}class="last"{% endif %}>
+              {% if threads.topic_priority == 0 %}
+                       LOW
+            {% elif threads.topic_priority == 1 %}
+                Normal
+            {% elif threads.topic_priority == 2 %}
+         HIGH
+         {% endif %}
+        </td>
                 </tr>
                 <tr>
                     <th>Department:</th>
@@ -93,12 +117,12 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
         </td>
         <td width="50%">
             <table border="0" cellspacing="" cellpadding="4" width="100%">
-               
+              
                 <tr>
                     <th>Email:</th>
                      <td {% if forloop.last %}class="last"{% endif %}>{{ threads.user_id}}</td>
                 </tr>
-               
+              
             </table>
         </td>
     </tr>
@@ -113,10 +137,14 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
                     <td>
                         AakashTech Support                    </td>
                 </tr>
-                              
+                             
                                 <tr>
                     <th>Close Date:</th>
-                    <td>06/06/2014 1:01 pm</td>
+                    {% if threads.closed_date_time > threads.created_date_time %}
+                    <td>{{ threads.closed_date_time }}</td>
+                    {% else %}
+                    <td>Not closed yet.</td>
+                    {% endif %}
                 </tr>
                             </table>
         </td>
@@ -126,15 +154,7 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
                     <th width="100">Help Topic:</th>
                     <td {% if forloop.last %}class="last"{% endif %}>{{ threads.topic_id}}</td>
                 </tr>
-                <tr>
-                    <th nowrap>Last Message:</th>
-                <td {% if forloop.last %}class="last"{% endif %}>{{ threads.reopened_date}}</td>
-                </tr>
-                <tr>
-                    <th nowrap>Last Response:</th>
-                    <td>06/06/2014 1:01 pm</td>
-                </tr>
-                 
+
             </table>
         </td>
     </tr>
@@ -147,7 +167,11 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
 <div id="ticket_thread">
             <table class="message" cellspacing="0" cellpadding="1" width="940" border="0">
             <tr>
-                <th width="200">06/06/2014 12:54 pm</th>
+                {% if threads.closed_date_time > threads.created_date_time %}
+                <th width="200">{{ threads.closed_date_time }}</th>
+                {% else %}
+                <th width="200">Not yet closed.</th>
+                {% endif %}
                 <th width="440"><span></span></th>
                 <th width="300" class="tmeta"></th>
             </tr>
@@ -155,16 +179,16 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
                     </table>
                 <table class="response" cellspacing="0" cellpadding="1" width="940" border="0">
             <tr>
-               
+              
                 <th width="440"><span></span></th>
                 <th width="300" class="tmeta">AakashTech Support</th>
             </tr
-	    {% for responses in response %}
-	    <tr>
-		 <th width="200">{{responses.created}}</th>
-	    </tr>
-            <tr><td colspan=3>{{responses.reply}}</tr>
-	    {%  endfor %}
+        {% for responses in response %}
+        <tr>
+         <th width="200">{{ responses.created }}</th>
+        </tr>
+            <tr><td colspan=3>{{ responses.reply }}</tr>
+        {%  endfor %}
                     </table>
         </div>
 <div class="clear" style="padding-bottom:10px;"></div>
@@ -172,9 +196,9 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
 <div id="response_options">
     <ul>
                 <li><a id="reply_tab" href="#reply">Post Reply</a></li>
-                
+               
             </ul>
-    
+   
         <form id="reply" action="/ac/reply/{{threads.pk}}/" name="reply" method="POST">{% csrf_token %}
         <input type="hidden" name="id" value="{{threads.ticket_id}}">
         <input type="hidden" name="a" value="reply">
@@ -186,20 +210,18 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
                 </td>
                 <td width="765">
                 <label id="uder email">{{threads.user_id}}</label>
-		
+       
                 </td>
-		<
+
             </tr>
-                        <tr>
+
+            <tr>
                 <td width="160">
                     <label><strong>Response:</strong></label>
                 </td>
                 <td width="765">
-                                    
-                    
-                        
-                        <br>
-                                        <textarea name="response" id="response" cols="50" rows="9" wrap="soft"></textarea>
+                    <br>
+                <textarea name="response" id="response" cols="50" rows="9" wrap="soft"></textarea>
                 </td>
             </tr>
                         <tr>
@@ -216,39 +238,40 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
                     </div>
                 </td>
             </tr>
-                 
-               
-            
-                        <tr>
+                
+              
+           
+            <tr>
                 <td width="160">
                     <label><strong>Ticket Status:</strong></label>
                 </td>
                 <td width="765">
-                                            <label><input type="checkbox" name="reply_ticket_status" id="reply_ticket_status" value="Open"
-                            > Reopen on Reply</label>
-                                   </td>
+                    <label><input type="checkbox" name="reply_ticket_status" id="reply_ticket_status" value="Open">
+                        Reopen on Reply
+                    </label>
+               </td>
             </tr>
-                        </div>
+        </div>
         </table>
-        <p  style="padding-left:165px;">
+        <p style="padding-left:165px;">
             <input class="btn_sm" type="submit" value="Post Reply">
             <input class="btn_sm" type="reset" value="Reset">
         </p>
     </form>
-      
+     
     </div>
 <div style="display:none;" class="dialog" id="print-options">
     <h3>Ticket Print Options</h3>
     <a class="close" href="">&times;</a>
     <hr/>
-   
+  
     <div class="clear"></div>
 </div>
 <div style="display:none;" class="dialog" id="ticket-status">
     <h3>Reopen Ticket #274</h3>
     <a class="close" href="">&times;</a>
     <hr/>
-    Are you sure you want to <b>REOPEN</b> this ticket?   
+    Are you sure you want to <b>REOPEN</b> this ticket?  
     <div class="clear"></div>
 </div>
 <div style="display:none;" class="dialog" id="confirm-action">
@@ -260,7 +283,7 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
     </p>
     <p class="confirm-action" style="display:none;" id="answered-confirm">
         Are you sure want to flag the ticket as <b>answered</b>?
-    </p>    
+    </p>   
     <p class="confirm-action" style="display:none;" id="unanswered-confirm">
         Are you sure want to flag the ticket as <b>unanswered</b>?
     </p>
@@ -282,12 +305,12 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
         <br><br>Deleted tickets CANNOT be recovered, including any associated attachments.
     </p>
     <div>Please confirm to continue.</div>
-  
+ 
     <div class="clear"></div>
 </div>
 <script type="text/javascript" src="js/ticket.js"></script>
     </div>
-   
+  
     <div>
         <!-- Do not remove <img src="autocron.php" alt="" width="1" height="1" border="0" /> or your auto cron will cease to function -->
         <img src="autocron.php" alt="" width="1" height="1" border="0" />
@@ -301,3 +324,4 @@ document.getElementById('txtBoxHolder').removeChild(allTxtBxs[allTxtBxs.length-1
 </div>
 </body>
 </html>
+

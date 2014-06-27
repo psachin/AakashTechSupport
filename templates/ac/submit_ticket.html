@@ -1,31 +1,70 @@
 {% extends 'index.html' %}
+{% block head_block %}
+
+<script type="text/javascript">
+function validate()
+{
+var x=document.forms["submit_ticket_form"]["message"].value;
+var y=document.forms["submit_ticket_form"]["tab_id"].value;
+var z = /^\d+$/.test(y);
+if(z==false || (x==null||x=="")&&(y==null||y==""))
+{
+alert("Tablet id and Message field cannot be empty or contain invalid values");
+return false;
+}
+if(x==null||x=="")
+{
+alert("Message field cannot be empty");
+return false;
+}
+if(z==false ||(y==null||y==""))
+{
+alert("Tablet id field cannot be empty or has invalid value");
+return false;
+}
+if(y==null||y=="")
+{
+alert("Tablet field cannot be empty");
+return false;
+}
+}
+</script>
+{% endblock %}
 {% block body_block %}
 <div class="container-fluid">
 <div class="col-md-4 col-md-offset-4 well">
-<form class="navbar-form navbar-left" role="search" id="user_form" method="post" action="/ac/submit_ticket/">
-{% csrf_token %}
+
 <div align="center">
-<h2 class="form-signin-heading" > Submit your issue here</h2>
-{%for hidden in user_form.hidden_fields%}
-{{hidden}}
-{%endfor%}
-{% for field in submit_ticket_form.visible_fields %}
-{{ field.errors }}
-{{ field.help_text }}
-<div class="form-group">
-{{ field }}
+<h2>Submit your issue here</h2>
 </div>
-<br />
-{% endfor %}
-</div>
-<br />
-<!-- Provide a button to click to submit the form. -->
-<button class="btn btn-lg btn-primary btn-block" type="submit">
 
-Submit Ticket
-
-</button>
-
+<form class="form-horizontal" name="submit_ticket_form" method="post" onsubmit="return validate()">{% csrf_token %}
+    <fieldset>
+        {% for field in submit_ticket_form.visible_fields %}
+            {% if field.errors %}
+                <div class="control-group error">
+                    <label class="control-label">{{ field.label }}</label> 
+                    <div class="controls">{{ field }}
+                        <span class="help-inline">
+                            {% for error in  field.errors %}{{ error }}{% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                    <label class="control-label">{{ field.help_text }}</label> 
+                    <div class="controls">{{ field }}
+                        <!--
+                        {% if field.help_text %}
+                            <p class="help-inline"><small>{{ field.help_text }}</small></p>
+                        {% endif %}-->
+                    </div>
+            {% endif %}
+        {% endfor %}
+    </fieldset>
+    <br />
+    <div class="form-actions" align="center">
+        <button type="submit" class="btn btn-lg btn-primary btn-block" >Submit</button>
+    </div>
 </form>
 </div>
 </div>

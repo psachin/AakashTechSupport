@@ -3,6 +3,11 @@
 
 {% block body_block %}
 
+    <script type="text/javascript">
+
+    /* URL RESOLVER */
+
+    </script>
 
     <!-- ALL_QUESTIONS SUB_HEADER -->
 
@@ -13,8 +18,12 @@
           <li style="float: right;"><a href="/questions/unanswered/">Unanswered</a></li>
           <li style="float: right;"><a href="/questions/votes/">Votes</a></li>
           <li style="float: right;"><a href="/questions/frequent/">Frequent</a></li>
+<<<<<<< HEAD
           <li style="float: right;"><a href="/questions/latest/">Latest</a></li>
 	  <li style="float: right;" class="active"><a href="/questions/">All</a></li>
+=======
+          <li style="float: right;" class="active"><a href="/questions/latest/">Latest</a></li>
+>>>>>>> 7ca4f7ee3c20000da2e1dd1f1bb6bbd40960e2fc
 
         <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
             All Questions
@@ -59,7 +68,7 @@
                         <div class="vote">
                             <div class="votes">
                                <span class="vote-count-post">
-                                    0
+                                    {{ post.num_votes }}
                                </span>
                                <div class="viewcount">
                                    votes
@@ -86,13 +95,13 @@
                         {{ post.body }}
                     </div>
                     <div class="tags t-search">
-                        <a class="post-tag" rel="tag" title="" href="/questions/tags/{{ post.tag.pk }}">
-                            {{ post.tag }}
+                        <a class="post-tag" rel="tag" title="" href="/questions/tagged_questions/{{ post.category.pk }}">
+                            {{ post.category|lower|capfirst }}
                         </a>
                     </div>
                     <div class="started-fr">
                         <div class="user-info">
-                            <div class="user-action-time" style="float: right;">
+                            <div class="user-action-time" style="float: left; ">
                                 asked
                                 <span class="relativetime" title="2014-06-17 14:05:09Z">
                                     1 min ago

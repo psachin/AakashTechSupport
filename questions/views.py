@@ -1,9 +1,13 @@
 # Create your views here.
+import datetime
+from django.contrib.auth.models import User
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response, render, get_object_or_404
-from aakashuser.models import Post, Reply
+from aakashuser.models import Post, Reply, UserProfile, Category
 from taggit.models import Tag
+from django.core.context_processors import csrf
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
@@ -26,8 +30,13 @@ def all_questions_view(request, url):
         }
 
     elif url == 'votes':
+<<<<<<< HEAD
         posts=Post.objects.all().order_by("-upvotes")
     	context_dict = {
+=======
+        posts = Post.objects.all().order_by("-upvotes")
+        context_dict = {
+>>>>>>> 7ca4f7ee3c20000da2e1dd1f1bb6bbd40960e2fc
             'posts': posts,
         }
 
@@ -53,9 +62,15 @@ def all_questions_view(request, url):
             'posts': posts,
         }
 
+    c_dict = {
+        'url': url
+    }
+    context_dict.update(c_dict)
+
     return render_to_response('questions/all_questions.html', context_dict, context)
 
 
+<<<<<<< HEAD
 def view_tags(request): #This view has been defined for displaying all the tags and the number of posts related to each tag.
 	context=RequestContext(request)
 	tags=Tag.objects.all()#for fetching all the tags.
@@ -63,6 +78,178 @@ def view_tags(request): #This view has been defined for displaying all the tags 
 		tag.count=len(Post.objects.filter(tags=tag,post_status=1))
 	context_dict= {'tags': tags}
 	return render_to_response('forum/tags.html', context_dict, context)
+=======
+def ask_question(request):
+    context = RequestContext(request)
+    if request.POST:
+        title = request.POST['post_title']
+        body = request.POST['post_text']
+        category_selected = request.POST['category']
+        post_date = datetime.datetime.now()
+        u = User.objects.get(username=request.user.username)
+        some_user = UserProfile.objects.get(user=u)
+
+        category_selected = category_selected.upper()
+        category = Category.objects.get(category=category_selected)
+
+        post = Post.objects.create(title=title, body=body, post_date=post_date, creator=some_user,
+                                   category=category)
+        post.tags.all()
+        # Adding tags to the object created.
+        post.tags.add(request.POST['post_tags'])
+
+        thisuserupvote = post.userUpVotes.filter(id=request.user.id).count()
+        thisuserdownvote = post.userDownVotes.filter(id=request.user.id).count()
+
+        print "User Upvote and Downvote: "
+        print thisuserupvote
+
+        print thisuserdownvote
+        net_count = post.userUpVotes.count() - post.userDownVotes.count()
+        que_dict = {
+            'posts': post,
+            'user': request.user,
+            'thisUserUpvote': thisuserupvote,
+            'thisUserDownvote': thisuserdownvote,
+            'net_count': net_count
+        }
+        return render_to_response('questions/question_page.html', que_dict, context)
+
+    else:
+        if request.user.is_authenticated():
+            user = request.user
+            categories = Category.objects.all()
+            c = {
+                'user': user,
+                'catg': categories
+            }
+            print user.username
+        else:
+            err_msg = "You need to login to post a question."
+            c = {'err_msg': err_msg}
+
+        c.update(csrf(request))
+        return render_to_response('questions/ask_question.html', c)
+
+
+def submit_reply(request, qid):
+    context = RequestContext(request)
+    context_dict = {}
+
+    if request.POST:
+        current_post = Post.objects.get(pk=qid)
+        print current_post.creator
+        print current_post.title
+
+        reply_body = request.POST['post_answer']
+        upvotes = 0
+
+        u = User.objects.get(username=request.user.username)
+        some_user = UserProfile.objects.get(user=u)
+
+        reply = Reply.objects.create(title=current_post, body=reply_body, upvotes=upvotes, user=some_user)
+        print reply.reply_date
+
+        thisuserupvote = current_post.userUpVotes.filter(id=request.user.id).count()
+        thisuserdownvote = current_post.userDownVotes.filter(id=request.user.id).count()
+        net_count = current_post.userUpVotes.count() - current_post.userDownVotes.count()
+
+        context_dict = {
+            'user': request.user,
+            'posts': current_post,
+            'post_reply': reply,
+            'thisUserUpvote': thisuserupvote,
+            'thisUserDownvote': thisuserdownvote,
+            'net_count': net_count
+        }
+
+    else:
+        return HttpResponse("Reply failed to process..")
+
+    return render_to_response('questions/question_page.html', context_dict, context)
+
+
+def vote_post(request):
+    post_id = int(request.POST.get('id'))
+    vote_type = request.POST.get('type')
+    vote_action = request.POST.get('action')
+
+    cur_post = get_object_or_404(Post, pk=post_id)
+
+    thisuserupvote = cur_post.userUpVotes.filter(id=request.user.id).count()
+    thisuserdownvote = cur_post.userDownVotes.filter(id=request.user.id).count()
+
+    initial_votes = cur_post.userUpVotes.count() - cur_post.userDownVotes.count()
+
+    # print "User Initial Upvote and Downvote: %d %d %s " % (thisuserupvote, thisuserdownvote, vote_action)
+
+    #This loop is for voting
+    if vote_action == 'vote':
+        if (thisuserupvote == 0) and (thisuserdownvote == 0):
+            if vote_type == 'up':
+                cur_post.userUpVotes.add(request.user)
+            elif vote_type == 'down':
+                cur_post.userDownVotes.add(request.user)
+            else:
+                return HttpResponse("Error: Unknown vote-type passed.")
+        else:
+            return HttpResponse(initial_votes)
+    #This loop is for canceling vote
+    elif vote_action == 'recall-vote':
+        if (vote_type == 'up') and (thisuserupvote == 1):
+            cur_post.userUpVotes.remove(request.user)
+        elif (vote_type == 'down') and (thisuserdownvote == 1):
+            cur_post.userDownVotes.remove(request.user)
+        else:
+            # "Error - Unknown vote type or no vote to recall"
+            return HttpResponse(initial_votes)
+    else:
+        return HttpResponse("Error: Bad Action.")
+
+    num_votes = cur_post.userUpVotes.count() - cur_post.userDownVotes.count()
+    cur_post.num_votes = num_votes
+    cur_post.save()
+
+    print "Num Votes: %s" % num_votes
+
+    return HttpResponse(num_votes)
+
+
+def link_question(request, qid):
+    context = RequestContext(request)
+    posts = Post.objects.get(pk=qid)
+    replies = Reply.objects.filter(title=posts)
+
+    thisuserupvote = posts.userUpVotes.filter(id=request.user.id).count()
+    thisuserdownvote = posts.userDownVotes.filter(id=request.user.id).count()
+
+    net_count = posts.userUpVotes.count() - posts.userDownVotes.count()
+
+    context_dict = {
+        'user': request.user,
+        'posts': posts,
+        'replies': replies,
+        'thisUserUpvote': thisuserupvote,
+        'thisUserDownvote': thisuserdownvote,
+        'net_count': net_count
+    }
+
+    return render_to_response('questions/question_page.html', context_dict, context)
+
+
+def view_tags(request):
+    context = RequestContext(request)
+    tags = Category.objects.all()
+
+    for i in tags:
+        i.count = len(Post.objects.filter(category=i))
+
+    context_dict = {
+        'tags': tags
+    }
+
+    return render_to_response('forum/tags.html', context_dict, context)
+>>>>>>> 7ca4f7ee3c20000da2e1dd1f1bb6bbd40960e2fc
 
 
 def search_tags(request):
@@ -89,14 +276,19 @@ def search_tags(request):
 def linktag(request, qid):
     context = RequestContext(request)
 
+<<<<<<< HEAD
     new_tag = Tag.objects.get(pk=qid)
     posts_date = Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_date')#for fetching posts related to a particular tag.
     posts_views = Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_views')
+=======
+    cat = Category.objects.get(pk=qid)
+    posts_date = Post.objects.filter(category=cat).order_by('-post_date')
+    posts_views = Post.objects.filter(category=cat).order_by('-post_views')
+>>>>>>> 7ca4f7ee3c20000da2e1dd1f1bb6bbd40960e2fc
     #post = Post.objects.get(tags=new_tag)
 
-
     context_dict = {
-        'mytag': new_tag,
+        'mytag': cat,
         'posts_views': posts_views,
         'posts_date': posts_date,
         #'post': post,
@@ -156,6 +348,7 @@ def tag_search(request):
     return render_to_response('questions/all_questions.html', context_dict, context)
 
 
+<<<<<<< HEAD
 def link_question(request, qid):
     context = RequestContext(request)
     question = Post.objects.get(pk=qid)
@@ -169,3 +362,5 @@ def link_question(request, qid):
 
     return render_to_response('questions/allqueries_link.html', context_dict, context)
 >>>>>>> cca12ce2129ae83aa7aff971486fe70553529b92
+=======
+>>>>>>> 7ca4f7ee3c20000da2e1dd1f1bb6bbd40960e2fc
