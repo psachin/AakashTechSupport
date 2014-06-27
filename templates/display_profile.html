@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+{% block body_block %} 
+{% load static %}       
+        <div class="container-fluid">
+<div class="col-md-4 col-md-offset-4 well">
+        
+            <div align="center">
+	    <h2>Your profile</h2>
+	    </div>
+	    <b>Location :</b>
+	    {{location}}<br />
+	    <b>Skills :</b>
+	    {{user_skills}}<br />
+	    <b>Profile Picture :</b>
+	    <a href="#" class="thumbnail">
+	    <img src="{{MEDIA_URL}}{{avatar}}"></img>
+	    </a>
+	    <form action="/aakashuser/profile">
+	    
+	   <center><input type="submit" name="submit" class="btn btn-lg btn-primary btn-block" value="Update profile" /></center>
+	    </form>
+         </div>
+         </div>
+{% endblock %}
+

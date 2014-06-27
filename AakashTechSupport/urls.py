@@ -2,7 +2,7 @@ __author__ = 'ushubham27'
 
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-
+from django.conf import settings
 
 admin.autodiscover()
 
@@ -29,8 +29,6 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'aakashuser.views.logout_new', name='logout_new'),
     url(r'^index/$', 'aakashuser.views.index', name='index'),
     url(r'^search/$', 'aakashuser.views.search', name='index'),
-	
-
-
-
+               (r'^media/(?P<path>.*)$', 'django.views.static.serve',
+                 {'document_root': settings.MEDIA_ROOT}),
 )
