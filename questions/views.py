@@ -136,6 +136,8 @@ def submit_reply(request, qid):
         reply = Reply.objects.create(title=current_post, body=reply_body, upvotes=upvotes, user=some_user)
         print reply.reply_date
 
+        replies = Reply.objects.filter(title=current_post)
+
         thisuserupvote = current_post.userUpVotes.filter(id=request.user.id).count()
         thisuserdownvote = current_post.userDownVotes.filter(id=request.user.id).count()
         net_count = current_post.userUpVotes.count() - current_post.userDownVotes.count()
@@ -143,7 +145,7 @@ def submit_reply(request, qid):
         context_dict = {
             'user': request.user,
             'posts': current_post,
-            'post_reply': reply,
+            'post_replies': replies,
             'thisUserUpvote': thisuserupvote,
             'thisUserDownvote': thisuserdownvote,
             'net_count': net_count
@@ -214,7 +216,7 @@ def link_question(request, qid):
     context_dict = {
         'user': request.user,
         'posts': posts,
-        'replies': replies,
+        'post_replies': replies,
         'thisUserUpvote': thisuserupvote,
         'thisUserDownvote': thisuserdownvote,
         'net_count': net_count
