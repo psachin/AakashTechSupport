@@ -235,7 +235,14 @@ def profile(request):
 		  up.user_skills=request.POST['skills']
 		  up.save()
 		  image=request.FILES['avatar']
-		  up.avatar.save(image.name,image)		 
+		  print image.content_type
+		  print image.size
+		  if image.content_type in ["image/jpeg","image/png","image/jpg"] and (image.size/1024) <= 1024:
+		    up.avatar.save(image.name,image)		 
+		  else:
+		    return render_to_response('after_profile_update.html',
+					  {"message": "file type is invalid or size exceeds 1 MB"},
+					  RequestContext(request))
 		else:
 		  up.location=request.POST['location']
 		  up.user_skills=request.POST['skills']
@@ -246,6 +253,8 @@ def profile(request):
                     {"message": "Your profile has been updated"},
                     RequestContext(request)) 
             else:
+		print "the form submitted was invalid"
+		print user_profile_form.errors
 		#this handles the ValidationError raised in forms.py
                 return render_to_response('after_profile_update.html',
 					  {"message": "please enter valid data"},
@@ -254,9 +263,31 @@ def profile(request):
 	    #the user has to login to post and is displayed the login to post message if he does so without logging in
             return HttpResponse("login to post")
     # displaying the form for the first time.
-    else: 
-        user_profile_form = UserProfileForm()
+    
+    else:   
+	      user_profile_form = UserProfileForm()
+	      return render_to_response(
+	      'update_profile.html',
+	      {'user_profile_form': user_profile_form},
+	      RequestContext(request))
+	#else:
+	      #userprofile exists so display and give an option to update
+	      #resize the avatar while submitting the form
+@login_required
+def view_profile(request):
+	u=User.objects.get(username=request.user.username)
+	#if UserProfile already exists for the user then display the profile
+	try:
+	      up=UserProfile.objects.get(user=u)
+	except UserProfile.DoesNotExist:
+	      up = None
+	      return render_to_response('after_profile_update.html',
+					  {"message": "You have not yet updated your profile"},
+					  RequestContext(request))
+	context_dict={'location':up.location,
+			    'avatar':up.avatar,
+			    'user_skills':up.user_skills}
 	return render_to_response(
-        'update_profile.html',
-        {'user_profile_form': user_profile_form},
-        RequestContext(request))
+	      'display_profile.html',
+	      context_dict,
+	      RequestContext(request))
