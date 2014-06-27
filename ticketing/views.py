@@ -6,12 +6,12 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Count
-from ac.forms import SubmitTicketForm
+from ticketing.forms import SubmitTicketForm
 import json
 from django.shortcuts import render
 from django import forms
 from django.db.models import Max
-from ac.forms import SubmitTicketForm
+from ticketing.forms import SubmitTicketForm
 from django.template import RequestContext
 import datetime
 from django.db.models import Max
@@ -72,7 +72,7 @@ You can view this ticket's progress online by logging into your account and clic
                 return render_to_response(
                     'ac/after_submit.html',
                     {'ticket_id': ticket.ticket_id},
-                    RequestContext(request)) #passing the ticket_id as a dictionary element to the template ac/after_submit.html where its displayed to the user
+                    RequestContext(request)) #passing the ticket_id as a dictionary element to the template ticketing/after_submit.html where its displayed to the user
             else:
 		#this handles the ValidationError raised in forms.py if the user enters a tablet id that is not present in the Tablet_info table
                 return render_to_response('ac/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
@@ -406,7 +406,7 @@ def approve_post(request,id):
 		my_post.post_status=1
 		my_post.body = request.POST['post_text']
 		my_post.save()
-	return HttpResponseRedirect('/ac/unapproved/')
+	return HttpResponseRedirect('/ticketing/unapproved/')
 	
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -430,5 +430,5 @@ def approve_reply(request,id):
 		my_reply.reply_status=1
 		my_reply.body = request.POST['post_text']
 		my_reply.save()
-	return HttpResponseRedirect('/ac/unapproved_ans/')
+	return HttpResponseRedirect('/ticketing/unapproved_ans/')
 	

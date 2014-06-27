@@ -52,13 +52,13 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/ac">Dashboard</a></li>
-            <li><a href="/ac/open">Open ({{count_open}})</a></li>
-            <li><a href="/ac/close">Closed Tickets ({{count_close}})</a></li>
+            <li><a href="/ticketing">Dashboard</a></li>
+            <li><a href="/ticketing/open">Open ({{count_open}})</a></li>
+            <li><a href="/ticketing/close">Closed Tickets ({{count_close}})</a></li>
             <li><a href="/logout">LOGOUT</a></li>
           </ul>
           
-          <form class="navbar-form navbar-right"   action= "/ac/search/" method="post">{% csrf_token %}
+          <form class="navbar-form navbar-right"   action= "/ticketing/search/" method="post">{% csrf_token %}
             <input type="text" name="search" class="form-control" placeholder="Search id or subject">
             </form>
         </div>

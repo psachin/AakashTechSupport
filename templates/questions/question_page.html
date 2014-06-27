@@ -78,13 +78,69 @@
         </table>
         <hr>
 
+
+    {% if posts.num_votes > 0 %}
+
+        <!-- ANSWER SECTION -->
+        <div style="padding-top: 1cm;">
+        </div>
         <ul class="nav nav-tabs">
+           <li style="float: right;"><a href="#">Popular</a></li>
+           <li style="float: right;" class="active"><a href="#">New</a></li>
         <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
-            {{ posts.num_votes }}
-            {{ Answers }}
+            {{ posts.num_votes }} Answers
         </h4>
 
         </ul>
+
+        <table>
+            <tbody>
+                <tr>
+                    <!-- VOTE CELL -->
+                    <td class="votecell" style="padding-top: 0.0cm;">
+                        <div class="vote">
+
+                            {% ifequal thisUserUpvote 0 %}
+                                <img src="{% static 'images/up1-off.png' %}" class="ans-vote-up" title="This question shows research effort; it is useful and clear"/>
+                            {% else %}
+                                <img src="{% static 'images/up1-on.png' %}" class="ans-vote-up vote-selected" title="This question shows research effort; it is useful and clear"/>
+                            {% endifequal %}
+
+                            <span class="ans-vote-count-post" id="show_vote_count">
+                                {{ net_count }}
+                            </span>
+
+                            {% ifequal thisUserDownvote 0 %}
+                                <img src="{% static 'images/down1-off.png' %}" class="ans-vote-down" title="This question does not show any research effort; it is not useful and unclear"/>
+                            {% else %}
+                                <img src="{% static 'images/down1-on.png' %}" class="ans-vote-down vote-selected" title="This question does not show any research effort; it is not useful and unclear"/>
+                            {% endifequal %}
+                        </div>
+                    </td>
+
+                    <!-- POST CELL -->
+                    <td class="postcell" style="padding-top: 1cm; padding-left: 0.5cm;">
+                        <div>
+                            <div class="well post-text" itemprop="description">
+                                {{ post_reply.body }}
+                            </div>
+                            <div class="" style="padding-top: 0.5cm;">
+                                <a class="post-tag" rel="tag" title="" href="/questions/tags/">
+                                    {{ post_reply.user.username }}
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+    {% endif %}
+
+        <!-- ANSWER SECTION ENDS HERE -->
+
+
+
 
 
         <!-- SUBMIT REPLY FORM -->
