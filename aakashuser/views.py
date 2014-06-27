@@ -15,6 +15,7 @@ from django.db.models.signals import post_delete
 import re
 from django.contrib.auth.decorators import login_required
 # INDEX PAGE VIEW
+from django.conf import settings
 
 
 def index(request):
@@ -246,7 +247,8 @@ def profile(request):
 		else:
 		  up.location=request.POST['location']
 		  up.user_skills=request.POST['skills']
-		  up.avatar=None
+		  up_avatar=up.avatar
+		  up.avatar=up_avatar
 		  up.save()
                 return render_to_response(
                     'after_profile_update.html',
@@ -257,7 +259,7 @@ def profile(request):
 		print user_profile_form.errors
 		#this handles the ValidationError raised in forms.py
                 return render_to_response('after_profile_update.html',
-					  {"message": "please enter valid data"},
+					  {"message": "please enter valid data.The location and skills field are required. Profile photo is optional"},
 					  RequestContext(request))
         else:
 	    #the user has to login to post and is displayed the login to post message if he does so without logging in
@@ -284,8 +286,13 @@ def view_profile(request):
 	      return render_to_response('after_profile_update.html',
 					  {"message": "You have not yet updated your profile"},
 					  RequestContext(request))
-	context_dict={'location':up.location,
+	if up.avatar:    
+	  context_dict={'location':up.location,
 			    'avatar':up.avatar,
+			    'user_skills':up.user_skills}
+	else:
+	  context_dict={'location':up.location,
+			    'avatar':"static/images/profile_image/default_avatar.jpg ",
 			    'user_skills':up.user_skills}
 	return render_to_response(
 	      'display_profile.html',
