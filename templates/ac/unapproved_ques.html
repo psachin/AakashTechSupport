@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+{% extends 'index.html' %}
+
+{% block body_block %}
+
+
+    <!-- ALL_QUESTIONS SUB_HEADER -->
+
+    <div class="container-fluid"  style="padding-top: 0.5cm;">
+	<div class="  col-md-8 col-md-offset-2" role="navigation">
+
+        <ul class="nav nav-tabs">
+       
+        <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
+            Unapproved Questions
+        </h4>
+
+        </ul>
+
+	</div>
+	</div>
+
+
+    <!-- UNAPPROVED_QUESTIONS PAGE CONTENT -->
+
+	
+    <div class="container-fluid"  style="padding-top: 0.5cm; padding-bottom: 2cm;">
+	<div class="  col-md-8 col-md-offset-2" role="navigation">
+        {% for i in posts %}
+		<form action="/ac/approve_post/{{i.pk}}/" method="post">
+		{% csrf_token %}
+        <div class="well-sm" style="padding-top: 0.2cm;">
+            <h4 class="text-justify">
+                   <font color=#0066CC>{{forloop.counter}}.){{i.title}}</font>
+            </h4>
+            	<div class="nav navbar-nav navbar-right">
+            		<button class="btn btn btn-primary" type="submit" name="Approve">Approve Post</button>
+            		&nbsp;&nbsp;
+            		<button class="btn btn btn-primary" type="submit" name="Delete">Delete Post</button>
+        		</div>
+        		<br>
+        		<br>
+        		<div id="post_text" style="padding-top: 0.5cm">
+            <textarea name="post_text" id="wmd-input" class="wmd-input processed form-control" required="required" data-min-length="" tabindex="101" rows="6" cols="92" name="post-text" style="width: 610px;">{{i.body}} 
+            </textarea>
+            <div class="grippie" style="margin-right: 0px;"></div>
+        	</div>
+        </div>
+        </form>
+        {% endfor %}
+
+    </div>
+    </div>
+
+
+{% endblock %}
+
+
