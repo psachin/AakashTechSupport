@@ -27,3 +27,10 @@ color: yellow;
     float: right;
     font-weight: normal;
 }
+
+.active-tab {
+    border-bottom: 1px solid rgb(255, 255, 255);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(255, 255, 255);
+}

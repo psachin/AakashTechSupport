@@ -21,6 +21,7 @@
 
 		.light-wrap {
 			border: 1px solid rgb(194, 199, 208);
+            border-top: 1px solid rgb(255, 255, 255);
 		}
 		
 		
@@ -57,20 +58,20 @@
           <a href='/' title="Go back to Home Page">
 		    <img src = "{% static 'images/aakash.png' %}" height="50px" width="100px" />
           </a>
-		  <h1><small>Log In to </small><strong>TechSupport</strong></h1>
+		  <h1 style="font-family: Whitney SSm A,Whitney SSm B,verdana,Lucida Grande,sans-serif;"><small>Log In to </small><strong>TechSupport</strong></h1>
 		</div>
 		
 	<div class="col-md-4 col-md-offset-4">
 	<ul class="nav nav-tabs nav-justified">
-		<li><a href="/register/">Register</a></li>
-		<li class="active"><a href="/login/">Login</a></li>
+		<li style="font-family: Whitney SSm A,Whitney SSm B,verdana,Lucida Grande,sans-serif;"><a href="/register/">Register</a></li>
+		<li style="font-family: Whitney SSm A,Whitney SSm B,verdana,Lucida Grande,sans-serif;" class="active"><a href="/login/">Login</a></li>
 	
 	</ul>
 
-	<div class="well light-wrap">
+	<div class="light-wrap">
 		<br />
 		<br />
-		
+		<div style="padding-left: 25px; padding-right: 25px; padding-bottom: 20px; padding-top: 10px;">
 		<form role="form" name="login_form" method="post">
 		{% csrf_token %}
 		<i class="fa fa-user fa-5x"></i>			
@@ -100,6 +101,7 @@
 
 				<br />		
 		  </form>
+        </div>
 		</div>	<!-- light-wrap -->
 	</div>
 	</div> <!-- /container -->
