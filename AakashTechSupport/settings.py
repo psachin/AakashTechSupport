@@ -145,7 +145,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'aakashuser',
-    'ac',
+    'ticketing',
     'south',
     'taggit',
     'django_wysiwyg',
