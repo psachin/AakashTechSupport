@@ -236,7 +236,7 @@ def view_tags(request):
         'tags': tags
     }
 
-    return render_to_response('forum/tags.html', context_dict, context)
+    return render_to_response('questions/tags.html', context_dict, context)
 
 
 def search_tags(request):

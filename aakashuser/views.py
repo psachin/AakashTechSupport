@@ -89,7 +89,7 @@ def register(request):
     }
     context_dict.update(temp_dict)
 
-    return render_to_response("register.html", context_dict, context)
+    return render_to_response("user_profile/register.html", context_dict, context)
 
 # LOGIN VIEW
 
@@ -114,7 +114,7 @@ def login_x(request):
         c = {}
         c.update(csrf(request))
         context = RequestContext(request)
-        return render_to_response("login.html", c, context)
+        return render_to_response("user_profile/login.html", c, context)
 
 
 def logout_x(request):
@@ -161,19 +161,19 @@ def login_new(request):
                 login_dict = {
                     'login_error': login_error
                 }
-                return render_to_response('login.html', login_dict, context)
+                return render_to_response('user_profile/login.html', login_dict, context)
         else:
             login_error = "User authentication failed."
             login_dict = {
                 'login_error': login_error
             }
-            return render_to_response('login.html', login_dict, context)
+            return render_to_response('user_profile/login.html', login_dict, context)
     else:
         #URL was accessed directly
         c = {}
         c.update(csrf(request))
         context = RequestContext(request)
-        return render_to_response('login.html', c, context)
+        return render_to_response('user_profile/login.html', c, context)
 
 
 def logout_new(request):
@@ -190,7 +190,7 @@ def view_tags(request):
     for i in tags:
         i.count = len(Post.objects.filter(tags=i))
     context_dict = {'tags': tags}
-    return render_to_response('forum/tags.html', context_dict, context)
+    return render_to_response('forum/../templates/questions/tags.html', context_dict, context)
 
 
 def search_tags(request):
@@ -241,7 +241,7 @@ def profile(request):
                     if image.content_type in ["image/jpeg", "image/png", "image/jpg"] and (image.size / 1024) <= 1024:
                         up.avatar.save(image.name, image)
                     else:
-                        return render_to_response('after_profile_update.html',
+                        return render_to_response('user_profile/after_profile_update.html',
                                                   {"message":
                                                       "file type is invalid or size exceeds 1 MB"},
                                                   RequestContext(request))
@@ -252,14 +252,14 @@ def profile(request):
                     up.avatar = up_avatar
                     up.save()
                 return render_to_response(
-                    'after_profile_update.html',
+                    'user_profile/after_profile_update.html',
                     {"message": "Your profile has been updated"},
                     RequestContext(request))
             else:
                 print "the form submitted was invalid"
                 print user_profile_form.errors
                 # this handles the ValidationError raised in forms.py
-                return render_to_response('after_profile_update.html',
+                return render_to_response('user_profile/after_profile_update.html',
                                           {
                                               "message": "please enter valid data.The location and skills field are required. Profile photo is optional"},
                                           RequestContext(request))
@@ -272,7 +272,7 @@ def profile(request):
     else:
         user_profile_form = UserProfileForm()
         return render_to_response(
-            'update_profile.html',
+            'user_profile/update_profile.html',
             {'user_profile_form': user_profile_form},
             RequestContext(request))
         # else:
@@ -288,7 +288,7 @@ def view_profile(request):
         up = UserProfile.objects.get(user=u)
     except UserProfile.DoesNotExist:
         up = None
-        return render_to_response('after_profile_update.html',
+        return render_to_response('user_profile/after_profile_update.html',
                                   {"message":
                                       "You have not yet updated your profile"},
                                   RequestContext(request))
@@ -301,7 +301,7 @@ def view_profile(request):
                         'avatar': "static/images/profile_image/default_avatar.jpg ",
                         'user_skills': up.user_skills}
     return render_to_response(
-        'display_profile.html',
+        'user_profile/display_profile.html',
         context_dict,
         RequestContext(request))
 
