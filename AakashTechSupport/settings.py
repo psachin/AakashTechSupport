@@ -1,6 +1,7 @@
 # Django settings for AakashTechSupport project.
 
 import os
+import top_secret
 from django.conf.global_settings import TEMPLATE_DIRS
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SETTINGS_DIR = os.path.dirname(__file__)
@@ -21,8 +22,8 @@ LOGIN_URL = '/login/'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': top_secret.DB_ENGINE,
+        'NAME': os.path.join(BASE_DIR, top_secret.DB_NAME),
     }
 }
 
@@ -85,7 +86,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(BASE_DIR, "static"),
-    '/home/shubham/virtualenvs/interns2014/InternFinal/AakashTechSupport/static',
+    top_secret.STATIC_DIR,
     
 )
 
