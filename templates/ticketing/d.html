@@ -91,7 +91,7 @@
                
             <tr>
                 <td {% if forloop.last %}class="last"{% endif %}>
-              <div class="title"><a href="/ac/display/{{ticket.pk}}">{{ ticket.ticket_id }}</a>
+              <div class="title"><a href="/ticketing/display/{{ticket.pk}}">{{ ticket.ticket_id }}</a>
                     </div></td>
                 <td {% if forloop.last %}class="last"{% endif %}>{{ ticket.created_date_time}}</td>
                 <td {% if forloop.last %}class="last"{% endif %}>

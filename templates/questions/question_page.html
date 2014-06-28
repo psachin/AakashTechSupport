@@ -78,7 +78,7 @@
         </table>
         <hr>
 
-
+    {% if post_replies %}
         <!-- ANSWER SECTION -->
         <div style="padding-top: 1cm;">
         </div>
@@ -90,6 +90,7 @@
         </h4>
 
         </ul>
+
 
         {% for i in post_replies %}
 
@@ -138,7 +139,7 @@
         </table>
         <hr>
     {% endfor %}
-
+    {% endif %}
         <!-- ANSWER SECTION ENDS HERE -->
 
 

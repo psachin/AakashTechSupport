@@ -31,11 +31,11 @@ def submit_ticket(request):
     if request.method == "POST":
         if request.user.email != request.POST["user_id"]:
 	    #checking whether the email id submitted by the user is the same as the email id he registered with
-            return render_to_response('ac/email_not_valid.html', {"message": "Please enter a valid email id; the email id you used during registration!"}, RequestContext(request))
+            return render_to_response('ticketing/email_not_valid.html', {"message": "Please enter a valid email id; the email id you used during registration!"}, RequestContext(request))
         if request.user.is_authenticated() and request.user.email == request.POST["user_id"]:
 	    user_tab_id = request.POST["tab_id"]
 	    if len(user_tab_id) != 8 and not special_match(user_tab_id):
-                return render_to_response('ac/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
+                return render_to_response('ticketing/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
             user_details = request.user.email
             submit_ticket_form = SubmitTicketForm(
                 request.POST, user_details=user_details)#instantiating the SubmitTicketForm; passing the POST request and users email as a parameter
@@ -70,12 +70,12 @@ You can view this ticket's progress online by logging into your account and clic
 		receiptents=[request.user.email]
 		send_mail(subject, message, my_email, receiptents,fail_silently=False)
                 return render_to_response(
-                    'ac/after_submit.html',
+                    'ticketing/after_submit.html',
                     {'ticket_id': ticket.ticket_id},
                     RequestContext(request)) #passing the ticket_id as a dictionary element to the template ticketing/after_submit.html where its displayed to the user
             else:
 		#this handles the ValidationError raised in forms.py if the user enters a tablet id that is not present in the Tablet_info table
-                return render_to_response('ac/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
+                return render_to_response('ticketing/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
         else:
 	    #the user has to login to post and is displayed the login to post message if he does so without logging in
             return HttpResponse("login to post")
@@ -85,7 +85,7 @@ You can view this ticket's progress online by logging into your account and clic
         user_details = request.user.email #get the users email
         submit_ticket_form = SubmitTicketForm(user_details=user_details) #instantiate the form
     return render_to_response(
-        'ac/submit_ticket.html',
+        'ticketing/submit_ticket.html',
         {'submit_ticket_form': submit_ticket_form, 'user': request.user},
         RequestContext(request))
 
@@ -94,7 +94,7 @@ You can view this ticket's progress online by logging into your account and clic
 def main(request):
     """Main listing."""
     tickets = Ticket.objects.all()
-    return render_to_response("ac/d.html", dict(tickets=tickets), RequestContext(request))
+    return render_to_response("ticketing/d.html", dict(tickets=tickets), RequestContext(request))
 
 # To show all the details of a particular ticket
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -121,7 +121,7 @@ def display(request, id):
             'count_close': count_close,
         }
 
-    return render_to_response("ac/second.html", context_dict, RequestContext(request))
+    return render_to_response("ticketing/second.html", context_dict, RequestContext(request))
 
 #Function for searching tickets
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -139,7 +139,7 @@ def search(request):
                 'user': active_user,
                 'tickets': tickets,
             }
-            return render_to_response("ac/search.html", context_dict, RequestContext(request))
+            return render_to_response("ticketing/search.html", context_dict, RequestContext(request))
         else:
             """Searching for Topic-id"""
             tickets = Category.objects.filter(category__icontains=Search)
@@ -150,14 +150,14 @@ def search(request):
                     'user': active_user,
                     'tickets': tickets,
                 }
-                return render_to_response("ac/search.html", context_dict, RequestContext(request))
+                return render_to_response("ticketing/search.html", context_dict, RequestContext(request))
             else:
                 tickets = Ticket.objects.all()
                 context_dict = {
                     'user': active_user,
                     'tickets': tickets,
                 }
-                return render_to_response("ac/d.html", context_dict, RequestContext(request))
+                return render_to_response("ticketing/d.html", context_dict, RequestContext(request))
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -180,7 +180,7 @@ def graph(request):
 	    ticket_for_a_cat=[]	
             ticket_for_a_cat = Ticket.objects.filter(topic_id=c)#ticket_for_a_cat is a list that contains tickets corresponding to the category	
             count[c.category] = ticket_for_a_cat.count()#updating the count of each category as the number of elements in ticket_for_a_cat list
-    return render_to_response("ac/graphs.html", {'count': count, 'category_names': category_names}, RequestContext(request))#passing the count and category_names dictionary to graphs.html template for rendering graph
+    return render_to_response("ticketing/graphs.html", {'count': count, 'category_names': category_names}, RequestContext(request))#passing the count and category_names dictionary to graphs.html template for rendering graph
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -196,7 +196,7 @@ def ticket_status_graph(request):
         if status == 1:
             t_closed = t_closed + 1#increment t_closed if status is 1 i.e closed
     status_dict = {'open': t_open, 'closed': t_closed}#stores the number of open and closed tickets
-    return render_to_response("ac/graphs_tickets.html", {'status_dict': status_dict}, RequestContext(request))#passing the status_dict dictionary to graphs_tickets.html template for rendering graph of open vs closed tickets
+    return render_to_response("ticketing/graphs_tickets.html", {'status_dict': status_dict}, RequestContext(request))#passing the status_dict dictionary to graphs_tickets.html template for rendering graph of open vs closed tickets
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -210,7 +210,7 @@ def ticket_traffic_graph(request):
                                              created_date_time__month=i)#filter tickets having the created year equal to year and created month equal to i
         tickets_in_i_count = tickets_in_i.count()#count the number of tickets in the month i
         ticket_dict[i] = tickets_in_i_count#update the dictionary to include the value of the number of tickets in the month i
-    return render_to_response("ac/ticket_traffic.html", {'ticket_dict': ticket_dict}, RequestContext(request))#passing the ticket_dict dictionary to ticket_traffic.html template for rendering graph of ticket traffic
+    return render_to_response("ticketing/ticket_traffic.html", {'ticket_dict': ticket_dict}, RequestContext(request))#passing the ticket_dict dictionary to ticket_traffic.html template for rendering graph of ticket traffic
 
 #To post the ADMIN REPLY
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -253,19 +253,19 @@ We hope this response has sufficiently answered your questions.If so please logi
             'count_close': count_close,
         }
 
-        return render_to_response("ac/second.html", context_dict, RequestContext(request))
+        return render_to_response("ticketing/second.html", context_dict, RequestContext(request))
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def open(request):
     tickets = Ticket.objects.filter(status=0)
-    return render_to_response("ac/d.html", dict(tickets=tickets), RequestContext(request))
+    return render_to_response("ticketing/d.html", dict(tickets=tickets), RequestContext(request))
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def close(request):
     tickets = Ticket.objects.filter(status=1)
-    return render_to_response("ac/d.html", dict(tickets=tickets), RequestContext(request))
+    return render_to_response("ticketing/d.html", dict(tickets=tickets), RequestContext(request))
 
 
 @login_required
@@ -275,7 +275,7 @@ def view_tickets(request):
     tickets = Ticket.objects.filter(user_id=email)#get all the tickets submitted by the user
     if not tickets:
 	#if user has submitted no tickets so far redirect him to a page showing the message No tickets to display
-        return render_to_response("ac/email_not_valid.html", {"message": "No tickets to display"}, context_instance=RequestContext(request))
+        return render_to_response("ticketing/email_not_valid.html", {"message": "No tickets to display"}, context_instance=RequestContext(request))
     else:
 	#display the users tickets
         tickets_dict = []#this list will contain all the ticket details
@@ -309,7 +309,7 @@ def view_tickets(request):
                         '%Y-%m-%d') + " : " + reply.reply + " ;"#concatenated each reply by the admin along with the date of the reply to the reply_str string
             t_dic["Replies"] = reply_str
             tickets_dict.append(t_dic)#append the t_dic dictionary to the tickets_dict list
-        return render_to_response("ac/view_tickets.html", {"tickets_dict": tickets_dict}, context_instance=RequestContext(request))#passing the tickets_dict dictionary to view_tickets.html template for displaying ticket details
+        return render_to_response("ticketing/view_tickets.html", {"tickets_dict": tickets_dict}, context_instance=RequestContext(request))#passing the tickets_dict dictionary to view_tickets.html template for displaying ticket details
 
 
 @login_required
@@ -319,7 +319,7 @@ def close_ticket(request, id):
 	ticket=Ticket.objects.filter(ticket_id=id)
 	print ticket
 	if not ticket:
-		return render_to_response('ac/email_not_valid.html', {"message": "No such ticket exists!"}, RequestContext(request))
+		return render_to_response('ticketing/email_not_valid.html', {"message": "No such ticket exists!"}, RequestContext(request))
 	else:
 		ticket=ticket[0]
 		ticket_submitter_user_email=ticket.user_id
@@ -331,10 +331,10 @@ def close_ticket(request, id):
 				ticket.closed_date_time=now.strftime('%Y-%m-%d %H:%M:%S')
 				ticket.save()
 			else:
-				return render_to_response('ac/email_not_valid.html', {"message": "You have already closed this ticket!"}, RequestContext(request))			
+				return render_to_response('ticketing/email_not_valid.html', {"message": "You have already closed this ticket!"}, RequestContext(request))
 		else:
-			return render_to_response('ac/email_not_valid.html', {"message": "you can close tickets submitted only by you!"}, RequestContext(request))
-	return render_to_response('ac/email_not_valid.html', {"message": "The ticket has been closed! Happy that your problem was resolved!"}, RequestContext(request))
+			return render_to_response('ticketing/email_not_valid.html', {"message": "you can close tickets submitted only by you!"}, RequestContext(request))
+	return render_to_response('ticketing/email_not_valid.html', {"message": "The ticket has been closed! Happy that your problem was resolved!"}, RequestContext(request))
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -392,7 +392,7 @@ def view_unapproved_ques(request):
 	context=RequestContext(request)
 	posts=Post.objects.filter(post_status=0)
 	context_dict={'posts':posts}
-	return render_to_response('ac/unapproved_ques.html',context_dict,context)
+	return render_to_response('ticketing/unapproved_ques.html',context_dict,context)
 	
 	
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -416,7 +416,7 @@ def view_unapproved_ans(request):
 	for i in replies:
 		i.post_body=i.title.body
 	context_dict={'answers':replies}
-	return render_to_response('ac/unapproved_ans.html',context_dict,context)
+	return render_to_response('ticketing/unapproved_ans.html',context_dict,context)
 	
 	
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')

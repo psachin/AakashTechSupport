@@ -199,7 +199,7 @@
                
             </ul>
    
-        <form id="reply" action="/ac/reply/{{threads.pk}}/" name="reply" method="POST">{% csrf_token %}
+        <form id="reply" action="/ticketing/reply/{{threads.pk}}/" name="reply" method="POST">{% csrf_token %}
         <input type="hidden" name="id" value="{{threads.ticket_id}}">
         <input type="hidden" name="a" value="reply">
         <span class="error"></span>
