@@ -284,6 +284,9 @@ def profile(request):
 def view_profile(request):
     u = User.objects.get(username=request.user.username)
     # if UserProfile already exists for the user then display the profile
+    up = UserProfile.objects.get(user=u)
+    related_post = Post.objects.filter(creator=up)
+
     try:
         up = UserProfile.objects.get(user=u)
     except UserProfile.DoesNotExist:
@@ -293,15 +296,44 @@ def view_profile(request):
                                       "You have not yet updated your profile"},
                                   RequestContext(request))
     if up.avatar:
-        context_dict = {'location': up.location,
-                        'avatar': up.avatar,
-                        'user_skills': up.user_skills}
+        context_dict = {
+            'posts': related_post,
+            'up': up,
+        }
     else:
-        context_dict = {'location': up.location,
-                        'avatar': "static/images/profile_image/default_avatar.jpg ",
-                        'user_skills': up.user_skills}
-    return render_to_response(
-        'user_profile/display_profile.html',
-        context_dict,
-        RequestContext(request))
+        context_dict = {
+            'posts': related_post,
+            'up': up,
+            'default_avatar': "static/images/profile_image/default_avatar.png ",
+        }
+    return render_to_response('user_profile/profile_page.html', context_dict, RequestContext(request))
+
+
+@login_required
+def view_related_answers(request):
+    u = User.objects.get(username=request.user.username)
+    # if UserProfile already exists for the user then display the profile
+    up = UserProfile.objects.get(user=u)
+    related_replies = Reply.objects.filter(user=up)
+
+    try:
+        up = UserProfile.objects.get(user=u)
+    except UserProfile.DoesNotExist:
+        up = None
+        return render_to_response('user_profile/after_profile_update.html',
+                                  {"message":
+                                      "You have not yet updated your profile"},
+                                  RequestContext(request))
+    if up.avatar:
+        context_dict = {
+            'replies': related_replies,
+            'up': up,
+        }
+    else:
+        context_dict = {
+            'replies': related_replies,
+            'up': up,
+            'default_avatar': "static/images/profile_image/default_avatar.png ",
+        }
+    return render_to_response('user_profile/profile_page.html', context_dict, RequestContext(request))
 

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+{% extends 'index.html' %}
+{% load staticfiles %}
+
+{% block body_block %}
+
+    <div class=""  style="padding-top: 0.5cm; padding-bottom: 0.7cm;">
+	<div class="col-md-8 col-md-offset-2" role="navigation">
+
+        <ul class="nav nav-tabs">
+        <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
+            {{ up.user.username }}
+        </h4>
+        </ul>
+        <div style="padding-bottom: 0.5cm;">
+        </div>
+
+    <table>
+        <tbody>
+            <tr>
+
+                <td>
+                    <div class="row">
+                    <div class="media">
+                      <div class="col-xs-6 col-md-3">
+                          <a href="#" class="">
+                              {% if up.avatar %}
+                              <img src="{{ MEDIA_URL }}{{ up.avatar }}" alt="..." class="img-thumbnail">
+                              {% else %}
+                              <img src="{{ MEDIA_URL }}{{ default_avatar }}" alt="..." class="img-thumbnail">
+                              {% endif %}
+                          </a>
+                      </div>
+
+                      <div class="media-body">
+                        <div class="profile-data" style="font-family: Whitney SSm A,Whitney SSm B,verdana,Lucida Grande,sans-serif;">
+                        <header style="font-size: 17px; padding-left: 0.5cm;">
+                            <strong>User Information</strong>
+                        </header>
+                        <hr>
+
+                        <dl class="dl-horizontal">
+                          <dt>Username</dt>
+                          <dd>{{ up.user.username }}</dd>
+                        </dl>
+                        <dl class="dl-horizontal">
+                          <dt>Full Name</dt>
+                          <dd>{{ up.user.first_name }} {{ up.user.last_name }}</dd>
+                        </dl>
+                        <dl class="dl-horizontal">
+                          <dt>Location</dt>
+                          <dd>{{ up.location }}</dd>
+                        </dl>
+                         <dl class="dl-horizontal">
+                          <dt>User skills</dt>
+                          <dd>{{ up.user_skills }}</dd>
+                        </dl>
+
+
+                        </div>
+                      </div>
+
+                    </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <hr>
+
+        <ul class="nav nav-tabs">
+          <li style="float: right;" class=""><a href="/aakashuser/view_profile/answers/">Answers</a></li>
+          <li style="float: right;" class="active"><a href="/aakashuser/view_profile/questions/">Questions</a></li>
+
+
+        <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
+            Related Posts
+        </h4>
+
+        </ul>
+
+
+    {% for post in posts %}
+
+    <div style="padding-top: 1cm;">
+    </div>
+
+    <div id="mainbar">
+        <div id="questions" class="content-padding">
+            <div id="question-summary" class="question-summary">
+
+                    <div class="stats-container">
+                    <div class="stats-arrow">
+                    </div>
+                    <div class="stats" style="width: 10%; float:left; padding-top: 10px;">
+                        <div class="vote">
+                            <div class="votes">
+                               <span class="vote-count-post">
+                                    {{ post.num_votes }}
+                               </span>
+                               <div class="viewcount">
+                                   votes
+                               </div>
+                            </div>
+                        </div>
+
+                        <div class="status unanswered">
+                            <strong>
+                                0
+                            </strong>
+                            ans
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="summary" style="float: left; width: 70%; padding-left: 40px;">
+                    <h3>
+                        <a class="question-hyperlink" href="/questions/{{ post.id }}" style="font-size: 19px;" >
+                            {{ post.title }}
+                        </a>
+                    </h3>
+                    <div class="excerpt">
+                        {{ post.body }}
+                    </div>
+                    <div class="tags t-search">
+                        <a class="post-tag" rel="tag" title="" href="/questions/tagged_questions/{{ post.category.pk }}">
+                            {{ post.category|lower|capfirst }}
+                        </a>
+                    </div>
+                    <div class="started-fr">
+                        <div class="user-info">
+                            <div class="user-gravatar32">
+                                <a href="/users/1">
+                                    <div class="gravatar-wrapper-32">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="user-details">
+                                <a href="/users/1">
+                                </a>
+                                <br>
+                                </br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+
+    <!--  REPLY SECTION  -->
+
+
+    {% for reply in replies %}
+
+    <div style="padding-top: 1cm;">
+    </div>
+
+    <div id="mainbar">
+        <div id="questions" class="content-padding">
+            <div id="question-summary" class="question-summary">
+                    <div class="stats-container">
+                    <div class="stats-arrow">
+                    </div>
+                    <div class="stats" style="width: 10%; float:left; padding-top: 10px;">
+                        <div class="vote">
+                            <div class="votes">
+                               <span class="vote-count-post">
+                                    {{ reply.upvotes }}
+                               </span>
+                               <div class="viewcount">
+                                   votes
+                               </div>
+                            </div>
+                        </div>
+
+                        <div class="status unanswered">
+                            <strong>
+                                0
+                            </strong>
+                            ans
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="summary" style="float: left; width: 70%; padding-left: 40px;">
+                    <h3>
+                        <a class="question-hyperlink" href="/questions/{{ post.id }}" style="font-size: 19px;" >
+                            {{ reply.title }}
+                        </a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+
+    <!--  REPLY SECTION ENDS HERE -->
+
+    </div>
+    </div>
+
+    <script>
+
+
+
+    </script>
+
+
+{% endblock %}
