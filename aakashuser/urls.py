@@ -12,5 +12,6 @@ urlpatterns = patterns('',
     url(r'^view_profile/$', 'aakashuser.views.view_profile', name='view profile'),
     url(r'^view_profile/questions/$', 'aakashuser.views.view_profile', name='view profile'),
     url(r'^view_profile/answers/$', 'aakashuser.views.view_related_answers', name='view_profile_related_ans'),
-
+    url(r'^reset/$', 'aakashuser.views.reset', name='reset_password'),
+     url(r'^change/$', 'aakashuser.views.change', name='reset_password'),
 )

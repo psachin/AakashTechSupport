@@ -16,8 +16,26 @@ import re
 from django.contrib.auth.decorators import login_required
 # INDEX PAGE VIEW
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 
+def change(request):
+    pass_word =  request.POST.get('reset1')
+    print pass_word
+    user = request.user.username
+    user = User.objects.get(username=user)
+    user.set_password(pass_word)
+    user.save()
+    user = UserProfile.objects.get(user=user)
+    user.online_status= False
+    user.save()
+    active_user = request.user
+    context_dict = {
+        'user': active_user,
+    }
+    context = RequestContext(request)
+    return render_to_response("index.html", context_dict, context)
+    
 def index(request):
     context = RequestContext(request)
     active_user = ""
@@ -37,7 +55,7 @@ def search(request):
 
 def validateEmail(email):
     if len(email) > 6:
-        #if re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) is not None:
+        # if re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) is not None:
         if re.match(r'\b[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\b', email) is not None:
             return 1
     return 0
@@ -90,6 +108,35 @@ def register(request):
     context_dict.update(temp_dict)
 
     return render_to_response("user_profile/register.html", context_dict, context)
+
+#PASSWORD RESET
+
+
+def reset(request):
+   try:
+        data = request.POST['forgot']
+        user = User.objects.get(email=data)
+
+    
+	password = User.objects.make_random_password()
+	print password
+        user.set_password(password)
+	
+	check = UserProfile.objects.get(user=user)
+    	check.online_status= True
+        user.save()
+	check.save()
+
+        subject = "RESET PASSWORD"
+        message = "Your Password is 123"
+        my_email = "aakashkumariitb@gmail.com"
+
+        print message
+        return render_to_response('index.html', RequestContext(request))
+
+   except ObjectDoesNotExist:
+        return render_to_response('index.html', RequestContext(request))
+
 
 # LOGIN VIEW
 
@@ -152,8 +199,13 @@ def login_new(request):
                     'session_id': session_id,
                     'login_error': login_error,
                 }
-                response = render_to_response('index.html', login_dict)
-                return response
+		check = UserProfile.objects.get(user=user)
+		if(check.online_status==True):
+		     response = render_to_response('user_profile/change.html', login_dict,context)
+                     return response
+		else:
+                     response = render_to_response('index.html', login_dict,context)
+                     return response
                
 #               response.set_cookie('logged_in', user.email)
             else:
@@ -169,7 +221,7 @@ def login_new(request):
             }
             return render_to_response('user_profile/login.html', login_dict, context)
     else:
-        #URL was accessed directly
+        # URL was accessed directly
         c = {}
         c.update(csrf(request))
         context = RequestContext(request)
@@ -179,7 +231,7 @@ def login_new(request):
 def logout_new(request):
     logout(request)
     response = HttpResponseRedirect('/index/')
-    #response.delete_cookie('logged_in')
+    # response.delete_cookie('logged_in')
     print "You have been logged out successfully."
     return response
 
@@ -213,13 +265,11 @@ def search_tags(request):
 
     render_to_response('search.html', search_dict)
 
-
 @login_required
 def profile(request):
     if request.method == "POST":
         if request.user.is_authenticated():
-
-            try:
+	    try:
                 u = User.objects.get(username=request.user.username)
             except User.DoesNotExist:
                 u = None
@@ -238,12 +288,22 @@ def profile(request):
                     image = request.FILES['avatar']
                     print image.content_type
                     print image.size
+                    from django.core.files.images import *
+                    image_dim = get_image_dimensions(image)
+                    print image_dim[0]<=500
+                    print image_dim[1]<=500
                     if image.content_type in ["image/jpeg", "image/png", "image/jpg"] and (image.size / 1024) <= 1024:
+		      if image_dim[0]<=500 and image_dim[1]<=500:
                         up.avatar.save(image.name, image)
-                    else:
+		      else:
                         return render_to_response('user_profile/after_profile_update.html',
                                                   {"message":
-                                                      "file type is invalid or size exceeds 1 MB"},
+                                                      "Your pictures resolution should not be more than 500*500"},
+                                                  RequestContext(request))
+		    else:
+		      return render_to_response('user_profile/after_profile_update.html',
+                                                  {"message":
+                                                      "file type is invalid or size exceeds 1 MB."},
                                                   RequestContext(request))
                 else:
                     up.location = request.POST['location']
@@ -278,8 +338,6 @@ def profile(request):
         # else:
         # userprofile exists so display and give an option to update
         # resize the avatar while submitting the form
-
-
 @login_required
 def view_profile(request):
     u = User.objects.get(username=request.user.username)
@@ -336,4 +394,7 @@ def view_related_answers(request):
             'default_avatar': "static/images/profile_image/default_avatar.png ",
         }
     return render_to_response('user_profile/profile_page.html', context_dict, RequestContext(request))
+
+
+
 

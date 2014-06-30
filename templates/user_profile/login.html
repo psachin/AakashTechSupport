@@ -87,7 +87,10 @@
 					<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
 					<input type="password" class="form-control" name="password" placeholder="Password" required="required" />
 			  	</div>
-			  	<br/>
+				<div style="padding-top:0.5cm;padding-bottom:0.5cm;">
+				<a class="cursor pull-right password-retrieve btn btn-link" onclick="Scroll()" ><small>Forgot your password?</small></a>
+				</div>
+				<br/>
 
                 <!-- ERRORS, IF ANY IN POSTFORM -->
 
@@ -101,14 +104,35 @@
 
 				<br />		
 		  </form>
+		
         </div>
 		</div>	<!-- light-wrap -->
 	</div>
+
+	<script type="text/javascript">
+		
+		function Scroll()
+		{
+			window.scrollTo(0,document.body.scrollHeight);
+		}
+			
+		
+	</script>
+	<form id="forgot" method="POST" action="/aakashuser/reset/">{% csrf_token %}
+        {% csrf_token %}
+	<div class="input-group" style="top:1500px; text-align: center ; right:400px" >
+		<input type="text" class="form-control" name ="forgot" placeholder="Enter E-mail " required="required" data-title="Please use a valid email-id" data-require="" data-regex="email"/>
+	<button class="btn btn-lg btn-primary btn-block" style="top:1000px" type="submit" >RESET</button>	
+	</div>
+	</form>
+
 	</div> <!-- /container -->
 	{% endblock body_block %}
 
 
 	<!-- REGISTER COMPLETES HERE -->
+	
+	
 
 </BODY>
 

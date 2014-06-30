@@ -36,6 +36,10 @@ def submit_ticket(request):
 	    user_tab_id = request.POST["tab_id"]
 	    if len(user_tab_id) != 8 and not special_match(user_tab_id):
                 return render_to_response('ticketing/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
+            if request.POST["message"]=="":
+                return render_to_response('ticketing/email_not_valid.html', {"message": "the message cannot be empty!"}, RequestContext(request))
+            else:
+                pass
             user_details = request.user.email
             submit_ticket_form = SubmitTicketForm(
                 request.POST, user_details=user_details)#instantiating the SubmitTicketForm; passing the POST request and users email as a parameter
@@ -94,7 +98,14 @@ You can view this ticket's progress online by logging into your account and clic
 def main(request):
     """Main listing."""
     tickets = Ticket.objects.all()
-    return render_to_response("ticketing/d.html", dict(tickets=tickets), RequestContext(request))
+    count_open = Ticket.objects.filter(status=0).count()
+    count_close = Ticket.objects.filter(status=1).count()
+    context_dict = {
+            'tickets': tickets,
+            'count_open': count_open,
+            'count_close': count_close,
+        }
+    return render_to_response("ticketing/d.html", context_dict, RequestContext(request))
 
 # To show all the details of a particular ticket
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
@@ -129,6 +140,8 @@ def search(request):
     if request.method == "POST":
         Search = request.POST.get('search')
         active_user = request.user
+        count_open = Ticket.objects.filter(status=0).count()
+        count_close = Ticket.objects.filter(status=1).count()
         context_dict = {}
 
         """Searching for ticket-id"""
@@ -138,6 +151,8 @@ def search(request):
             context_dict = {
                 'user': active_user,
                 'tickets': tickets,
+                'count_open': count_open,
+                'count_close': count_close,
             }
             return render_to_response("ticketing/search.html", context_dict, RequestContext(request))
         else:
@@ -149,6 +164,8 @@ def search(request):
                 context_dict = {
                     'user': active_user,
                     'tickets': tickets,
+                    'count_open': count_open,
+                    'count_close': count_close,
                 }
                 return render_to_response("ticketing/search.html", context_dict, RequestContext(request))
             else:
@@ -156,6 +173,8 @@ def search(request):
                 context_dict = {
                     'user': active_user,
                     'tickets': tickets,
+                    'count_open': count_open,
+                    'count_close': count_close,
                 }
                 return render_to_response("ticketing/d.html", context_dict, RequestContext(request))
 
@@ -212,6 +231,7 @@ def ticket_traffic_graph(request):
         ticket_dict[i] = tickets_in_i_count#update the dictionary to include the value of the number of tickets in the month i
     return render_to_response("ticketing/ticket_traffic.html", {'ticket_dict': ticket_dict}, RequestContext(request))#passing the ticket_dict dictionary to ticket_traffic.html template for rendering graph of ticket traffic
 
+
 #To post the ADMIN REPLY
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def reply(request, id):
@@ -259,13 +279,28 @@ We hope this response has sufficiently answered your questions.If so please logi
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def open(request):
     tickets = Ticket.objects.filter(status=0)
-    return render_to_response("ticketing/d.html", dict(tickets=tickets), RequestContext(request))
+    count_open = Ticket.objects.filter(status=0).count()
+    count_close = Ticket.objects.filter(status=1).count()
+    context_dict = {
+            'tickets': tickets,
+            'count_open': count_open,
+            'count_close': count_close,
+        }
+    return render_to_response("ticketing/d.html",context_dict, RequestContext(request))
 
 
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def close(request):
     tickets = Ticket.objects.filter(status=1)
-    return render_to_response("ticketing/d.html", dict(tickets=tickets), RequestContext(request))
+    count_open = Ticket.objects.filter(status=0).count()
+    count_close = Ticket.objects.filter(status=1).count()
+    context_dict = {
+            'tickets': tickets,
+            'count_open': count_open,
+            'count_close': count_close,
+        }
+    
+    return render_to_response("ticketing/d.html",context_dict, RequestContext(request))
 
 
 @login_required
@@ -345,45 +380,148 @@ def make_csv(request):
 	#file_obj=open("data_of_rc.csv")
 	#print file_obj
 	#file_obj.close()
-	import csv
-	response = HttpResponse(mimetype='text/csv')
-	response['Content-Disposition'] =  'attachment; filename=ticket_data.csv'
-	writer = csv.writer(response)
+        return render_to_response('ticketing/ticket_data.html', RequestContext(request))
+
+def download_csv(request):
+     
+     data = request.POST.get('selectivereport')
+     import csv
+        
+	
+     response = HttpResponse(mimetype='text/csv')
+     response['Content-Disposition'] =  'attachment; filename=ticket_data.csv'
+     writer = csv.writer(response)
 	#writer = csv.writer(open("ticket_data.csv", 'w'))	
-	headers = []
-	for field in Ticket._meta.fields:
-		headers.append(field.name)
-	writer.writerow(headers)
-	ticket=Ticket.objects.all()
-	for t in ticket:
-	  row=[]
-	  user_id=t.user_id
-	  topic_id=t.topic_id
-	  tab_id=t.tab_id
-	  message=t.message
-	  ticket_id = t.ticket_id
-	  created_date_time=t.created_date_time.strftime("%d/%m/%Y %H:%M:%S")
-	  overdue_date_time=t.overdue_date_time.strftime("%d/%m/%Y %H:%M:%S")
-	  closed_date_time=t.closed_date_time.strftime("%d/%m/%Y %H:%M:%S")
-	  status=t.status
-	  reopened_date_time=t.reopened_date_time.strftime("%d/%m/%Y %H:%M:%S")
-	  topic_priority=t.topic_priority
-	  duration_for_reply=t.duration_for_reply
-	  row.append(user_id)
-	  row.append(topic_id)
-	  row.append(tab_id)
-	  row.append(message)
-	  row.append(ticket_id)
-	  row.append(created_date_time)
-	  row.append(overdue_date_time)
-	  row.append(closed_date_time)
-	  row.append(status)
-	  row.append(reopened_date_time)
-	  row.append(topic_priority)
-	  row.append(duration_for_reply)
+	
+         
+     headers=[]
+		
+       #  writer.writerow(headers)
+     ticket=Ticket.objects.all()
+     count = Ticket.objects.count()
+     print count
+     
+         
+     
+     i=1
+     for t in ticket:
+          row=[]
+          
+          check = request.POST.get('email')
+             
+          if(check== 'close'):
+            
+            user_id=t.user_id
+            row.append(user_id)
+           
+               
+         
+            
+            
+          check = request.POST.get('helptopic')
+          if(check== 'close'):
+              
+            topic_id=t.topic_id
+            row.append(topic_id)
+          
+            
+          check = request.POST.get('tabletid')
+          if(check== 'close'):  
+	    tab_id=t.tab_id
+            row.append(tab_id)
+           
+    
+          check = request.POST.get('subject')   
+          if(check== 'close'):  
+	    message=t.message
+            row.append(message)
+            
+       
+          
+            
+          check = request.POST.get('ticketid')
+          
+          if(check== 'close'):  
+	    ticket_id = t.ticket_id
+            row.append(ticket_id)
+           
+            
+            
+          check = request.POST.get('created')   
+          if(check== 'close'):  
+	    created_date_time=t.created_date_time.strftime("%d/%m/%Y %H:%M:%S")
+            row.append(created_date_time)
+           
+            
+          check = request.POST.get('duedate')   
+          if(check== 'close'):  
+	    overdue_date_time=t.overdue_date_time.strftime("%d/%m/%Y %H:%M:%S")
+            row.append(overdue_date_time)
+          
+             
+          
+          
+          check = request.POST.get('closed')   
+          if(check== 'close'):  
+	    closed_date_time=t.closed_date_time.strftime("%d/%m/%Y %H:%M:%S")
+            row.append(closed_date_time)
+            
+            
+            
+          check = request.POST.get('status1')   
+          if(check== 'close'):
+	    status=t.status
+            if(status==0):
+              status= 'Open'
+            if(status==1):
+              status= 'Close'
+            row.append(status)
+            
+            
+            
+            
+          check = request.POST.get('reopened')   
+          if(check== 'close'):
+	    reopened_date_time=t.reopened_date_time.strftime("%d/%m/%Y %H:%M:%S")
+            row.append(reopened_date_time)
+          
+          
+          
+          
+          
+               
+          check = request.POST.get('priority')   
+          if(check== 'close'):
+	    topic_priority=t.topic_priority
+            if t.topic_priority == 0:
+                topic_priority = "low"
+            if t.topic_priority == 1:
+                topic_priority = "normal"
+            if t.topic_priority == 2:
+                topic_priority = "high"
+            row.append(topic_priority)
+            
+          print row
+          print headers
+          
+          writer.writerow(row) 
+
+          
+    
+            
+          
+          
+	 
+	  
+	
+	 
+	
+	 
+	  
 	  #print row
-	  writer.writerow(row)
-	return response
+     
+     return response
+
 
 
 

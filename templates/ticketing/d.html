@@ -61,16 +61,54 @@
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li><a href="/ticketing/ticket_traffic">Ticket Traffic</a></li>
+            <li><a href="/ticketing/ticket_stats">Ticket Statistics</a></li>
             <li><a href="/ticketing/graphs">Analytics</a></li>
-            <li><a href="/ticketing/ticket_stats">Ticket Stats</a></li>
+            <li><a href="/ticketing/ticket_csv/">Generate Reports</a></li>
+            <li><a href="/ticketing/open">Open ({{count_open}})</a></li>
+            <li><a href="/ticketing/close">Closed Tickets ({{count_close}})</a></li>
           </ul>
         </div>
+            <!-- NAV PILLS -->
+
+    <div class="container-fluid"  style="position:relative;left:30px;top: 10px">
+	<nav class="navbar navbar-default navbar-static-top  col-md-8 col-md-offset-2" role="navigation">
+
+	<ul class="nav navbar-nav">
+        <a class="navbar-brand " href="/questions/" ><b>Questions</b></a>
+        <a class="navbar-brand " href="/questions/tags/" ><b>Tags</b></a>
+        <a class="navbar-brand " href="/ticketing/view_tickets/" >View <b>Tickets </b></a>
+        <li class="dropdown">
+            <a href=""  class="navbar-brand " data-toggle="dropdown">Approval<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="/ticketing/unapproved/">Approve a <b>Post</b></a></li>
+                <li><a href="/ticketing/unapproved_ans/">Approve a <b>Reply</b></a></li>
+            </ul>
+        </li>
+    </ul>
+
+
+    <ul class="nav navbar-nav navbar-right">
+      {% if user.is_authenticated %}
+          <a class="navbar-brand " href="/questions/askquestion/" >Ask <b>Question </b></a>
+      {% else %}
+          <a class="navbar-brand " href="#" data-toggle="modal" data-target="#myModal">Ask <b>Question </b></a>
+      {% endif %}
+    </ul>
+
+	</nav>
+	</div>
+
+
+    <!-- NAV PILLS ENDS HERE-->
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        
+
           <h1 class="page-header">Dashboard</h1>
 
-          <div class="row placeholders">
           
-          </div>
+        
+          
+          
 
         
           <div class="table-responsive">
@@ -81,7 +119,7 @@
                   <th>Date</th>
                   <th>Subject</th>
                   <th>From</th>
-                   <th>Priority</th>
+                   <th>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -99,12 +137,11 @@
                 <td {% if forloop.last %}class="last"{% endif %}>
                      {{ ticket.user_id|linebreaksbr }}</td>
                   <td {% if forloop.last %}class="last"{% endif %}>
-              {% if ticket.topic_priority == 0 %}
-                       LOW
-                      {% elif ticket.topic_priority == 1 %}
-                      Normal
-                      {% elif ticket.topic_priority == 2 %}
-                  HIGH
+              {% if ticket.status == 0 %}
+                        <font color="red">Open</font>
+                      {% elif ticket.status == 1 %}
+                     <font color="green">Close</font>
+                     
                   {% endif %}
         </td>
                    
@@ -119,11 +156,14 @@
       </div>
     </div>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
-    <script src="../../assets/js/docs.min.js"></script>
   </body>
+
+  <!-- SCRIPTS -->
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+		<script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/ajax.js' %}"></script>
+
+  <!-- SCRIPTS ENDS HERE -->
+
 </html>

@@ -16,13 +16,7 @@
         .tip_shadow { display:block !important; }
     </style>
     <![endif]-->
-    <script type="text/javascript" src="../js/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="../js/jquery-ui-1.8.18.custom.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.multifile.js"></script>
-    <script type="text/javascript" src="./js/tips.js"></script>
-    <script type="text/javascript" src="./js/nicEdit.js"></script>
-    <script type="text/javascript" src="./js/bootstrap-typeahead.js"></script>
-    <script type="text/javascript" src="./js/scp.js"></script>
+   
     <link rel="stylesheet" href="/static/css/scp.css" media="screen">
     <link rel="stylesheet" href="/static/css/typeahead.css" media="screen">
     <link type="text/css" href="static/css/custom.css" rel="stylesheet" />
@@ -32,13 +26,13 @@
 
     <!-- Custom styles for this template -->
     <link href="/static/css/dashboard.css" rel="stylesheet">
-
+   
 
    
    
     <meta name="csrf_token" content="ODUxZDI2Y2ZjMDY0NTM3ZWI2ZTA5OWFiZjgyOWY5ZmJjYzNmNjM4Mw==" />
 </head>
-<body>
+<body onload="setcounter()">
      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -53,8 +47,7 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/ticketing">Dashboard</a></li>
-            <li><a href="/ticketing/open">Open ({{count_open}})</a></li>
-            <li><a href="/ticketing/close">Closed Tickets ({{count_close}})</a></li>
+          
             <li><a href="/logout">LOGOUT</a></li>
           </ul>
           
@@ -209,12 +202,30 @@
                     <label><strong>TO:</strong></label>
                 </td>
                 <td width="765">
-                <label id="uder email">{{threads.user_id}}</label>
-       
+                <label id="useremail">{{threads.user_id}}</label>
+        <input type='button' value='Add Email' id='addButton' onclick="add()"></input>
                 </td>
 
             </tr>
-
+         
+ <script type="text/javascript">
+      function setcounter() {
+        var counter =0;
+       }
+      function add() {
+          
+        var add_email = document.getElementById('useremail');
+        var email_field= document.createElement('input');
+        email_field.setAttribute("type","text");
+        email_field.setAttribute( "name","som");
+        
+        
+        add_email.appendChild(email_field);
+        
+        
+      }
+     
+    </script>
             <tr>
                 <td width="160">
                     <label><strong>Response:</strong></label>
@@ -259,69 +270,7 @@
         </p>
     </form>
      
-    </div>
-<div style="display:none;" class="dialog" id="print-options">
-    <h3>Ticket Print Options</h3>
-    <a class="close" href="">&times;</a>
-    <hr/>
-  
-    <div class="clear"></div>
-</div>
-<div style="display:none;" class="dialog" id="ticket-status">
-    <h3>Reopen Ticket #274</h3>
-    <a class="close" href="">&times;</a>
-    <hr/>
-    Are you sure you want to <b>REOPEN</b> this ticket?  
-    <div class="clear"></div>
-</div>
-<div style="display:none;" class="dialog" id="confirm-action">
-    <h3>Please Confirm</h3>
-    <a class="close" href="">&times;</a>
-    <hr/>
-    <p class="confirm-action" style="display:none;" id="claim-confirm">
-        Are you sure want to <b>claim</b> (self assign) this ticket?
-    </p>
-    <p class="confirm-action" style="display:none;" id="answered-confirm">
-        Are you sure want to flag the ticket as <b>answered</b>?
-    </p>   
-    <p class="confirm-action" style="display:none;" id="unanswered-confirm">
-        Are you sure want to flag the ticket as <b>unanswered</b>?
-    </p>
-    <p class="confirm-action" style="display:none;" id="overdue-confirm">
-        Are you sure want to flag the ticket as <font color="red"><b>overdue</b></font>?
-    </p>
-    <p class="confirm-action" style="display:none;" id="banemail-confirm">
-        Are you sure want to <b>ban</b> javeds@iitb.ac.in? <br><br>
-        New tickets from the email address will be auto-rejected.
-    </p>
-    <p class="confirm-action" style="display:none;" id="unbanemail-confirm">
-        Are you sure want to <b>remove</b> javeds@iitb.ac.in from ban list?
-    </p>
-    <p class="confirm-action" style="display:none;" id="release-confirm">
-        Are you sure want to <b>unassign</b> ticket from <b>AakashTech Support</b>?
-    </p>
-    <p class="confirm-action" style="display:none;" id="delete-confirm">
-        <font color="red"><strong>Are you sure you want to DELETE this ticket?</strong></font>
-        <br><br>Deleted tickets CANNOT be recovered, including any associated attachments.
-    </p>
-    <div>Please confirm to continue.</div>
- 
-    <div class="clear"></div>
-</div>
-<script type="text/javascript" src="js/ticket.js"></script>
-    </div>
-  
-    <div>
-        <!-- Do not remove <img src="autocron.php" alt="" width="1" height="1" border="0" /> or your auto cron will cease to function -->
-        <img src="autocron.php" alt="" width="1" height="1" border="0" />
-        <!-- Do not remove <img src="autocron.php" alt="" width="1" height="1" border="0" /> or your auto cron will cease to function -->
-    </div>
-</div>
-<div id="overlay"></div>
-<div id="loading">
-    <h4>Please Wait!</h4>
-    <p>Please wait... it will take a second!</p>
-</div>
+   
 </body>
 </html>
 
