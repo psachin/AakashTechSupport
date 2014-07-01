@@ -113,19 +113,19 @@ def register(request):
 
 
 def reset(request):
-   try:
+    try:
         data = request.POST['forgot']
+        print data
         user = User.objects.get(email=data)
 
-    
-	password = User.objects.make_random_password()
-	print password
+        password = User.objects.make_random_password()
+        print password
         user.set_password(password)
-	
-	check = UserProfile.objects.get(user=user)
-    	check.online_status= True
+
+        check = UserProfile.objects.get(user=user)
+        check.online_status = True
         user.save()
-	check.save()
+        check.save()
 
         subject = "RESET PASSWORD"
         message = "Your Password is 123"
@@ -134,12 +134,15 @@ def reset(request):
         print message
         return render_to_response('index.html', RequestContext(request))
 
-   except ObjectDoesNotExist:
-        return render_to_response('index.html', RequestContext(request))
+    except ObjectDoesNotExist:
+        msg = "Email-id does not exist."
+        message_dict = {
+            'login_error': msg
+        }
+        return render_to_response('user_profile/login.html', message_dict, RequestContext(request))
 
 
 # LOGIN VIEW
-
 
 def login_x(request):
     session_id = ""

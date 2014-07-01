@@ -72,11 +72,11 @@
 		<br />
 		<br />
 		<div style="padding-left: 25px; padding-right: 25px; padding-bottom: 20px; padding-top: 10px;">
-		<form role="form" name="login_form" method="post">
+		<form role="form" name="login_form" method="post" id="login_form">
 		{% csrf_token %}
 		<i class="fa fa-user fa-5x"></i>			
 		
-				<div class="form-group">
+				<div class="form-group" id="user_name">
 					<div class="input-group">
 						<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
 						<input type="text" class="form-control" name ="username" placeholder="Username" required="required" data-title="Please use a valid email-id" data-require="" data-regex="email"/>
@@ -85,46 +85,82 @@
 
 	   			<div class="input-group">
 					<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-					<input type="password" class="form-control" name="password" placeholder="Password" required="required" />
+					<input type="password" id="pass_word" class="form-control" name="password" placeholder="Password" required="required" />
 			  	</div>
-				<div style="padding-top:0.5cm;padding-bottom:0.5cm;">
-				<a class="cursor pull-right password-retrieve btn btn-link" onclick="Scroll()" ><small>Forgot your password?</small></a>
+				<div style="padding-top:0.5cm;padding-bottom:0.5cm;" id="forgot_password">
+				    <a class="cursor pull-right password-retrieve btn btn-link" onclick="Scroll()" ><small>Forgot your password?</small></a>
 				</div>
 				<br/>
 
                 <!-- ERRORS, IF ANY IN POSTFORM -->
 
 				{% if login_error %}
-				<div class="alert alert-danger">
+				<div id="alert-box" class="alert alert-danger">
 				<p>{{ login_error }}</p>
 				</div>
 			    {% endif %}
 
-				<button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+				<button id="login_submit" class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
 
 				<br />		
 		  </form>
 		
         </div>
-		</div>	<!-- light-wrap -->
+    </div>	<!-- light-wrap -->
+
+    <div>
+
+
+    <form id="reset-password">
+    </form>
+
 	</div>
 
 	<script type="text/javascript">
-		
+
+        /*
 		function Scroll()
 		{
 			window.scrollTo(0,document.body.scrollHeight);
 		}
-			
-		
+		*/
+		function Scroll() {
+
+            var rs_form = document.getElementById('login_form');
+
+            var uid = document.getElementById('user_name');
+            rs_form.removeChild(uid);
+
+            var link = document.getElementById('forgot_password');
+            link.remove();
+
+            var submit_btn = document.getElementById('login_submit');
+            submit_btn.innerHTML = 'Reset Password';
+
+            rs_form.setAttribute('action', '/aakashuser/reset/');
+
+            var pwd = document.getElementById('pass_word');
+            pwd.setAttribute('placeholder', 'Your Email-id');
+            pwd.setAttribute('name', 'forgot');
+            pwd.setAttribute('type', 'email');
+
+            var input = document.createElement('input');
+            input.setAttribute('type', 'email');
+            input.setAttribute('name', 'forgot');
+            input.setAttribute('placeholder', 'email');
+            input.setAttribute('required', 'required');
+            input.setAttribute('class', 'form-control');
+            input.setAttribute('data-title', 'Please enter a valid email address.')
+
+            // rs_form.appendChild(input);
+
+            var box = document.getElementById('alert-box').remove();
+
+        }
+
+
+
 	</script>
-	<form id="forgot" method="POST" action="/aakashuser/reset/">{% csrf_token %}
-        {% csrf_token %}
-	<div class="input-group" style="top:1500px; text-align: center ; right:400px" >
-		<input type="text" class="form-control" name ="forgot" placeholder="Enter E-mail " required="required" data-title="Please use a valid email-id" data-require="" data-regex="email"/>
-	<button class="btn btn-lg btn-primary btn-block" style="top:1000px" type="submit" >RESET</button>	
-	</div>
-	</form>
 
 	</div> <!-- /container -->
 	{% endblock body_block %}

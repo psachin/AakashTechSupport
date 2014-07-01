@@ -24,9 +24,13 @@ from datetime import timedelta
 import re
 from django.contrib import messages
 from django.core.mail import send_mail
+
+
 def special_match(strg, search=re.compile(r'[^a-z0-9.]').search):
      return not bool(search(strg))
 @login_required
+
+
 def submit_ticket(request):
     if request.method == "POST":
         if request.user.email != request.POST["user_id"]:
