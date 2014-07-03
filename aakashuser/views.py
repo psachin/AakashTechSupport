@@ -1,4 +1,6 @@
 # Create your views here.
+from django.contrib.humanize.templatetags.humanize import naturaltime
+
 __author__ = 'ushubham27'
 
 from django.contrib.auth import authenticate, login, logout
@@ -18,9 +20,15 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+SETTINGS_DIR = os.path.dirname(__file__)
+PROJECT_PATH = os.path.join(SETTINGS_DIR, os.pardir)
+IMAGE_PATH = os.path.join(BASE_DIR, 'media/static/images/profile_image')
+
 
 def change(request):
-    pass_word =  request.POST.get('reset1')
+    pass_word = request.POST.get('reset1')
     print pass_word
     user = request.user.username
     user = User.objects.get(username=user)
@@ -82,13 +90,18 @@ def register(request):
                 new_user.set_password(pwd)
                 new_user.save()
 
-                return HttpResponseRedirect('/index/')
+                # CREATE
+
+                up = UserProfile.objects.create(user=new_user)
+                up.save()
+
             else:
                 er1 = ""
                 er2 = ""
+
                 if not validateEmail(email):
                     er2 = "Enter a valid email address. "
-                    print er2
+
                 if pwd != rpwd:
                     er1 = "Passwords don't match."
 
@@ -98,6 +111,11 @@ def register(request):
                 }
 
         else:
+            er3 = "Password should be of min_length 6"
+            print er3
+            temp_dict = {
+                'er3': er3
+            }
             print postform.errors
     else:
         postform = UserForm()
@@ -202,13 +220,13 @@ def login_new(request):
                     'session_id': session_id,
                     'login_error': login_error,
                 }
-		check = UserProfile.objects.get(user=user)
-		if(check.online_status==True):
-		     response = render_to_response('user_profile/change.html', login_dict,context)
-                     return response
-		else:
-                     response = render_to_response('index.html', login_dict,context)
-                     return response
+                check = UserProfile.objects.get(user=user)
+                if check.online_status:
+                    response = render_to_response('user_profile/change.html', login_dict,context)
+                    return response
+                else:
+                    response = render_to_response('index.html', login_dict, context)
+                    return response
                
 #               response.set_cookie('logged_in', user.email)
             else:
@@ -292,10 +310,16 @@ def profile(request):
                     print image.content_type
                     print image.size
                     from django.core.files.images import *
-                    image_dim = get_image_dimensions(image)
-                    print image_dim[0]<=500
-                    print image_dim[1]<=500
-                    if image.content_type in ["image/jpeg", "image/png", "image/jpg"] and (image.size / 1024) <= 1024:
+                    if image.content_type in ["image/png"] and (image.size / 1024) <= 1024:
+                        image_dim = get_image_dimensions(image)
+                        print image_dim[0]<=500
+                        print image_dim[1]<=500
+                    else:
+                        return render_to_response('user_profile/after_profile_update.html',
+                                                  {"message":
+                                                      "png file required"},
+                                                  RequestContext(request))
+                    if image.content_type in ["image/png"] and (image.size / 1024) <= 1024:
 		      if image_dim[0]<=500 and image_dim[1]<=500:
                         up.avatar.save(image.name, image)
 		      else:
@@ -356,17 +380,24 @@ def view_profile(request):
                                   {"message":
                                       "You have not yet updated your profile"},
                                   RequestContext(request))
+
     if up.avatar:
         context_dict = {
-            'posts': related_post,
             'up': up,
+            'posts': related_post,
+            'location': up.location,
+            'avatar': up.avatar,
+            'user_skills': up.user_skills
         }
     else:
         context_dict = {
-            'posts': related_post,
             'up': up,
-            'default_avatar': "static/images/profile_image/default_avatar.png ",
+            'posts': related_post,
+            'location': up.location,
+            'avatar': "static/images/profile_image/s1.PNG ",
+            'user_skills': up.user_skills
         }
+
     return render_to_response('user_profile/profile_page.html', context_dict, RequestContext(request))
 
 
@@ -376,7 +407,7 @@ def view_related_answers(request):
     # if UserProfile already exists for the user then display the profile
     up = UserProfile.objects.get(user=u)
     related_replies = Reply.objects.filter(user=up)
-
+    naturaltime()
     try:
         up = UserProfile.objects.get(user=u)
     except UserProfile.DoesNotExist:
@@ -388,15 +419,18 @@ def view_related_answers(request):
     if up.avatar:
         context_dict = {
             'replies': related_replies,
+            'avatar': up.avatar,
             'up': up,
+            'user': u
         }
     else:
         context_dict = {
             'replies': related_replies,
             'up': up,
-            'default_avatar': "static/images/profile_image/default_avatar.png ",
+            'avatar': "static/images/profile_image/s1.PNG ",
+            'user': u
         }
-    return render_to_response('user_profile/profile_page.html', context_dict, RequestContext(request))
+    return render_to_response('user_profile/profile_page_ans.html', context_dict, RequestContext(request))
 
 
 

@@ -31,13 +31,13 @@
 {%ifequal value "open"%}
 
 {% for key,value in dict.items %}
-            	{%ifequal key "ticket id" %}
+        {%ifequal key "ticket id" %}
 		<form method="post" action="/ticketing/close_ticket/{{value}}/">
 		{% csrf_token %}     
 		{%endifequal%}  
-    {% endfor %}
-	<button class="btn btn-primary " type="submit">Close Ticket</button>        
-	</form>
+        {% endfor %}
+	    <button class="btn btn-primary " type="submit">Close Ticket</button>
+	    </form>
 
 {%endifequal%}
 {%endifequal%}
@@ -51,8 +51,6 @@
 </div>
 </div>
 
-    <div style="padding-bottom: 10cm;">
 
-    </div>
 {%endblock%}
 

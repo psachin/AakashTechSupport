@@ -4,13 +4,13 @@ from django.contrib.auth.models import User
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response, render, get_object_or_404
-from aakashuser.models import Post, Reply, UserProfile, Category
+from aakashuser.models import Post, Reply, UserProfile, Category, Ticket
 from taggit.models import Tag
 from django.core.context_processors import csrf
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Count
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 def all_questions_view(request, url):
@@ -19,18 +19,24 @@ def all_questions_view(request, url):
 
     if url == 'latest':
         posts = Post.objects.all().order_by("-post_date")
+        posts = Post.objects.filter(post_status=1)
+
         context_dict = {
             'posts': posts,
+
         }
 
     elif url == 'frequent':
         posts = Post.objects.all().order_by("-post_views")
+        posts = Post.objects.filter(post_status=1)
         context_dict = {
             'posts': posts,
+
         }
 
-    elif url == 'votes':
-        posts = Post.objects.all().order_by("-upvotes")
+    elif url == 'num_votes':
+        posts = Post.objects.all().order_by("-num_votes")
+        posts = Post.objects.filter(post_status=1)
         context_dict = {
             'posts': posts,
         }
@@ -53,8 +59,11 @@ def all_questions_view(request, url):
 
     elif url == '':
         posts = Post.objects.all()
+        posts = Post.objects.filter(post_status=1)
+
         context_dict = {
             'posts': posts,
+
         }
 
     c_dict = {
@@ -63,6 +72,7 @@ def all_questions_view(request, url):
     context_dict.update(c_dict)
 
     return render_to_response('questions/all_questions.html', context_dict, context)
+
 
 
 def ask_question(request):
@@ -281,18 +291,62 @@ def linktag(request, qid):
 def tag_search(request):
     context = RequestContext(request)
     mytag = request.POST.get('search_text')
+    active_user = request.user
     mytag = mytag.upper()
-    try:
-        new_tag = Tag.objects.get(name=mytag)
-        posts = Post.objects.filter(tags=new_tag).order_by('-post_date')
-        posts1 = Post.objects.filter(tags=new_tag).order_by('-post_views')
+
+    new_tags = Category.objects.filter(category__icontains=mytag)
+
+    if new_tags.exists():
         context_dict = {
-            'posts': posts,
-            'mytag': new_tag,
-            'posts1': posts1
+            'tags': new_tags
         }
-    except Tag.DoesNotExist:
+    else:
+        error_msg = "Sorry! No such Category found..."
+        context_dict = {
+            'error_msg': error_msg
+        }
+
+    return render_to_response('questions/tags.html', context_dict, context)
+
+
+def search(request):
+    if request.method == "POST":
+        Search = request.POST.get('search')
+        active_user = request.user
+        count_open = Ticket.objects.filter(status=0).count()
+        count_close = Ticket.objects.filter(status=1).count()
         context_dict = {}
-    return render_to_response('questions/all_questions.html', context_dict, context)
 
+        """Searching for ticket-id"""
+        tickets = Ticket.objects.filter(Q(ticket_id__icontains=Search) | Q(user_id__icontains=Search))
 
+        if tickets.exists():
+            context_dict = {
+                'user': active_user,
+                'tickets': tickets,
+                'count_open': count_open,
+                'count_close': count_close,
+            }
+            return render_to_response("ticketing/search.html", context_dict, RequestContext(request))
+        else:
+            """Searching for Topic-id"""
+            tickets = Category.objects.filter(category__icontains=Search)
+
+            if tickets.exists():
+                tickets = Ticket.objects.filter(topic_id=tickets)
+                context_dict = {
+                    'user': active_user,
+                    'tickets': tickets,
+                    'count_open': count_open,
+                    'count_close': count_close,
+                }
+                return render_to_response("ticketing/search.html", context_dict, RequestContext(request))
+            else:
+                tickets = Ticket.objects.all()
+                context_dict = {
+                    'user': active_user,
+                    'tickets': tickets,
+                    'count_open': count_open,
+                    'count_close': count_close,
+                }
+                return render_to_response("ticketing/d.html", context_dict, RequestContext(request))

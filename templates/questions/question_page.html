@@ -68,9 +68,17 @@
                                     <h3 class="panel-title">{{ posts.body }}</h3>
                                 </div>
                             </div>
+
                             <div class="post-taglist" style="padding-top: 0.5cm;">
                                 <a class="post-tag" rel="tag" title="" href="/questions/tags/">
                                     {{ posts.category|lower|capfirst }}
+                                </a>
+
+                            </div>
+                            <div class="" style="padding-top: 0.1cm;">
+                                Asked by
+                                <a class="" rel="user-profile" title="Registered User" href="/aakashuser/view_profile/">
+                                   {{ user.username }}
                                 </a>
                             </div>
                         </div>
@@ -132,7 +140,7 @@
                             </div>
                             <div class="" style="padding-top: 0.5cm;">
                                 posted by
-                                <a class="" rel="user-profile" title="Registered User" href="#">
+                                <a class="" rel="user-profile" title="Registered User" href="/aakashuser/view_profile/">
                                    {{ i.user }}
                                 </a>
                             </div>
@@ -356,5 +364,9 @@
 
     </script>
 
+
+    <div style="padding-bottom: 7cm;">
+
+    </div>
 
 {% endblock %}

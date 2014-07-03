@@ -15,12 +15,14 @@ urlpatterns = patterns(
 
     #url(r'^tag/$', views.tag, name='tag'),
     url(r'^tags/$', views.view_tags, name='tags'),
-    url(r'^tagged_questions/(?P<qid>\d+)/$', views.linktag, name='linktag'),
     url(r'^tag_search/$', views.tag_search, name='tag_search'),
-  
+
+    url(r'^tagged_questions/(?P<qid>\d+)/$', views.linktag, name='linktag'),
+
     url(r'^(unanswered)/$', views.all_questions_view, name='unans'),
     url(r'^(latest)/$', views.all_questions_view, name='latest'),
     url(r'^(frequent)/$', views.all_questions_view, name='frequent'),
+    url(r'^(num_votes)/$', views.all_questions_view, name='frequent'),
 
     url(r'^vote/$', views.vote_post, name='votes'),
 )
