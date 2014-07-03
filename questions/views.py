@@ -30,13 +30,12 @@ def all_questions_view(request, url):
         }
 
     elif url == 'votes':
-<<<<<<< HEAD
+
         posts=Post.objects.all().order_by("-upvotes")
-    	context_dict = {
-=======
+    
         posts = Post.objects.all().order_by("-upvotes")
         context_dict = {
->>>>>>> 7ca4f7ee3c20000da2e1dd1f1bb6bbd40960e2fc
+
             'posts': posts,
         }
 
@@ -70,7 +69,6 @@ def all_questions_view(request, url):
     return render_to_response('questions/all_questions.html', context_dict, context)
 
 
-<<<<<<< HEAD
 def view_tags(request): #This view has been defined for displaying all the tags and the number of posts related to each tag.
 	context=RequestContext(request)
 	tags=Tag.objects.all()#for fetching all the tags.
@@ -78,7 +76,8 @@ def view_tags(request): #This view has been defined for displaying all the tags 
 		tag.count=len(Post.objects.filter(tags=tag,post_status=1))
 	context_dict= {'tags': tags}
 	return render_to_response('forum/tags.html', context_dict, context)
-=======
+
+
 def ask_question(request):
     context = RequestContext(request)
     if request.POST:
@@ -249,13 +248,7 @@ def view_tags(request):
     context_dict = {
         'tags': tags
     }
-
-<<<<<<< HEAD
-    return render_to_response('forum/tags.html', context_dict, context)
->>>>>>> 7ca4f7ee3c20000da2e1dd1f1bb6bbd40960e2fc
-=======
     return render_to_response('questions/tags.html', context_dict, context)
->>>>>>> 575d973aae4d075cf656ced0d661581d412724c8
 
 
 def search_tags(request):
@@ -282,15 +275,12 @@ def search_tags(request):
 def linktag(request, qid):
     context = RequestContext(request)
 
-<<<<<<< HEAD
     new_tag = Tag.objects.get(pk=qid)
     posts_date = Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_date')#for fetching posts related to a particular tag.
     posts_views = Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_views')
-=======
     cat = Category.objects.get(pk=qid)
     posts_date = Post.objects.filter(category=cat).order_by('-post_date')
     posts_views = Post.objects.filter(category=cat).order_by('-post_views')
->>>>>>> 7ca4f7ee3c20000da2e1dd1f1bb6bbd40960e2fc
     #post = Post.objects.get(tags=new_tag)
 
     context_dict = {
@@ -302,7 +292,6 @@ def linktag(request, qid):
 
     return render_to_response('questions/tagged_questions.html', context_dict, context)    
     
-
 
 def tag_search(request):#This view has been defined to search a tag, and if found , display the associated questions.
 	context=RequestContext(request)
@@ -320,6 +309,7 @@ def tag_search(request):#This view has been defined to search a tag, and if foun
 		context_dict={}
 	return render_to_response('questions/all_questions.html', context_dict, context)
 
+
 def link_question(request, qid):
     context = RequestContext(request)
 
@@ -334,8 +324,7 @@ def link_question(request, qid):
 
     return render_to_response('questions/allqueries_link.html', context_dict, context)
 
-<<<<<<< HEAD
-=======
+
 def tag_search(request):
     context = RequestContext(request)
     mytag = request.POST.get('search_text')
@@ -354,7 +343,6 @@ def tag_search(request):
     return render_to_response('questions/all_questions.html', context_dict, context)
 
 
-<<<<<<< HEAD
 def link_question(request, qid):
     context = RequestContext(request)
     question = Post.objects.get(pk=qid)
@@ -367,6 +355,4 @@ def link_question(request, qid):
     }
 
     return render_to_response('questions/allqueries_link.html', context_dict, context)
->>>>>>> cca12ce2129ae83aa7aff971486fe70553529b92
-=======
->>>>>>> 7ca4f7ee3c20000da2e1dd1f1bb6bbd40960e2fc
+

@@ -80,6 +80,7 @@
         </table>
         <hr>
 
+
     {% if post_replies %}
         <!-- ANSWER SECTION -->
         <div style="padding-top: 1cm;">
@@ -95,7 +96,6 @@
 
 
         {% for i in post_replies %}
-
 
         <table>
             <tbody>
@@ -125,8 +125,10 @@
                     <!-- POST CELL -->
                     <td class="postcell" style="padding-top: 1cm; padding-left: 0.5cm;">
                         <div>
-                            <div class="well post-text" itemprop="description">
-                                {{ i.body }}
+                            <div class="panel panel-info post-text">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">{{ i.body }}</h3>
+                                </div>
                             </div>
                             <div class="" style="padding-top: 0.5cm;">
                                 posted by
