@@ -57,36 +57,32 @@
           <a href='/' title="Go back to Home Page">
 		    <img src = "{% static 'images/aakash.png' %}" height="50px" width="100px" />
           </a>
-		  <h1><small>Log In to </small><strong>TechSupport</strong></h1>
+		  <h1 style="font-family: Whitney SSm A,Whitney SSm B,verdana,Lucida Grande,sans-serif;"><small>Change </small><strong>Password</strong></h1>
 		</div>
 		
 	<div class="col-md-4 col-md-offset-4">
-	<ul class="nav nav-tabs nav-justified">
-		<li><a href="/register/">Register</a></li>
-		<li class="active"><a href="/login/">Login</a></li>
 	
-	</ul>
 
-	<div class="well light-wrap">
+	<div class="light-wrap">
 		<br />
 		<br />
-		
-		<form role="form" name="login_form" method="post">
-		{% csrf_token %}
+		<div style="padding-left: 25px; padding-right: 25px; padding-bottom: 20px; padding-top: 10px;">
+		<form   action="/aakashuser/change/"  onsubmit="return check()"  method="POST">
+    		{% csrf_token %}
 		<i class="fa fa-user fa-5x"></i>			
 		
-				<div class="form-group">
+				<div class="form-group" action=">
 					<div class="input-group">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-						<input type="text" class="form-control" name ="username" placeholder="Username" required="required" data-title="Please use a valid email-id" data-require="" data-regex="email"/>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span>
+						<input type="password" class="form-control" id="reset1" name="reset1" placeholder="Password" required="required" data-title="Please use a valid email-id" data-require="" data-regex="email"/>
 				  	</div>
 				</div>
 
-	   			<div class="input-group">
-					<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-					<input type="password" class="form-control" name="password" placeholder="Password" required="required" />
-			  	</div>
-			  	<br/>
+	   			
+                                
+                                
+				
+				<br/>
 
                 <!-- ERRORS, IF ANY IN POSTFORM -->
 
@@ -96,17 +92,48 @@
 				</div>
 			    {% endif %}
 
-				<button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+				<button class="btn btn-lg btn-primary btn-block" type="submit"  ">Change Password</button>
 
 				<br />		
 		  </form>
+		
+        </div>
 		</div>	<!-- light-wrap -->
 	</div>
+
+
 	</div> <!-- /container -->
 	{% endblock body_block %}
 
 
 	<!-- REGISTER COMPLETES HERE -->
+	
+<script type="text/javascript">
+		  $(document).ready(function() {
+
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        });
+</script>
+<script>
+
+		function check()
+              
+		{
+                    
+                    $.post('/aakashuser/change')
+                     var pass1 = document.getElementById("reset1").value;
+		     var len = pass1.length
+                                                
+			if(len<5)
+                           alet("Minimum 5 characters")
+			   return false
+                        else
+                           return  true
+		}
+			
+		
+	</script>	
 
 </BODY>
 

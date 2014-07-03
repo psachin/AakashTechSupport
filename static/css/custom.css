@@ -27,3 +27,29 @@ color: yellow;
     float: right;
     font-weight: normal;
 }
+
+.active-tab {
+    border-bottom: 1px solid rgb(255, 255, 255);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(255, 255, 255);
+}
+
+div.site-flow img {
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-clip: border-box;
+    transition: background-size 0.2s;
+    transition-timing-function: cubic-bezier(.07,1.41,.82,1.41);
+    height: 70px;
+    width: 70px;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+
+}
+
+div.site-flow a.discforum:hover img {
+    background-size: 20px;
+}

@@ -63,8 +63,10 @@
                     <!-- POST CELL -->
                     <td class="postcell" style="padding-top: 1cm; padding-left: 0.5cm;">
                         <div>
-                            <div class="well post-text" itemprop="description">
-                                {{ posts.body }}
+                            <div class="panel panel-info post-text">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">{{ posts.body }}</h3>
+                                </div>
                             </div>
                             <div class="post-taglist" style="padding-top: 0.5cm;">
                                 <a class="post-tag" rel="tag" title="" href="/questions/tags/">
@@ -78,9 +80,7 @@
         </table>
         <hr>
 
-
-    {% if posts.num_votes > 0 %}
-
+    {% if post_replies %}
         <!-- ANSWER SECTION -->
         <div style="padding-top: 1cm;">
         </div>
@@ -92,6 +92,10 @@
         </h4>
 
         </ul>
+
+
+        {% for i in post_replies %}
+
 
         <table>
             <tbody>
@@ -122,11 +126,12 @@
                     <td class="postcell" style="padding-top: 1cm; padding-left: 0.5cm;">
                         <div>
                             <div class="well post-text" itemprop="description">
-                                {{ post_reply.body }}
+                                {{ i.body }}
                             </div>
                             <div class="" style="padding-top: 0.5cm;">
-                                <a class="post-tag" rel="tag" title="" href="/questions/tags/">
-                                    {{ post_reply.user.username }}
+                                posted by
+                                <a class="" rel="user-profile" title="Registered User" href="#">
+                                   {{ i.user }}
                                 </a>
                             </div>
                         </div>
@@ -135,8 +140,8 @@
             </tbody>
         </table>
         <hr>
+    {% endfor %}
     {% endif %}
-
         <!-- ANSWER SECTION ENDS HERE -->
 
 

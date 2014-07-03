@@ -22,5 +22,7 @@ urlpatterns = patterns( '',
      url(r'^approve_post/(?P<id>\d+)/$', 'ticketing.views.approve_post',name='approve_post'),
      url(r'^unapproved_ans/$', 'ticketing.views.view_unapproved_ans',name='view_unapproved_ans'),
      url(r'^approve_reply/(?P<id>\d+)/$', 'ticketing.views.approve_reply',name='approve_reply'),
+     url(r'^ticket_csv/$', "ticketing.views.make_csv"),
+     url(r'^download_report/$',"ticketing.views.download_csv"),
 		
 )

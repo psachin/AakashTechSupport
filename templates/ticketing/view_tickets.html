@@ -20,7 +20,8 @@
       <div class="panel-body">
         {% for key,value in dict.items %}
             	{{ key }}:
-		{{ value }}</br>
+		{{ value }}
+        <br />
         {% endfor %}
 	
 	<div align="center">
@@ -31,7 +32,7 @@
 
 {% for key,value in dict.items %}
             	{%ifequal key "ticket id" %}
-		<form method="post" action="/ac/close_ticket/{{value}}/">
+		<form method="post" action="/ticketing/close_ticket/{{value}}/">
 		{% csrf_token %}     
 		{%endifequal%}  
     {% endfor %}

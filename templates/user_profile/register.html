@@ -21,6 +21,7 @@
 			
 		.light-wrap {
 			border: 1px solid rgb(194, 199, 208);
+            border-top: 1px solid rgb(255, 255, 255);
 		}
 		
 		</style>
@@ -57,19 +58,19 @@
             <img src = "{% static 'images/aakash.png' %}" alt="Aakash Logo-small" height="50px" width="100px" />
 		  </a>
 
-		  <h1><small>Register to </small><strong>TechSupport</strong></h1>
+		  <h1 style="font-family: Whitney SSm A,Whitney SSm B,verdana,Lucida Grande,sans-serif;"><small>Register to </small><strong>TechSupport</strong></h1>
 		</div>
 		
 	<div class="col-md-4 col-md-offset-4">
 	<ul class="nav nav-tabs nav-justified">
-		<li class="active"><a href="/register/">Register</a></li>
-		<li><a href="/login/">Login</a></li>
+		<li style="font-family: Whitney SSm A,Whitney SSm B,verdana,Lucida Grande,sans-serif;" class="active"><a href="/register/">Register</a></li>
+		<li style="font-family: Whitney SSm A,Whitney SSm B,verdana,Lucida Grande,sans-serif;"><a href="/login/">Login</a></li>
 	</ul>
 	
-	<div id="register" class="well light-wrap" style="display: block;">
+	<div id="register" class="light-wrap" style="display: block;">
 		<br />
 		<br />
-		
+    <div style="padding-left: 25px; padding-right: 25px; padding-bottom: 20px; padding-top: 10px;">
 		<form role="form" name="login_form" method="post">
 		{% csrf_token %}
 		<i class="fa fa-user fa-5x"></i>			
@@ -154,16 +155,19 @@
 				</div>
 			    {% endif %}
 
-
-
-
 				<button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
 
 				<br />		
 		  </form>
+        </div>
 		</div>	<!-- light-wrap -->
 	</div>
 	</div> <!-- /container -->
+
+    <div style="padding-top: 2cm;">
+
+    </div>
+
 	{% endblock body_block %}
 
 

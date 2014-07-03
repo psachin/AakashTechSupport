@@ -1,0 +1,54 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+   
+<form name="selectivereport" method="POST" action="/ticketing/download_report/">{% csrf_token %}
+
+    <body  style="background-color:black;height:300px;">
+
+    <div style="color:white;margin-left:200px;">  
+    <h3 style="margin-left:100px;color:white;">Choose the data that you want to export:-</h3><br/><br/>
+    <table style="width:600px;">
+        <tr style="height:50px;">
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="ticketid" name="ticketid" value="close" />&nbsp;&nbsp;Ticket ID </td>
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="tabletid" name="tabletid" value="close" />&nbsp;&nbsp;Tablet ID </td>
+        </tr>
+        <tr style="height:50px;">
+      
+        <td style="width:300px;"><input type="checkbox" height="10" width="10" id="email" name="email" value="close" />&nbsp;&nbsp;Email</td>
+        </tr>
+        <tr style="height:50px;">
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="name" name="name"  value="close"/>&nbsp;&nbsp;Name</td>
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="status1" name="status1" value="close" />&nbsp;&nbsp;Status</td>
+        </tr>
+        <tr style="height:50px;">
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="source" name="source" value="close" />&nbsp;&nbsp;Source Of Ticket</td>
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="duedate" name="duedate" value="close" />&nbsp;&nbsp;Due Date</td>
+        </tr>
+        <tr style="height:50px;">
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="closed" name="closed" value="close" />&nbsp;&nbsp;Closed On</td>
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="created" name="created" value="close" />&nbsp;&nbsp;Created On </td>
+        </tr>
+        <tr style="height:50px;">
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="reopened" name="reopened" value="close" />&nbsp;&nbsp;Reopened On</td>
+            
+        </tr>
+  <tr style="height:50px;">
+            <td style="width:300px;"><input type="checkbox" height="10" width="10" id="helptopic" name="priority" value="close" />&nbsp;&nbsp;Topic Priority</td>
+            
+        </tr>
+    </table>
+
+    <input type="submit" class="btn btn-primary" value="Generate Report"/>
+
+
+
+
+
+</div>
+                
+    </body>
+
+</form>
+</html>

@@ -16,8 +16,26 @@ import re
 from django.contrib.auth.decorators import login_required
 # INDEX PAGE VIEW
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 
+def change(request):
+    pass_word =  request.POST.get('reset1')
+    print pass_word
+    user = request.user.username
+    user = User.objects.get(username=user)
+    user.set_password(pass_word)
+    user.save()
+    user = UserProfile.objects.get(user=user)
+    user.online_status= False
+    user.save()
+    active_user = request.user
+    context_dict = {
+        'user': active_user,
+    }
+    context = RequestContext(request)
+    return render_to_response("index.html", context_dict, context)
+    
 def index(request):
     context = RequestContext(request)
     active_user = ""
@@ -37,7 +55,7 @@ def search(request):
 
 def validateEmail(email):
     if len(email) > 6:
-        #if re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) is not None:
+        # if re.match('\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b', email) is not None:
         if re.match(r'\b[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\b', email) is not None:
             return 1
     return 0
@@ -89,10 +107,42 @@ def register(request):
     }
     context_dict.update(temp_dict)
 
-    return render_to_response("register.html", context_dict, context)
+    return render_to_response("user_profile/register.html", context_dict, context)
+
+#PASSWORD RESET
+
+
+def reset(request):
+    try:
+        data = request.POST['forgot']
+        print data
+        user = User.objects.get(email=data)
+
+        password = User.objects.make_random_password()
+        print password
+        user.set_password(password)
+
+        check = UserProfile.objects.get(user=user)
+        check.online_status = True
+        user.save()
+        check.save()
+
+        subject = "RESET PASSWORD"
+        message = "Your Password is 123"
+        my_email = "aakashkumariitb@gmail.com"
+
+        print message
+        return render_to_response('index.html', RequestContext(request))
+
+    except ObjectDoesNotExist:
+        msg = "Email-id does not exist."
+        message_dict = {
+            'login_error': msg
+        }
+        return render_to_response('user_profile/login.html', message_dict, RequestContext(request))
+
 
 # LOGIN VIEW
-
 
 def login_x(request):
     session_id = ""
@@ -114,7 +164,7 @@ def login_x(request):
         c = {}
         c.update(csrf(request))
         context = RequestContext(request)
-        return render_to_response("login.html", c, context)
+        return render_to_response("user_profile/login.html", c, context)
 
 
 def logout_x(request):
@@ -152,8 +202,13 @@ def login_new(request):
                     'session_id': session_id,
                     'login_error': login_error,
                 }
-                response = render_to_response('index.html', login_dict)
-                return response
+		check = UserProfile.objects.get(user=user)
+		if(check.online_status==True):
+		     response = render_to_response('user_profile/change.html', login_dict,context)
+                     return response
+		else:
+                     response = render_to_response('index.html', login_dict,context)
+                     return response
                
 #               response.set_cookie('logged_in', user.email)
             else:
@@ -161,25 +216,25 @@ def login_new(request):
                 login_dict = {
                     'login_error': login_error
                 }
-                return render_to_response('login.html', login_dict, context)
+                return render_to_response('user_profile/login.html', login_dict, context)
         else:
             login_error = "User authentication failed."
             login_dict = {
                 'login_error': login_error
             }
-            return render_to_response('login.html', login_dict, context)
+            return render_to_response('user_profile/login.html', login_dict, context)
     else:
-        #URL was accessed directly
+        # URL was accessed directly
         c = {}
         c.update(csrf(request))
         context = RequestContext(request)
-        return render_to_response('login.html', c, context)
+        return render_to_response('user_profile/login.html', c, context)
 
 
 def logout_new(request):
     logout(request)
     response = HttpResponseRedirect('/index/')
-    #response.delete_cookie('logged_in')
+    # response.delete_cookie('logged_in')
     print "You have been logged out successfully."
     return response
 
@@ -190,7 +245,7 @@ def view_tags(request):
     for i in tags:
         i.count = len(Post.objects.filter(tags=i))
     context_dict = {'tags': tags}
-    return render_to_response('forum/tags.html', context_dict, context)
+    return render_to_response('forum/../templates/questions/tags.html', context_dict, context)
 
 
 def search_tags(request):
@@ -213,88 +268,136 @@ def search_tags(request):
 
     render_to_response('search.html', search_dict)
 
-
 @login_required
 def profile(request):
     if request.method == "POST":
-        if request.user.is_authenticated(): 
-	  
+        if request.user.is_authenticated():
 	    try:
-	      u=User.objects.get(username=request.user.username)
-	    except User.DoesNotExist:
-	      u = None
-	    print u
-	    up=UserProfile.objects.get_or_create(user=u)[0]
-	    print up
-            user_profile_form=UserProfileForm(data=request.POST)
-            user_profile_form.user=u
+                u = User.objects.get(username=request.user.username)
+            except User.DoesNotExist:
+                u = None
+            print u
+            up = UserProfile.objects.get_or_create(user=u)[0]
+            print up
+            user_profile_form = UserProfileForm(data=request.POST)
+            user_profile_form.user = u
             if user_profile_form.is_valid():
                 print "valid form"
                 if 'avatar' in request.FILES:
-		  up.location=request.POST['location']
-		  #up.avatar=request.FILES['avatar'],
-		  up.user_skills=request.POST['skills']
-		  up.save()
-		  image=request.FILES['avatar']
-		  print image.content_type
-		  print image.size
-		  if image.content_type in ["image/jpeg","image/png","image/jpg"] and (image.size/1024) <= 1024:
-		    up.avatar.save(image.name,image)		 
-		  else:
-		    return render_to_response('after_profile_update.html',
-					  {"message": "file type is invalid or size exceeds 1 MB"},
-					  RequestContext(request))
-		else:
-		  up.location=request.POST['location']
-		  up.user_skills=request.POST['skills']
-		  up_avatar=up.avatar
-		  up.avatar=up_avatar
-		  up.save()
+                    up.location = request.POST['location']
+                    # up.avatar=request.FILES['avatar'],
+                    up.user_skills = request.POST['skills']
+                    up.save()
+                    image = request.FILES['avatar']
+                    print image.content_type
+                    print image.size
+                    from django.core.files.images import *
+                    image_dim = get_image_dimensions(image)
+                    print image_dim[0]<=500
+                    print image_dim[1]<=500
+                    if image.content_type in ["image/jpeg", "image/png", "image/jpg"] and (image.size / 1024) <= 1024:
+		      if image_dim[0]<=500 and image_dim[1]<=500:
+                        up.avatar.save(image.name, image)
+		      else:
+                        return render_to_response('user_profile/after_profile_update.html',
+                                                  {"message":
+                                                      "Your pictures resolution should not be more than 500*500"},
+                                                  RequestContext(request))
+		    else:
+		      return render_to_response('user_profile/after_profile_update.html',
+                                                  {"message":
+                                                      "file type is invalid or size exceeds 1 MB."},
+                                                  RequestContext(request))
+                else:
+                    up.location = request.POST['location']
+                    up.user_skills = request.POST['skills']
+                    up_avatar = up.avatar
+                    up.avatar = up_avatar
+                    up.save()
                 return render_to_response(
-                    'after_profile_update.html',
+                    'user_profile/after_profile_update.html',
                     {"message": "Your profile has been updated"},
-                    RequestContext(request)) 
+                    RequestContext(request))
             else:
-		print "the form submitted was invalid"
-		print user_profile_form.errors
-		#this handles the ValidationError raised in forms.py
-                return render_to_response('after_profile_update.html',
-					  {"message": "please enter valid data.The location and skills field are required. Profile photo is optional"},
-					  RequestContext(request))
+                print "the form submitted was invalid"
+                print user_profile_form.errors
+                # this handles the ValidationError raised in forms.py
+                return render_to_response('user_profile/after_profile_update.html',
+                                          {
+                                              "message": "please enter valid data.The location and skills field are required. Profile photo is optional"},
+                                          RequestContext(request))
         else:
-	    #the user has to login to post and is displayed the login to post message if he does so without logging in
+            # the user has to login to post and is displayed the login to post
+            # message if he does so without logging in
             return HttpResponse("login to post")
     # displaying the form for the first time.
-    
-    else:   
-	      user_profile_form = UserProfileForm()
-	      return render_to_response(
-	      'update_profile.html',
-	      {'user_profile_form': user_profile_form},
-	      RequestContext(request))
-	#else:
-	      #userprofile exists so display and give an option to update
-	      #resize the avatar while submitting the form
+
+    else:
+        user_profile_form = UserProfileForm()
+        return render_to_response(
+            'user_profile/update_profile.html',
+            {'user_profile_form': user_profile_form},
+            RequestContext(request))
+        # else:
+        # userprofile exists so display and give an option to update
+        # resize the avatar while submitting the form
 @login_required
 def view_profile(request):
-	u=User.objects.get(username=request.user.username)
-	#if UserProfile already exists for the user then display the profile
-	try:
-	      up=UserProfile.objects.get(user=u)
-	except UserProfile.DoesNotExist:
-	      up = None
-	      return render_to_response('after_profile_update.html',
-					  {"message": "You have not yet updated your profile"},
-					  RequestContext(request))
-	if up.avatar:    
-	  context_dict={'location':up.location,
-			    'avatar':up.avatar,
-			    'user_skills':up.user_skills}
-	else:
-	  context_dict={'location':up.location,
-			    'avatar':"static/images/profile_image/default_avatar.jpg ",
-			    'user_skills':up.user_skills}
-	return render_to_response(
-	      'display_profile.html',
-	      context_dict,
-	      RequestContext(request))
+    u = User.objects.get(username=request.user.username)
+    # if UserProfile already exists for the user then display the profile
+    up = UserProfile.objects.get(user=u)
+    related_post = Post.objects.filter(creator=up)
+
+    try:
+        up = UserProfile.objects.get(user=u)
+    except UserProfile.DoesNotExist:
+        up = None
+        return render_to_response('user_profile/after_profile_update.html',
+                                  {"message":
+                                      "You have not yet updated your profile"},
+                                  RequestContext(request))
+    if up.avatar:
+        context_dict = {
+            'posts': related_post,
+            'up': up,
+        }
+    else:
+        context_dict = {
+            'posts': related_post,
+            'up': up,
+            'default_avatar': "static/images/profile_image/default_avatar.png ",
+        }
+    return render_to_response('user_profile/profile_page.html', context_dict, RequestContext(request))
+
+
+@login_required
+def view_related_answers(request):
+    u = User.objects.get(username=request.user.username)
+    # if UserProfile already exists for the user then display the profile
+    up = UserProfile.objects.get(user=u)
+    related_replies = Reply.objects.filter(user=up)
+
+    try:
+        up = UserProfile.objects.get(user=u)
+    except UserProfile.DoesNotExist:
+        up = None
+        return render_to_response('user_profile/after_profile_update.html',
+                                  {"message":
+                                      "You have not yet updated your profile"},
+                                  RequestContext(request))
+    if up.avatar:
+        context_dict = {
+            'replies': related_replies,
+            'up': up,
+        }
+    else:
+        context_dict = {
+            'replies': related_replies,
+            'up': up,
+            'default_avatar': "static/images/profile_image/default_avatar.png ",
+        }
+    return render_to_response('user_profile/profile_page.html', context_dict, RequestContext(request))
+
+
+
+
