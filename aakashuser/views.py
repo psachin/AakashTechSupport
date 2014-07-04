@@ -407,7 +407,7 @@ def view_related_answers(request):
     # if UserProfile already exists for the user then display the profile
     up = UserProfile.objects.get(user=u)
     related_replies = Reply.objects.filter(user=up)
-    naturaltime()
+
     try:
         up = UserProfile.objects.get(user=u)
     except UserProfile.DoesNotExist:
