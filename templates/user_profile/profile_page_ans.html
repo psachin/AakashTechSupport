@@ -63,8 +63,8 @@
     <hr>
 
         <ul class="nav nav-tabs" id="myTab">
-          <li style="float: right;" class=""><a href="/aakashuser/view_profile/answers/">Answers</a></li>
-          <li style="float: right;" class="active"><a href="/aakashuser/view_profile/questions/">Questions</a></li>
+          <li style="float: right;" class="active"><a href="/aakashuser/view_profile/answers/">Answers</a></li>
+          <li style="float: right;" class=""><a href="/aakashuser/view_profile/questions/">Questions</a></li>
 
 
         <h4 style="text-align: left; font-size:18px; font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-weight: bold;">
@@ -74,7 +74,9 @@
         </ul>
 
 
-    {% for post in posts %}
+    <!--  REPLY SECTION  -->
+
+    {% for reply in replies %}
 
     <div style="padding-top: 1cm;">
     </div>
@@ -82,7 +84,6 @@
     <div id="mainbar">
         <div id="questions" class="content-padding">
             <div id="question-summary" class="question-summary">
-
                     <div class="stats-container">
                     <div class="stats-arrow">
                     </div>
@@ -90,7 +91,7 @@
                         <div class="vote">
                             <div class="votes">
                                <span class="vote-count-post">
-                                    {{ post.num_votes }}
+                                    {{ reply.upvotes }}
                                </span>
                                <div class="viewcount">
                                    votes
@@ -98,59 +99,28 @@
                             </div>
                         </div>
 
-                        <div class="status unanswered">
-                            <strong>
-                                0
-                            </strong>
-                            ans
-                        </div>
                     </div>
                     </div>
 
                     <div class="summary" style="float: left; width: 70%; padding-left: 40px;">
                     <h3>
                         <a class="question-hyperlink" href="/questions/{{ post.id }}" style="font-size: 19px;" >
-                            {{ post.title }}
+                            {{ reply.title }}
                         </a>
                     </h3>
-                    <div class="excerpt">
-                        {{ post.body }}
                     </div>
-                    <div class="tags t-search">
-                        <a class="post-tag" rel="tag" title="" href="/questions/tagged_questions/{{ post.category.pk }}">
-                            {{ post.category|lower|capfirst }}
-                        </a>
-                    </div>
-                    <div class="started-fr">
-                        <div class="user-info">
-                            <div class="user-gravatar32">
-                                <a href="/users/1">
-                                    <div class="gravatar-wrapper-32">
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="user-details">
-                                <a href="/users/1">
-                                </a>
-                                <br>
-                                </br>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
             </div>
         </div>
     </div>
-
     {% endfor %}
 
 
+    <!--  REPLY SECTION ENDS HERE -->
 
     </div>
     </div>
 
-    <div style="padding-bottom: 30cm;"></div>
+    <div style="padding-bottom: 20cm;">
 
+    </div>
 {% endblock %}

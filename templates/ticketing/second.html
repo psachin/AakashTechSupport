@@ -188,8 +188,10 @@
 
 <div id="response_options">
     <ul>
-                <li><a id="reply_tab" href="#reply">Post Reply</a></li>
-               
+                
+                <li><a id="reply_tab" href="#reply">Post Reply</a>
+                <a id="reply_count" name="reply_count" >1</a> </li>
+                
             </ul>
    
         <form id="reply" action="/ticketing/reply/{{threads.pk}}/" name="reply" method="POST">{% csrf_token %}
@@ -209,18 +211,41 @@
             </tr>
          
  <script type="text/javascript">
+    
       function setcounter() {
-        var counter =0;
+        window.counter =1;
+        var add_email = document.getElementById("reply");
+        add_email.action = "/ticketing/reply/{{threads.pk}}/"+counter+"/";
+        
        }
       function add() {
-          
-        var add_email = document.getElementById('useremail');
-        var email_field= document.createElement('input');
-        email_field.setAttribute("type","text");
-        email_field.setAttribute( "name","som");
+        
+        counter= counter+1;
+        var add_email = document.getElementById("useremail");
+        
+        var  emails  =  document.createElement('input');
+        emails.setAttribute('type','text');
+        emails.setAttribute('name','email'+counter);
+        
+       
+        
+        add_email.appendChild(emails);
+       
+        var reply_count = document.getElementById("reply_count")
+        reply_count.innerHTML = counter
+        
+         var add_email = document.getElementById("reply");
+         add_email.action = "/ticketing/reply/{{threads.pk}}/"+counter+"/";
         
         
-        add_email.appendChild(email_field);
+      
+         
+      
+        
+         
+        
+       
+        
         
         
       }

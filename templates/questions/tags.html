@@ -22,7 +22,8 @@
     </div>
 
     <div id="post_body" class="col-md-8 col-md-offset-2" style="padding-top: 0.0cm">
-        <form action="search" role="form" id="search_form">
+        <form action="/questions/tag_search/" role="form" id="search_form" method="POST">
+            {% csrf_token %}
         <nav>
         <ul class="nav navbar-nav">
             <div class="input-group" style="float: left; padding-left: 0.2cm;">
@@ -70,7 +71,12 @@
         </tbody>
 
     </table>
-
+    {% if error_msg %}
+    <p style="font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif; font-size: 18px;">
+        {{ error_msg }}
+    </p>
+    <hr>
+    {% endif %}
     </div>
 
     <div style="padding-top: 20cm;">

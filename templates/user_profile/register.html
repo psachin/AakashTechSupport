@@ -135,11 +135,11 @@
                     {% endif %}
 
                     {% if i == "first_name" %}
-                        First name should consist of alphabets only
+                        First name should consist of alphabets
                     {% endif %}
 
                     {% if i == "last_name" %}
-                        Last name should consist of alphabets only
+                        Last name should consist of alphabets
                     {% endif %}
                 </p>
 				{% endfor %}
@@ -151,6 +151,10 @@
                 {% if er2 %}
 				<p> {{ er2 }} </p>
 				{% endif %}
+
+                {% if er3 %}
+                <p>{{ er3 }}</p>
+                {% endif %}
 
 				</div>
 			    {% endif %}
