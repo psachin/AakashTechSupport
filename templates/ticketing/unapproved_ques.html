@@ -27,7 +27,7 @@
     <div class="container-fluid"  style="padding-top: 0.5cm; padding-bottom: 2cm;">
 	<div class="  col-md-8 col-md-offset-2" role="navigation">
         {% for i in posts %}
-		<form action="/ac/approve_post/{{i.pk}}/" method="post">
+		<form action="/ticketing/approve_post/{{i.pk}}/" method="post">
 		{% csrf_token %}
         <div class="well-sm" style="padding-top: 0.2cm;">
             <h4 class="text-justify">

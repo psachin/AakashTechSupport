@@ -28,9 +28,9 @@ from django.core.mail import send_mail
 
 def special_match(strg, search=re.compile(r'[^a-z0-9.]').search):
      return not bool(search(strg))
+
+
 @login_required
-
-
 def submit_ticket(request):
     if request.method == "POST":
         if request.user.email != request.POST["user_id"]:
@@ -50,7 +50,7 @@ def submit_ticket(request):
             print request.POST["topic_id"]
             category = Category.objects.get(category=str(request.POST["topic_id"]))#getting the category object from the Category table corresponding to the category selected from the drop down by the user
             cat_id = category.id
-            submit_ticket_form.topic_id = cat_id	
+            submit_ticket_form.topic_id = cat_id
             if submit_ticket_form.is_valid():
                 t=datetime.datetime.now()
 		t=t.strftime('%Y-%m-%d %H:%M:%S')
@@ -67,6 +67,11 @@ def submit_ticket(request):
 					    status=0,
 					    topic_priority=1,
 					    duration_for_reply=24)[0]
+                t_user = User.objects.get(username=request.user.username)
+                creator = UserProfile.objects.get(user=t_user)
+                post = Post.objects.create(creator=creator,title=category,body=request.POST["message"],category=category)
+                print request.user.username
+
                 print "success"
 		subject="AakashTechSupport: Your ticket id is:"+str(ticket.ticket_id)
 		message=request.user.email+''',
@@ -82,8 +87,17 @@ You can view this ticket's progress online by logging into your account and clic
                     {'ticket_id': ticket.ticket_id},
                     RequestContext(request)) #passing the ticket_id as a dictionary element to the template ticketing/after_submit.html where its displayed to the user
             else:
+
 		#this handles the ValidationError raised in forms.py if the user enters a tablet id that is not present in the Tablet_info table
-                return render_to_response('ticketing/email_not_valid.html', {"message": "the tablet id you entered is not valid.Please enter a valid tablet id"}, RequestContext(request))
+                user_details = request.user.email #get the users email
+                submit_ticket_form = SubmitTicketForm(user_details=user_details) #instantiate the form
+                content = {
+                    'submit_ticket_form': submit_ticket_form,
+                    'user': request.user,
+                }
+                return render_to_response('ticketing/submit_ticket.html',content,RequestContext(request))
+
+
         else:
 	    #the user has to login to post and is displayed the login to post message if he does so without logging in
             return HttpResponse("login to post")
@@ -238,9 +252,17 @@ def ticket_traffic_graph(request):
 
 #To post the ADMIN REPLY
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
-def reply(request, id):
+def reply(request, id, counts):
     if request.method == 'POST':
         Reply = request.POST.get('response')
+        counts=int(counts)
+        if counts>1:
+               emails= []
+               for i in range (2, counts+1):
+                   emails_enter=request.POST.get("email"+str(i))
+                   emails.append(emails_enter)
+
+
         ticket = Ticket.objects.get(pk=id)
 
         response = Threads.objects.create(
@@ -254,10 +276,14 @@ A customer support staff member has replied to your support request, #'''+id+'''
 
 We hope this response has sufficiently answered your questions.If so please login to your account and close the ticket. Login to your account for a complete archive of all your support requests and responses.'''
 	my_email="aakashkumariitb@gmail.com"#CHANGE THIS WHILE DEPLOYING
-	receiptents=[ticket.user_id]
+	receiptents=[ticket.user_id,]
 	send_mail(subject, message, my_email, receiptents,fail_silently=False)
         check = request.POST.get('reply_ticket_status')
-        print check
+        if counts>1:
+          for email in emails:
+             email=[email]
+             send_mail(subject, message, my_email,email,fail_silently=False)
+
         if check == 'Open':
             s = Ticket.objects.get(pk=id)
             s.status = 0
@@ -536,7 +562,7 @@ def view_unapproved_ques(request):
 	context_dict={'posts':posts}
 	return render_to_response('ticketing/unapproved_ques.html',context_dict,context)
 	
-	
+
 @user_passes_test(lambda u:u.is_staff, login_url='/login/')
 def approve_post(request,id):
 	context=RequestContext(request)

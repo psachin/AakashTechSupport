@@ -19,7 +19,7 @@ Invaliddate = Date - datetime.timedelta(days=1)
 
 class UserProfile(models.Model):#Model for storing a user's information.
     user = OneToOneField(User)
-    location = models.CharField(max_length=10)
+    location = models.CharField(max_length=10, blank=True)
     avatar = models.ImageField(upload_to='static/images/profile_image', blank=True)#for storing user's pic
     online_status = models.BooleanField(default=False)
     user_type = models.IntegerField(max_length=1, default=0)

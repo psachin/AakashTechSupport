@@ -16,7 +16,7 @@
 
         <ul class="nav nav-tabs">
           <li style="float: right;"><a href="/questions/unanswered/">Unanswered</a></li>
-          <li style="float: right;"><a href="/questions/votes/">Votes</a></li>
+          <li style="float: right;"><a href="/questions/num_votes/">Votes</a></li>
           <li style="float: right;"><a href="/questions/frequent/">Frequent</a></li>
 <<<<<<< HEAD
           <li style="float: right;"><a href="/questions/latest/">Latest</a></li>
@@ -102,9 +102,9 @@
                     <div class="started-fr">
                         <div class="user-info">
                             <div class="user-action-time" style="float: left; ">
-                                asked
+                                asked by
                                 <span class="relativetime" title="2014-06-17 14:05:09Z">
-                                    1 min ago
+                                    {{ user.username }}
                                 </span>
                             </div>
                             <div class="user-gravatar32">
@@ -153,6 +153,7 @@
     </div>
 
     -->
+
 
 
 {% endblock %}
