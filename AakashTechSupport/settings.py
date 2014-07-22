@@ -147,7 +147,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'aakashuser',
     'ticketing',
-    'south',
+   # 'south',
     'taggit',
     'django_wysiwyg',
     'tinymce',

@@ -34,19 +34,10 @@ def all_questions_view(request, url):
 
         }
 
-<<<<<<< HEAD
-    elif url == 'votes':
-
-        posts=Post.objects.all().order_by("-upvotes")
-    
-        posts = Post.objects.all().order_by("-upvotes")
-=======
     elif url == 'num_votes':
         posts = Post.objects.all().order_by("-num_votes")
         posts = Post.objects.filter(post_status=1)
->>>>>>> faeb44b15c2fa16f2d9460b642ee14c55b7551a9
         context_dict = {
-
             'posts': posts,
         }
 
@@ -83,17 +74,6 @@ def all_questions_view(request, url):
     return render_to_response('questions/all_questions.html', context_dict, context)
 
 
-<<<<<<< HEAD
-def view_tags(request): #This view has been defined for displaying all the tags and the number of posts related to each tag.
-	context=RequestContext(request)
-	tags=Tag.objects.all()#for fetching all the tags.
-	for tag in tags:
-		tag.count=len(Post.objects.filter(tags=tag,post_status=1))
-	context_dict= {'tags': tags}
-	return render_to_response('forum/tags.html', context_dict, context)
-
-=======
->>>>>>> faeb44b15c2fa16f2d9460b642ee14c55b7551a9
 
 def ask_question(request):
     context = RequestContext(request)
@@ -265,6 +245,7 @@ def view_tags(request):
     context_dict = {
         'tags': tags
     }
+
     return render_to_response('questions/tags.html', context_dict, context)
 
 
@@ -292,9 +273,6 @@ def search_tags(request):
 def linktag(request, qid):
     context = RequestContext(request)
 
-    new_tag = Tag.objects.get(pk=qid)
-    posts_date = Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_date')#for fetching posts related to a particular tag.
-    posts_views = Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_views')
     cat = Category.objects.get(pk=qid)
     posts_date = Post.objects.filter(category=cat).order_by('-post_date')
     posts_views = Post.objects.filter(category=cat).order_by('-post_views')
@@ -307,39 +285,7 @@ def linktag(request, qid):
         #'post': post,
     }
 
-    return render_to_response('questions/tagged_questions.html', context_dict, context)    
-    
-
-def tag_search(request):#This view has been defined to search a tag, and if found , display the associated questions.
-	context=RequestContext(request)
-	mytag = request.POST.get('search_text')#value of search_text comes through the textbox in html
-	mytag=mytag.upper()
-	try:
-		new_tag= Tag.objects.get(name=mytag)
-		posts=Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_date')#for fetching posts related to a particular tag.
-		posts1= Post.objects.filter(tags=new_tag,post_status=1).order_by('-post_views')
-		context_dict={
-			'posts':posts,
-			'mytag':new_tag,
-			'posts1':posts1}
-	except Tag.DoesNotExist:
-		context_dict={}
-	return render_to_response('questions/all_questions.html', context_dict, context)
-
-
-def link_question(request, qid):
-    context = RequestContext(request)
-
-    posts = Post.objects.get(pk=qid)
-    replies = Reply.objects.filter(title=posts).order_by("-upvotes")
-    posts.post_views = posts.post_views + 1
-    posts.save()
-    context_dict = {
-        'posts': posts,
-        'replies': replies,
-    }
-
-    return render_to_response('questions/allqueries_link.html', context_dict, context)
+    return render_to_response('questions/tagged_questions.html', context_dict, context)
 
 
 def tag_search(request):
@@ -374,21 +320,6 @@ def search(request):
         """Searching for ticket-id"""
         tickets = Ticket.objects.filter(Q(ticket_id__icontains=Search) | Q(user_id__icontains=Search))
 
-<<<<<<< HEAD
-def link_question(request, qid):
-    context = RequestContext(request)
-    question = Post.objects.get(pk=qid)
-    posts = Post.objects.get(pk=qid)
-    replies = Reply.objects.filter(title=posts)
-   
-    context_dict = {
-        'posts': posts,
-        'replies': replies,
-    }
-
-    return render_to_response('questions/allqueries_link.html', context_dict, context)
-
-=======
         if tickets.exists():
             context_dict = {
                 'user': active_user,
@@ -419,4 +350,3 @@ def link_question(request, qid):
                     'count_close': count_close,
                 }
                 return render_to_response("ticketing/d.html", context_dict, RequestContext(request))
->>>>>>> faeb44b15c2fa16f2d9460b642ee14c55b7551a9
